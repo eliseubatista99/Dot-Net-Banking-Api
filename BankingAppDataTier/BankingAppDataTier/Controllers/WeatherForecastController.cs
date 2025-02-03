@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace DotNetBankingAppProcess.Controllers
+namespace BankingAppDataTier.Controllers
 {
     [ApiController]
     [Route("[controller]")]

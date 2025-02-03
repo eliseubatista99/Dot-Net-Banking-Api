@@ -1,6 +1,0 @@
-@DotNetBankingAppProcess_HostAddress = http://localhost:5073
-
-GET {{DotNetBankingAppProcess_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

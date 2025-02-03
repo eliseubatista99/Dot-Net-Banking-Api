@@ -1,4 +1,4 @@
-namespace DotNetBankingAppProcess
+namespace BankingAppPresentationTier
 {
     public class WeatherForecast
     {
