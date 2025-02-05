@@ -7,7 +7,7 @@ namespace BankingAppDataTier
     {
         static void InjectDependencies(ref WebApplicationBuilder builder)
         {
-            builder.Services.AddSingleton<IBankingAppSqlProvider, BankingAppSqlProvider>();
+            builder.Services.AddSingleton<IDatabaseProvider, DatabaseProvider>();
         }
 
 
@@ -16,7 +16,7 @@ namespace BankingAppDataTier
             var builder = WebApplication.CreateBuilder(args);
 
             InjectDependencies(ref builder);
-            var databaseInitializer = new DatabaseInitializer(builder.Services.BuildServiceProvider().GetService<IBankingAppSqlProvider>());
+            var databaseInitializer = new DatabaseInitializer(builder.Services.BuildServiceProvider().GetService<IDatabaseProvider>());
 
             // Add services to the container.
 

@@ -1,4 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Mvc;
@@ -7,39 +8,48 @@ using Microsoft.Data.SqlClient;
 
 namespace BankingAppDataTier.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class ClientsController : Controller
     {
-        public IActionResult Index()
+        private readonly ILogger<ClientsController> logger;
+        private readonly IDatabaseProvider databaseProvider;
+
+        public ClientsController(ILogger<ClientsController> _logger, IDatabaseProvider _dbProvider)
         {
-            return View();
+            logger = _logger;
+            databaseProvider = _dbProvider;
         }
 
-        [HttpGet(Name = "GetClients")]
-        public List<ClientDto> Get()
+        [HttpGet()]
+        public List<ClientDto> GetClients()
         {
             List<ClientDto> result = new List<ClientDto>();
-            SqlConnection sqlConnection = new SqlConnection("");
-            SqlCommand sqlCommand = new SqlCommand();
 
-            sqlCommand.Connection = sqlConnection;
-            sqlCommand.CommandType = System.Data.CommandType.Text;
-            sqlCommand.Parameters.Clear();
+            var clientsInDb = databaseProvider.GetAllClients();
 
-            sqlCommand.CommandText = $"SELECT * FROM {ClientsTable.TABLE_NAME}";
+            return clientsInDb.Select(client => ClientsMapperProfile.MapClientTableEntryToClientDto(client)).ToList();
+        }
 
-            sqlConnection.Open();
-            SqlDataReader sqlReader = sqlCommand.ExecuteReader();
+        [HttpGet("{id}")]
+        public ClientDto GetClient(string id)
+        {
+            List<ClientDto> result = new List<ClientDto>();
 
-            while (sqlReader.Read())
+            var clientInDb = databaseProvider.GetClientById(id);
+
+            if(clientInDb != null)
             {
-                var dataEntry = ClientsMapperProfile.MapSqlDataToClientTableEntry(sqlReader);
-
-                result.Add(ClientsMapperProfile.MapClientTableEntryToClientDto(dataEntry));
+                return ClientsMapperProfile.MapClientTableEntryToClientDto(clientInDb);
             }
 
-            sqlConnection.Close();
+            return null;
+        }
 
-            return result;
+        [HttpPost()]
+        public bool AddClient([FromBody] ClientDto client)
+        {
+            return true;
         }
     }
 }

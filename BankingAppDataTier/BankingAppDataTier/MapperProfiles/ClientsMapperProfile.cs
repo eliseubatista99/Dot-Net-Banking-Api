@@ -13,12 +13,12 @@ namespace BankingAppDataTier.MapperProfiles
             {
                 Id = sqlReader[ClientsTable.COLUMN_ID].ToString()!,
                 Password = sqlReader[ClientsTable.COLUMN_PASSWORD].ToString()!,
-                Name = sqlReader[ClientsTable.COLUMN_ID].ToString()!,
-                Surname = sqlReader[ClientsTable.COLUMN_ID].ToString()!,
-                BirthDate = Convert.ToDateTime(sqlReader[ClientsTable.COLUMN_ID]),
-                VATNumber = sqlReader[ClientsTable.COLUMN_ID].ToString()!,
-                PhoneNumber = sqlReader[ClientsTable.COLUMN_ID].ToString()!,
-                Email = sqlReader[ClientsTable.COLUMN_ID].ToString()!,
+                Name = sqlReader[ClientsTable.COLUMN_NAME].ToString()!,
+                Surname = sqlReader[ClientsTable.COLUMN_SURNAME].ToString()!,
+                BirthDate = Convert.ToDateTime(sqlReader[ClientsTable.COLUMN_BIRTH_DATE]),
+                VATNumber = sqlReader[ClientsTable.COLUMN_VAT_NUMBER].ToString()!,
+                PhoneNumber = sqlReader[ClientsTable.COLUMN_PHONE_NUMBER].ToString()!,
+                Email = sqlReader[ClientsTable.COLUMN_EMAIL].ToString()!,
             };
         }
 
