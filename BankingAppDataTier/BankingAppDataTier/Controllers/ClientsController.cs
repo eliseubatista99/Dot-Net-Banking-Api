@@ -47,9 +47,12 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost()]
-        public bool AddClient([FromBody] ClientDto client)
+        public bool AddClient([FromBody] ClientDto client, string password)
         {
-            return true;
+            var clientEntry = ClientsMapperProfile.MapClientDtoToClientTableEntry(client);
+            clientEntry.Password = password;
+
+            return databaseProvider.AddClient(clientEntry);
         }
     }
 }

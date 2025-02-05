@@ -15,6 +15,14 @@ namespace BankingAppDataTier
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add Cors
+            builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             InjectDependencies(ref builder);
             var databaseInitializer = new DatabaseInitializer(builder.Services.BuildServiceProvider().GetService<IDatabaseProvider>());
 
