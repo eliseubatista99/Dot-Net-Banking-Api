@@ -1,13 +1,14 @@
-﻿using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Database;
+﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.MapperProfiles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
-using Microsoft.Data.SqlClient;
 
 namespace BankingAppDataTier.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class ClientsController : Controller
@@ -24,6 +25,7 @@ namespace BankingAppDataTier.Controllers
         [HttpGet()]
         public List<ClientDto> GetClients()
         {
+            Request.Headers.TryGetValue("", out StringValues headerValue);
             List<ClientDto> result = new List<ClientDto>();
 
             var clientsInDb = databaseProvider.GetAllClients();
