@@ -7,28 +7,30 @@ namespace BankingAppDataTier.Database
 {
     public class DatabaseInitializer
     {
-        private IDatabaseProvider databaseProvider;
+        private IServiceCollection serviceCollection;
 
-        public DatabaseInitializer(IDatabaseProvider dbProvider) 
+        public DatabaseInitializer(IServiceCollection service) 
         {
-            this.databaseProvider = dbProvider;
+            this.serviceCollection = service;
 
             InitializeClients();
+            InitializeAccounts();
         }
 
         private void InitializeClients()
         {
-            this.databaseProvider.CreateClientsTableIfNotExists();
+            var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseClientsProvider>();
+            dbProvider.CreateClientsTableIfNotExists();
 
-            var clients = this.databaseProvider.GetAllClients();
+            var elementsInDb = dbProvider.GetAll();
 
             //If the database already has entries, don't add anything
-            if(clients.Count > 0)
+            if(elementsInDb.Count > 0)
             {
                 return;
             }
 
-            this.databaseProvider.AddClient(
+            dbProvider.Add(
                 new ClientsTableEntry {
                     Id = "JW0000000",
                     Password = "password",
@@ -41,7 +43,7 @@ namespace BankingAppDataTier.Database
                 }
             );
 
-            this.databaseProvider.AddClient(
+            dbProvider.Add(
                 new ClientsTableEntry
                 {
                     Id = "JS0000000",
@@ -52,6 +54,51 @@ namespace BankingAppDataTier.Database
                     VATNumber = "111222333",
                     PhoneNumber = "911111112",
                     Email = "jacl.sparrow@dotnetbanking.com"
+                }
+            );
+        }
+
+        private void InitializeAccounts()
+        {
+            var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseAccountsProvider>();
+            dbProvider.CreateAccountsTableIfNotExists();
+
+            var elementsInDb = dbProvider.GetAll();
+
+            //If the database already has entries, don't add anything
+            if (elementsInDb.Count > 0)
+            {
+                return;
+            }
+
+            dbProvider.Add(
+                new AccountsTableEntry
+                {
+                    AccountId = "ACJW000000",
+                    AccountType = "CU",
+                    Balance = 1000,
+                    Name = "Jonh Wick Current Account",
+                    Image = DefaultBase64Img.Content,
+                }
+            );
+
+            dbProvider.Add(
+                new AccountsTableEntry
+                {
+                    AccountId = "ACJW000001",
+                    AccountType = "SA",
+                    Balance = 2000,
+                    Name = "Jonh Wick Savings Account",
+                }
+            );
+
+            dbProvider.Add(
+                new AccountsTableEntry
+                {
+                    AccountId = "ACJW000002",
+                    AccountType = "IN",
+                    Balance = 3000,
+                    Name = "Jonh Wick Investments Account",
                 }
             );
         }

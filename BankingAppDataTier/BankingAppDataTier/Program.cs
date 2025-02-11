@@ -12,15 +12,16 @@ namespace BankingAppDataTier
 {
     class Program
     {
-        static (IAuthenticationProvider authProvider, IDatabaseProvider dbProvider) InjectDependencies(ref WebApplicationBuilder builder)
+        static (IAuthenticationProvider authProvider, IServiceCollection serviceCollection) InjectDependencies(ref WebApplicationBuilder builder)
         {
             builder.Services.AddSingleton<IAuthenticationProvider, AuthenticationProvider>();
-            builder.Services.AddSingleton<IDatabaseProvider, DatabaseProvider>();
+            builder.Services.AddSingleton<IDatabaseClientsProvider, DatabaseClientsProvider>();
+            builder.Services.AddSingleton<IDatabaseAccountsProvider, DatabaseAccountsProvider>();
 
             var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
-            var dbProvider = builder.Services.BuildServiceProvider().GetService<IDatabaseProvider>()!;
+            var dbProvider = builder.Services.BuildServiceProvider().GetService<IDatabaseClientsProvider>()!;
 
-            return (authProvider, dbProvider);
+            return (authProvider, builder.Services);
         }
 
         static void Main(string[] args)
@@ -35,7 +36,7 @@ namespace BankingAppDataTier
                        .AllowAnyHeader();
             }));
 
-            var (authProvider, dbProvider) = InjectDependencies(ref builder);
+            var (authProvider, serviceCollection) = InjectDependencies(ref builder);
 
             // Add process of verifying who they are
             authProvider!.AddAuthenticationToApplicationBuilder(ref builder);
@@ -43,7 +44,7 @@ namespace BankingAppDataTier
             // Add the process of verifying what access they have
             builder.Services.AddAuthorization();
 
-            var databaseInitializer = new DatabaseInitializer(dbProvider);
+            var databaseInitializer = new DatabaseInitializer(serviceCollection);
 
             // Add services to the container.
 

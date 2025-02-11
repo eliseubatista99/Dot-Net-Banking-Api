@@ -26,11 +26,11 @@ namespace BankingAppDataTier.Contracts.Database
         /// <summary>
         /// Gets or sets the account name.
         /// </summary>
-        public required decimal Name { get; set; }
+        public required string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the account image.
         /// </summary>
-        public required byte[] Image { get; set; }
+        public string? Image { get; set; }
     }
 }

@@ -15,9 +15,9 @@ namespace BankingAppDataTier.Controllers
     public class ClientsController : Controller
     {
         private readonly ILogger<ClientsController> logger;
-        private readonly IDatabaseProvider databaseProvider;
+        private readonly IDatabaseClientsProvider databaseProvider;
 
-        public ClientsController(ILogger<ClientsController> _logger, IDatabaseProvider _dbProvider)
+        public ClientsController(ILogger<ClientsController> _logger, IDatabaseClientsProvider _dbProvider)
         {
             logger = _logger;
             databaseProvider = _dbProvider;
@@ -29,7 +29,7 @@ namespace BankingAppDataTier.Controllers
             Request.Headers.TryGetValue("", out StringValues headerValue);
             List<ClientDto> result = new List<ClientDto>();
 
-            var clientsInDb = databaseProvider.GetAllClients();
+            var clientsInDb = databaseProvider.GetAll();
 
             return clientsInDb.Select(client => ClientsMapperProfile.MapClientTableEntryToClientDto(client)).ToList();
         }
@@ -39,7 +39,7 @@ namespace BankingAppDataTier.Controllers
         {
             List<ClientDto> result = new List<ClientDto>();
 
-            var clientInDb = databaseProvider.GetClientById(id);
+            var clientInDb = databaseProvider.GetById(id);
 
             if(clientInDb != null)
             {
@@ -55,7 +55,7 @@ namespace BankingAppDataTier.Controllers
             var clientEntry = ClientsMapperProfile.MapClientDtoToClientTableEntry(client);
             clientEntry.Password = password;
 
-            return databaseProvider.AddClient(clientEntry);
+            return databaseProvider.Add(clientEntry);
         }
     }
 }

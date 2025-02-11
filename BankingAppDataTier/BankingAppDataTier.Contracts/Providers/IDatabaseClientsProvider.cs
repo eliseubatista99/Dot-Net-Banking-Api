@@ -9,15 +9,14 @@ using System.Threading.Tasks;
 
 namespace BankingAppDataTier.Contracts.Providers
 {
-    public interface IDatabaseProvider
+    public interface IDatabaseClientsProvider
     {
         public bool CreateClientsTableIfNotExists();
 
-        public List<ClientsTableEntry> GetAllClients();
+        public List<ClientsTableEntry> GetAll();
 
-        public ClientsTableEntry? GetClientById(string id);
+        public ClientsTableEntry? GetById(string id);
 
-        public bool AddClient(ClientsTableEntry client);
-
+        public bool Add(ClientsTableEntry entry);
     }
 }
