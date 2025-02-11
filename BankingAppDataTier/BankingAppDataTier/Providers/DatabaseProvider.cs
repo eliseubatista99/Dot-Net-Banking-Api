@@ -2,11 +2,12 @@
 using BankingAppDataTier.Contracts.Constants;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
+using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.Data.SqlClient;
 using System.Xml;
 
-namespace BankingAppDataTier.Database
+namespace BankingAppDataTier.Providers
 {
     public class DatabaseProvider : IDatabaseProvider
     {

@@ -1,6 +1,8 @@
 using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,73 +12,16 @@ namespace BankingAppDataTier
 {
     class Program
     {
-        static void InjectDependencies(ref WebApplicationBuilder builder)
+        static (IAuthenticationProvider authProvider, IDatabaseProvider dbProvider) InjectDependencies(ref WebApplicationBuilder builder)
         {
+            builder.Services.AddSingleton<IAuthenticationProvider, AuthenticationProvider>();
             builder.Services.AddSingleton<IDatabaseProvider, DatabaseProvider>();
+
+            var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
+            var dbProvider = builder.Services.BuildServiceProvider().GetService<IDatabaseProvider>()!;
+
+            return (authProvider, dbProvider);
         }
-
-        static void AddAuthorization(ref WebApplicationBuilder builder)
-        {
-            var authConfigs = builder.Configuration.GetSection(AuthenticationConfigs.AuthenticationSection);
-
-            // Add the process of verifying who they are
-            builder.Services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidIssuer = authConfigs.GetSection(AuthenticationConfigs.Issuer).Value!,
-                    ValidAudience = authConfigs.GetSection(AuthenticationConfigs.Audience).Value!,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfigs[AuthenticationConfigs.Key]!)),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                };
-            });
-
-            // Add the process of verifying what access they have
-            builder.Services.AddAuthorization();
-        }
-
-        static void ConfigureSwaggerGen(ref WebApplicationBuilder builder)
-        {
-            builder.Services.AddSwaggerGen(opt =>
-            {
-                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "BankingAppData", Version = "v1" });
-
-                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Description = "Please enter token",
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    BearerFormat = "JWT",
-                    Scheme = "bearer"
-                });
-
-                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type=ReferenceType.SecurityScheme,
-                                Id="Bearer"
-                            }
-                        },
-                        new string[]{}
-                    }
-                });
-            });
-
-        }
-
 
         static void Main(string[] args)
         {
@@ -90,17 +35,23 @@ namespace BankingAppDataTier
                        .AllowAnyHeader();
             }));
 
-            InjectDependencies(ref builder);
-            AddAuthorization(ref builder);
+            var (authProvider, dbProvider) = InjectDependencies(ref builder);
 
-            var databaseInitializer = new DatabaseInitializer(builder.Services.BuildServiceProvider().GetService<IDatabaseProvider>());
+            // Add process of verifying who they are
+            authProvider!.AddAuthenticationToApplicationBuilder(ref builder);
+
+            // Add the process of verifying what access they have
+            builder.Services.AddAuthorization();
+
+            var databaseInitializer = new DatabaseInitializer(dbProvider);
 
             // Add services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            ConfigureSwaggerGen(ref builder);
+            // Add authorization to swagger gen
+            authProvider!.AddAuthorizationToSwaggerGen(ref builder);
 
             var app = builder.Build();
 

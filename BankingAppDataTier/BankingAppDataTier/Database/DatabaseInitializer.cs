@@ -1,6 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Constants;
 using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Providers;
 
 namespace BankingAppDataTier.Database
 {

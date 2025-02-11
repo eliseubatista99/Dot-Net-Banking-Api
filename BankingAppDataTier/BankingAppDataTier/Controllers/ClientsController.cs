@@ -1,5 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
+using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

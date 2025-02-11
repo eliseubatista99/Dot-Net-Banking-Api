@@ -1,6 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
+using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,45 +22,21 @@ namespace BankingAppDataTier.Controllers
 
         private readonly IConfiguration configuration;
 
-        public AuthenticationController(ILogger<ClientsController> _logger, IConfiguration _config)
+        private readonly IAuthenticationProvider authenticationProvider;
+
+        public AuthenticationController(ILogger<ClientsController> _logger, IConfiguration _config, IAuthenticationProvider authProvider)
         {
             logger = _logger;
             configuration = _config;
+            authenticationProvider = authProvider;
         }
 
         [HttpPost("token")]
         public IActionResult GenerateToken([FromBody] AuthenticationInputDto input)
         {
-            var authConfigs = configuration.GetSection(AuthenticationConfigs.AuthenticationSection);
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfigs[AuthenticationConfigs.Key]!));
-            var lifetime = AuthenticationConfigs.TokenLifetime;
-            var issuer = authConfigs.GetSection(AuthenticationConfigs.Issuer).Value!;
-            var audience = authConfigs.GetSection(AuthenticationConfigs.Audience).Value!;
-            DateTime expireDateTime = DateTime.UtcNow.Add(lifetime);
-
-            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-
-            var claims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new("appId", input.AppId),
-            };
-
-            JwtSecurityToken token = new JwtSecurityToken(
-                           issuer: issuer,
-                           audience: input.AppId,
-                           claims: claims,
-                           expires: expireDateTime,
-                           signingCredentials: creds
-                       );
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            string writtenToken = handler.WriteToken(token);
-
-            return Ok(writtenToken);
+            var token = authenticationProvider.GenerateToken(input.AppId);
+            
+            return Ok(token);
         }        
     }
 }
