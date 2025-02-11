@@ -21,6 +21,7 @@ A home banking app is designed to be used by bank clients. A user must be identi
     - VAT:VARCHAR(30)
     - Phone Number : VARCHAR(20)
     - Email: VARCHAR (60)
+    - Password: VARCHAR (100)
 
 ### Accounts
 
@@ -56,7 +57,6 @@ Then, the account structure will look something like this:
     - Balance: DECIMAL (20,2)
     - AccountName: VARCHAR(100)
     - AccountImage BLOB
-    - Password: VARCHAR (100)
 
 ### Cards
 
