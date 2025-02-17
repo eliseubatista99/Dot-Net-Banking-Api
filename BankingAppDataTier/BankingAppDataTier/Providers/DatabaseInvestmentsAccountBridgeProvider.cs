@@ -217,11 +217,11 @@ namespace BankingAppDataTier.Providers
             {
                 this.SqlCommnand.Parameters.Clear();
                 this.SqlCommnand.CommandText = $"UPDATE {InvestmentsAccountBridgeTable.TABLE_NAME} " +
-                    $"SET {InvestmentsAccountBridgeTable.COLUMN_ID} = {entry.Id}, " +
-                    $"{InvestmentsAccountBridgeTable.COLUMN_SOURCE_ACCOUNT_ID} = {entry.SourceAccountId}, " +
-                    $"{InvestmentsAccountBridgeTable.COLUMN_INVESTMENTS_ACCOUNT_ID} = {entry.InvestmentsAccountId}" +
-                    $"{InvestmentsAccountBridgeTable.COLUMN_DURATION} = {entry.Duration}" +
-                    $"{InvestmentsAccountBridgeTable.COLUMN_INTEREST} = {entry.Interest}" +
+                    $"SET {InvestmentsAccountBridgeTable.COLUMN_ID} = '{entry.Id}', " +
+                    $"{InvestmentsAccountBridgeTable.COLUMN_SOURCE_ACCOUNT_ID} = '{entry.SourceAccountId}', " +
+                    $"{InvestmentsAccountBridgeTable.COLUMN_INVESTMENTS_ACCOUNT_ID} = '{entry.InvestmentsAccountId}'" +
+                    $"{InvestmentsAccountBridgeTable.COLUMN_DURATION} = '{entry.Duration}'" +
+                    $"{InvestmentsAccountBridgeTable.COLUMN_INTEREST} = '{entry.Interest}'" +
                     $"WHERE {InvestmentsAccountBridgeTable.COLUMN_ID} = '{entry.Id}';";
 
 

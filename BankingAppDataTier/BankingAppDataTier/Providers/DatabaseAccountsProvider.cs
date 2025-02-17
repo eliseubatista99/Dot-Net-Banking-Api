@@ -196,11 +196,11 @@ namespace BankingAppDataTier.Providers
             {
                 this.SqlCommnand.Parameters.Clear();
                 this.SqlCommnand.CommandText = $"UPDATE {AccountsTable.TABLE_NAME} " +
-                    $"SET {AccountsTable.COLUMN_ID} = {entry.AccountId}, " +
-                    $"{AccountsTable.COLUMN_TYPE} = {entry.AccountType}, " +
-                    $"{AccountsTable.COLUMN_BALANCE} = {entry.Balance}, " +
-                    $"{AccountsTable.COLUMN_NAME} = {entry.Name}, " +
-                    $"{AccountsTable.COLUMN_IMAGE} = {entry.Image} " +
+                    $"SET {AccountsTable.COLUMN_ID} = '{entry.AccountId}', " +
+                    $"{AccountsTable.COLUMN_TYPE} = '{entry.AccountType}', " +
+                    $"{AccountsTable.COLUMN_BALANCE} = '{entry.Balance}', " +
+                    $"{AccountsTable.COLUMN_NAME} = '{entry.Name}', " +
+                    $"{AccountsTable.COLUMN_IMAGE} = '{entry.Image}'" +
                     $"WHERE {AccountsTable.COLUMN_ID} = '{entry.AccountId}';";
 
 

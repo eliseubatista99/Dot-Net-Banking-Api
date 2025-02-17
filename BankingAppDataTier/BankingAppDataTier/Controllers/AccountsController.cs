@@ -135,42 +135,22 @@ namespace BankingAppDataTier.Controllers
             return result;
         }
 
-        [HttpDelete("DeleteAccount")]
-        public bool DeleteAccount([FromBody] AccountDto item)
+        [HttpDelete("DeleteAccount/{accountId}")]
+        public bool DeleteAccount(string accountId)
         {
-            var entry = AccountsMapperProfile.MapAccountDtoToAccountsTableEntry(item);
-            var entryInDb = databaseAccountsProvider.GetById(entry.AccountId);
             var result = false;
+            var entryInDb = databaseAccountsProvider.GetById(accountId);
 
             if (entryInDb == null)
             {
                 return false;
             }
 
-            var clientAccountBridgeEntryInDb = databaseClientAccountBridgeProvider.GetByAccountId(item.Id);
+            var accountType = AccountsMapperProfile.MapStringAccountTypeToAccountTypeEnum(entryInDb.AccountType);
 
-            if (clientAccountBridgeEntryInDb == null)
+            if (accountType == AccountType.Savings)
             {
-                return false;
-            }
-
-            result = databaseAccountsProvider.Delete(item.Id);
-
-            if (!result)
-            {
-                return false;
-            }
-
-            result = databaseClientAccountBridgeProvider.Delete(item.Id);
-
-            if (!result)
-            {
-                return false;
-            }
-
-            if (item.AccountType == AccountType.Savings)
-            {
-                var investmentsAccountBridgeEntryInDb = databaseInvestmentsAccountBridgeProvider.GetByInvestmentsAccountId(item.Id);
+                var investmentsAccountBridgeEntryInDb = databaseInvestmentsAccountBridgeProvider.GetByInvestmentsAccountId(entryInDb.AccountId);
 
                 if (investmentsAccountBridgeEntryInDb == null)
                 {
@@ -179,7 +159,7 @@ namespace BankingAppDataTier.Controllers
             }
             else
             {
-                var investmentsAccountBridgeEntriesInDb = databaseInvestmentsAccountBridgeProvider.GetInvestmentsAccountsOfAccount(item.Id);
+                var investmentsAccountBridgeEntriesInDb = databaseInvestmentsAccountBridgeProvider.GetInvestmentsAccountsOfAccount(entryInDb.AccountId);
 
                 if (investmentsAccountBridgeEntriesInDb == null)
                 {
@@ -188,7 +168,7 @@ namespace BankingAppDataTier.Controllers
 
                 investmentsAccountBridgeEntriesInDb = investmentsAccountBridgeEntriesInDb.Select(acc =>
                 {
-                    acc.SourceAccountId = item.Id;
+                    acc.SourceAccountId = entryInDb.AccountId;
                     return acc;
                 }).ToList();
 
@@ -201,6 +181,28 @@ namespace BankingAppDataTier.Controllers
                         return false;
                     }
                 }
+            }
+
+
+            var clientAccountBridgeEntryInDb = databaseClientAccountBridgeProvider.GetByAccountId(entryInDb.AccountId);
+
+            if (clientAccountBridgeEntryInDb == null)
+            {
+                return false;
+            }
+
+            result = databaseClientAccountBridgeProvider.Delete(entryInDb.AccountId);
+
+            if (!result)
+            {
+                return false;
+            }
+
+            result = databaseAccountsProvider.Delete(entryInDb.AccountId);
+
+            if (!result)
+            {
+                return false;
             }
 
             return result;

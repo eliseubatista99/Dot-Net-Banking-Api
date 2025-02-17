@@ -216,9 +216,9 @@ namespace BankingAppDataTier.Providers
             {
                 this.SqlCommnand.Parameters.Clear();
                 this.SqlCommnand.CommandText = $"UPDATE {ClientAccountBridgeTable.TABLE_NAME} " +
-                    $"SET {ClientAccountBridgeTable.COLUMN_ID} = {entry.Id}, " +
-                    $"{ClientAccountBridgeTable.COLUMN_ACCOUNT_ID} = {entry.AccountId}, " +
-                    $"{ClientAccountBridgeTable.COLUMN_CLIENT_ID} = {entry.ClientId}" +
+                    $"SET {ClientAccountBridgeTable.COLUMN_ID} = '{entry.Id}', " +
+                    $"{ClientAccountBridgeTable.COLUMN_ACCOUNT_ID} = '{entry.AccountId}', " +
+                    $"{ClientAccountBridgeTable.COLUMN_CLIENT_ID} = '{entry.ClientId}'" +
                     $"WHERE {ClientAccountBridgeTable.COLUMN_ID} = '{entry.Id}';";
 
 
