@@ -17,9 +17,10 @@ namespace BankingAppDataTier
             builder.Services.AddSingleton<IAuthenticationProvider, AuthenticationProvider>();
             builder.Services.AddSingleton<IDatabaseClientsProvider, DatabaseClientsProvider>();
             builder.Services.AddSingleton<IDatabaseAccountsProvider, DatabaseAccountsProvider>();
+            builder.Services.AddSingleton<IDatabaseClientAccountBridgeProvider, DatabaseClientAccountBridgeProvider>();
+            builder.Services.AddSingleton<IDatabaseInvestmentsAccountBridgeProvider, DatabaseInvestmentsAccountBridgeProvider>();
 
             var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
-            var dbProvider = builder.Services.BuildServiceProvider().GetService<IDatabaseClientsProvider>()!;
 
             return (authProvider, builder.Services);
         }

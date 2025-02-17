@@ -9,6 +9,11 @@ namespace BankingAppDataTier.Contracts.Database
     public class InvestmentsAccountBridgeTableEntry
     {
         /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
+        public required string Id { get; set; }
+
+        /// <summary>
         /// Gets or sets the source account id.
         /// </summary>
         public required string SourceAccountId { get; set; }

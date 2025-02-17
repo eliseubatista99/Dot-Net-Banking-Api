@@ -31,7 +31,7 @@ namespace BankingAppDataTier.Providers
             this.SqlCommnand.Parameters.Clear();
         }
 
-        public bool CreateAccountsTableIfNotExists()
+        public bool CreateTableIfNotExists()
         {
             try
             {
@@ -129,6 +129,41 @@ namespace BankingAppDataTier.Providers
             }
         }
 
+        public AccountsTableEntry? GetByClientId(string id)
+        {
+            try
+            {
+                this.SqlCommnand.Parameters.Clear();
+                this.SqlCommnand.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
+
+                SqlConnection.Open();
+
+                var sqlReader = this.SqlCommnand.ExecuteReader();
+
+                //Read one time
+                sqlReader.Read();
+
+                //If no entry was found, return nothing
+                if (sqlReader == null || !sqlReader.HasRows)
+                {
+                    SqlConnection.Close();
+                    return null;
+                }
+
+                var dataEntry = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
+
+                SqlConnection.Close();
+
+                return dataEntry;
+            }
+            catch (Exception ex)
+            {
+                SqlConnection.Close();
+                return null;
+            }
+        }
+
+
         public bool Add(AccountsTableEntry entry)
         {
             try
@@ -139,6 +174,57 @@ namespace BankingAppDataTier.Providers
                     $"VALUES " +
                     $"('{entry.AccountId}', '{entry.AccountType}', '{entry.Balance}', '{entry.Name}', '{entry.Image}');";
 
+
+                SqlConnection.Open();
+
+                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
+
+                SqlConnection.Close();
+
+                return affectedRows != -1;
+            }
+            catch (Exception ex)
+            {
+                SqlConnection.Close();
+                return false;
+            }
+        }
+
+        public bool Edit(AccountsTableEntry entry)
+        {
+            try
+            {
+                this.SqlCommnand.Parameters.Clear();
+                this.SqlCommnand.CommandText = $"UPDATE {AccountsTable.TABLE_NAME} " +
+                    $"SET {AccountsTable.COLUMN_ID} = {entry.AccountId}, " +
+                    $"{AccountsTable.COLUMN_TYPE} = {entry.AccountType}, " +
+                    $"{AccountsTable.COLUMN_BALANCE} = {entry.Balance}, " +
+                    $"{AccountsTable.COLUMN_NAME} = {entry.Name}, " +
+                    $"{AccountsTable.COLUMN_IMAGE} = {entry.Image} " +
+                    $"WHERE {AccountsTable.COLUMN_ID} = '{entry.AccountId}';";
+
+
+                SqlConnection.Open();
+
+                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
+
+                SqlConnection.Close();
+
+                return affectedRows != -1;
+            }
+            catch (Exception ex)
+            {
+                SqlConnection.Close();
+                return false;
+            }
+        }
+
+        public bool Delete(string id)
+        {
+            try
+            {
+                this.SqlCommnand.Parameters.Clear();
+                this.SqlCommnand.CommandText = $"DELETE FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
 
                 SqlConnection.Open();
 

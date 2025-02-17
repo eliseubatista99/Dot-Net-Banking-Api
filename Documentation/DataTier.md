@@ -14,14 +14,14 @@ Now that we have chosen a system, the next step is to determine the necessary da
 
 A home banking app is designed to be used by bank clients. A user must be identified by a unique ID and have other unique data, such as:
 
-    - ClientID: PRIMARY KEY VARCHAR (50)
-    - Name: VARCHAR(60)
-    - Surname: VARCHAR (200)
-    - Date of birth: DATE
-    - VAT:VARCHAR(30)
-    - Phone Number : VARCHAR(20)
-    - Email: VARCHAR (60)
-    - Password: VARCHAR (100)
+    - ClientID: PRIMARY KEY VARCHAR (64) NOT NULL,
+    - Password: VARCHAR (64) NOT NULL,
+    - Name: VARCHAR(64) NOT NULL,
+    - Surname: VARCHAR (64) NOT NULL,
+    - Date of birth: DATE NOT NULL,
+    - VAT:VARCHAR(30) NOT NULL,
+    - Phone Number : VARCHAR(20) NOT NULL,
+    - Email: VARCHAR (60) NOT NULL,
 
 ### Accounts
 
@@ -34,8 +34,9 @@ An account will always be associated with one or more clients (as it can have mu
 
 I will call this table ClientAccountBridge, with the following structure:
 
-    - ClientID: FOREIGN KEY VARCHAR(100)
-    - AccountID: FOREIGNK KEY VARCHAR(100)
+    - ID: PRIMARY KEY VARCHAR(64)
+    - ClientID: FOREIGN KEY VARCHAR(64)
+    - AccountID: FOREIGNK KEY VARCHAR(64)
 
 This way, when we need to retrieve all accounts associated with a specific user, we can query the ClientAccountBridge table using the desired ClientID.
 
@@ -45,18 +46,19 @@ For this application, we will assume that all transfers are immediate, so we wil
 
 Funds placed in an investment account must return to the source account once the investment period ends. To manage this relationship, we need a table that links investment accounts to their respective source accounts. This table will be called InvestmentsAccountBridge and will have the following structure:
 
-    - SourceAccountId: FOREIGN KEY VARCHAR(100)
-    - InvestmentsAccountId: FOREIGN KEY VARCHAR(100)
-    - Duration: Integer(2) //Number of months for an investment account
+    - ID: PRIMARY KEY VARCHAR(64)
+    - SourceAccountId: FOREIGN KEY VARCHAR(64)
+    - InvestmentsAccountId: FOREIGN KEY VARCHAR(64)
+    - Duration: Integer //Number of months for an investment account
     - Interest: DECIMAL (3,2)
 
 Then, the account structure will look something like this:
 
-    - AccountId: VARCHAR (100)
+    - AccountId: VARCHAR (64)
     - AccoutType: CHAR (2)
     - Balance: DECIMAL (20,2)
-    - AccountName: VARCHAR(100)
-    - AccountImage BLOB
+    - AccountName: VARCHAR(64)
+    - AccountImage VARCHAR(MAX)
 
 ### Cards
 

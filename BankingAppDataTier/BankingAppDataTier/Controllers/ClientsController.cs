@@ -15,12 +15,12 @@ namespace BankingAppDataTier.Controllers
     public class ClientsController : Controller
     {
         private readonly ILogger<ClientsController> logger;
-        private readonly IDatabaseClientsProvider databaseProvider;
+        private readonly IDatabaseClientsProvider databaseClientsProvider;
 
-        public ClientsController(ILogger<ClientsController> _logger, IDatabaseClientsProvider _dbProvider)
+        public ClientsController(ILogger<ClientsController> _logger, IDatabaseClientsProvider _dbClientsProvider)
         {
             logger = _logger;
-            databaseProvider = _dbProvider;
+            databaseClientsProvider = _dbClientsProvider;
         }
 
         [HttpGet()]
@@ -29,9 +29,9 @@ namespace BankingAppDataTier.Controllers
             Request.Headers.TryGetValue("", out StringValues headerValue);
             List<ClientDto> result = new List<ClientDto>();
 
-            var clientsInDb = databaseProvider.GetAll();
+            var itemsInDb = databaseClientsProvider.GetAll();
 
-            return clientsInDb.Select(client => ClientsMapperProfile.MapClientTableEntryToClientDto(client)).ToList();
+            return itemsInDb.Select(client => ClientsMapperProfile.MapClientTableEntryToClientDto(client)).ToList();
         }
 
         [HttpGet("{id}")]
@@ -39,23 +39,23 @@ namespace BankingAppDataTier.Controllers
         {
             List<ClientDto> result = new List<ClientDto>();
 
-            var clientInDb = databaseProvider.GetById(id);
+            var itemInDb = databaseClientsProvider.GetById(id);
 
-            if(clientInDb != null)
+            if(itemInDb != null)
             {
-                return ClientsMapperProfile.MapClientTableEntryToClientDto(clientInDb);
+                return ClientsMapperProfile.MapClientTableEntryToClientDto(itemInDb);
             }
 
             return null;
         }
 
         [HttpPost()]
-        public bool AddClient([FromBody] ClientDto client, string password)
+        public bool AddClient([FromBody] ClientDto item, string password)
         {
-            var clientEntry = ClientsMapperProfile.MapClientDtoToClientTableEntry(client);
-            clientEntry.Password = password;
+            var entry = ClientsMapperProfile.MapClientDtoToClientTableEntry(item);
+            entry.Password = password;
 
-            return databaseProvider.Add(clientEntry);
+            return databaseClientsProvider.Add(entry);
         }
     }
 }

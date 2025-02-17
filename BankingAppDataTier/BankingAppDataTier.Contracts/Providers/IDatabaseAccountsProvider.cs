@@ -11,12 +11,18 @@ namespace BankingAppDataTier.Contracts.Providers
 {
     public interface IDatabaseAccountsProvider
     {
-        public bool CreateAccountsTableIfNotExists();
+        public bool CreateTableIfNotExists();
 
         public List<AccountsTableEntry> GetAll();
 
         public AccountsTableEntry? GetById(string id);
 
+        public AccountsTableEntry? GetByClientId(string id);
+
         public bool Add(AccountsTableEntry entry);
+
+        public bool Edit(AccountsTableEntry entry);
+
+        public bool Delete(string id);
     }
 }

@@ -9,7 +9,7 @@ namespace BankingAppDataTier.MapperProfiles
     {
         public static AccountsTableEntry MapSqlDataToAccountsTableEntry(SqlDataReader sqlReader)
         {
-            var accountImage = (sqlReader[ClientsTable.COLUMN_BIRTH_DATE]).ToString();
+            var accountImage = (sqlReader[AccountsTable.COLUMN_IMAGE]).ToString();
 
             return new AccountsTableEntry
             {
@@ -21,32 +21,49 @@ namespace BankingAppDataTier.MapperProfiles
             };
         }
 
-        public static ClientDto MapClientTableEntryToClientDto(ClientsTableEntry tableEntry)
+        public static AccountType MapStringAccountTypeToAccountTypeEnum(string value)
         {
-            return new ClientDto
+            return value switch
             {
-                Id = tableEntry.Id,
-                Name = tableEntry.Name,
-                Surname = tableEntry.Surname,
-                BirthDate = tableEntry.BirthDate,
-                VATNumber = tableEntry.VATNumber,
-                PhoneNumber = tableEntry.PhoneNumber,
-                Email = tableEntry.Email,
+                "CU" => AccountType.Current,
+                "SA" => AccountType.Savings,
+                "IN" => AccountType.Investments,
+                _ => AccountType.None,
             };
         }
 
-        public static ClientsTableEntry MapClientDtoToClientTableEntry(ClientDto dto)
+        public static string MaAccountTypeEnumToStringAccountType(AccountType value)
         {
-            return new ClientsTableEntry
+            return value switch
             {
-                Id = dto.Id,
-                Password = string.Empty,
+                AccountType.Current => "CU",
+                AccountType.Savings => "SA",
+                AccountType.Investments => "IN",
+                _ => ""
+            };
+        }
+
+        public static AccountDto MapAccountsTableEntryToAccountDto(AccountsTableEntry tableEntry)
+        {
+            return new AccountDto
+            {
+                Id = tableEntry.AccountId,
+                AccountType = MapStringAccountTypeToAccountTypeEnum(tableEntry.AccountType),
+                Balance = tableEntry.Balance,
+                Name = tableEntry.Name,
+                Image = tableEntry.Image
+            };
+        }
+
+        public static AccountsTableEntry MapAccountDtoToAccountsTableEntry(AccountDto dto)
+        {
+            return new AccountsTableEntry
+            {
+                AccountId = dto.Id,
+                AccountType = MaAccountTypeEnumToStringAccountType(dto.AccountType),
+                Balance = dto.Balance,
                 Name = dto.Name,
-                Surname = dto.Surname,
-                BirthDate = dto.BirthDate,
-                VATNumber = dto.VATNumber,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
+                Image = dto.Image,
             };
         }
     }

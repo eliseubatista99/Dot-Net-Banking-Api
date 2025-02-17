@@ -31,7 +31,7 @@ namespace BankingAppDataTier.Providers
             this.SqlCommnand.Parameters.Clear();
         }
 
-        public bool CreateClientsTableIfNotExists()
+        public bool CreateTableIfNotExists()
         {
             try
             {
@@ -143,6 +143,84 @@ namespace BankingAppDataTier.Providers
                     $"VALUES " +
                     $"('{entry.Id}', '{entry.Password}', '{entry.Name}', '{entry.Surname}', '{entry.BirthDate.ToString("yyyy-MM-dd")}', '{entry.VATNumber}', '{entry.PhoneNumber}', '{entry.Email}');";
 
+
+                SqlConnection.Open();
+
+                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
+
+                SqlConnection.Close();
+
+                return affectedRows != -1;
+            }
+            catch (Exception ex)
+            {
+                SqlConnection.Close();
+                return false;
+            }
+        }
+
+        public bool Edit(ClientsTableEntry entry)
+        {
+            try
+            {
+                this.SqlCommnand.Parameters.Clear();
+                this.SqlCommnand.CommandText = $"UPDATE {ClientsTable.TABLE_NAME} " +
+                    $"SET {ClientsTable.COLUMN_ID} = {entry.Id}, " +
+                    $"{ClientsTable.TABLE_NAME} = {entry.Name}, " +
+                    $"{ClientsTable.COLUMN_SURNAME} = {entry.Surname}, " +
+                    $"{ClientsTable.COLUMN_BIRTH_DATE} = {entry.BirthDate}, " +
+                    $"{ClientsTable.COLUMN_VAT_NUMBER} = {entry.VATNumber}, " +
+                    $"{ClientsTable.COLUMN_PHONE_NUMBER} = {entry.PhoneNumber}, " +
+                    $"{ClientsTable.COLUMN_EMAIL} = {entry.Email} " +
+                    $"WHERE {ClientsTable.COLUMN_ID} = '{entry.Id}';";
+
+
+                SqlConnection.Open();
+
+                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
+
+                SqlConnection.Close();
+
+                return affectedRows != -1;
+            }
+            catch (Exception ex)
+            {
+                SqlConnection.Close();
+                return false;
+            }
+        }
+
+        public bool ChangePassword(string id, string password)
+        {
+            try
+            {
+                this.SqlCommnand.Parameters.Clear();
+                this.SqlCommnand.CommandText = $"UPDATE {ClientsTable.TABLE_NAME} " +
+                    $"SET {ClientsTable.COLUMN_PASSWORD} = {password} " +
+                    $"WHERE {ClientsTable.COLUMN_ID} = '{id}';";
+
+
+                SqlConnection.Open();
+
+                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
+
+                SqlConnection.Close();
+
+                return affectedRows != -1;
+            }
+            catch (Exception ex)
+            {
+                SqlConnection.Close();
+                return false;
+            }
+        }
+
+        public bool Delete(string id)
+        {
+            try
+            {
+                this.SqlCommnand.Parameters.Clear();
+                this.SqlCommnand.CommandText = $"DELETE FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
 
                 SqlConnection.Open();
 
