@@ -5,6 +5,7 @@ using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.Data.SqlClient;
+using Microsoft.Identity.Client;
 using System.Xml;
 
 namespace BankingAppDataTier.Providers
@@ -51,6 +52,21 @@ namespace BankingAppDataTier.Providers
 
                     command.ExecuteNonQuery();
 
+                    command.CommandText = $"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{ClientAccountBridgeTable.TABLE_NAME}]')  AND type in (N'U')) " +
+                    $"BEGIN " +
+                    $"CREATE TABLE {ClientAccountBridgeTable.TABLE_NAME} " +
+                    $"(" +
+                    $"{ClientAccountBridgeTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
+                    $"{ClientAccountBridgeTable.COLUMN_ACCOUNT_ID} VARCHAR(64) NOT NULL," +
+                    $"{ClientAccountBridgeTable.COLUMN_CLIENT_ID} VARCHAR(64) NOT NULL," +
+                    $"PRIMARY KEY ({ClientAccountBridgeTable.COLUMN_ID} )," +
+                    $"FOREIGN KEY ({ClientAccountBridgeTable.COLUMN_ACCOUNT_ID}) REFERENCES {AccountsTable.TABLE_NAME}({AccountsTable.COLUMN_ID})," +
+                    $"FOREIGN KEY ({ClientAccountBridgeTable.COLUMN_CLIENT_ID}) REFERENCES {ClientsTable.TABLE_NAME}({ClientsTable.COLUMN_ID})" +
+                    $") " +
+                    $"END";
+
+                    command.ExecuteNonQuery();
+
                     // Attempt to commit the transaction.
                     transaction.Commit();
 
@@ -76,23 +92,33 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
+                    var accountIdsOfClient = new List<string>();
+
                     command.CommandText = $"SELECT * FROM {ClientAccountBridgeTable.TABLE_NAME} WHERE {ClientAccountBridgeTable.COLUMN_CLIENT_ID} = '{clientId}'";
 
-                    var sqlReaderClientAccounts = command.ExecuteReader();
-
-                    while (sqlReaderClientAccounts!.Read())
+                    using (var sqlReader = command.ExecuteReader())
                     {
-                        var clientAccountEntry = ClientAccountBridgeMapperProfile.MapSqlDataToClientAccountBridgeTableEntry(sqlReaderClientAccounts);
+                        while (sqlReader!.Read())
+                        {
+                            var clientAccountEntry = ClientAccountBridgeMapperProfile.MapSqlDataToClientAccountBridgeTableEntry(sqlReader);
 
-                        command.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{clientAccountEntry.AccountId}'";
-
-                        var sqlReaderAccount = command.ExecuteReader();
-                        sqlReaderAccount.Read();
-
-                        var dataEntry = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReaderAccount);
-
-                        result.Add(dataEntry);
+                            accountIdsOfClient.Add(clientAccountEntry.AccountId);
+                        }
                     }
+
+                    foreach (var accountId in accountIdsOfClient)
+                    {
+                        command.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{accountId}'";
+
+                        using (var sqlReader = command.ExecuteReader())
+                        {
+                            sqlReader.Read();
+
+                            var dataEntry = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
+
+                            result.Add(dataEntry);
+                        }
+                    }                 
 
                     return result;
                 }

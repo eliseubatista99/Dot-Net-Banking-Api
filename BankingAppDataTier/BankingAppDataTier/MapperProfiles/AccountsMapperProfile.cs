@@ -12,9 +12,9 @@ namespace BankingAppDataTier.MapperProfiles
         {
             var accountImage = (sqlReader[AccountsTable.COLUMN_IMAGE]).ToString();
 
-            var sourceAccountId = sqlReader[InvestmentsAccountBridgeTable.COLUMN_SOURCE_ACCOUNT_ID];
-            var duration = sqlReader[InvestmentsAccountBridgeTable.COLUMN_DURATION];
-            var interest = sqlReader[InvestmentsAccountBridgeTable.COLUMN_INTEREST];
+            var sourceAccountId = sqlReader[AccountsTable.COLUMN_SOURCE_ACCOUNT_ID];
+            var duration = sqlReader[AccountsTable.COLUMN_DURATION];
+            var interest = sqlReader[AccountsTable.COLUMN_INTEREST];
 
             return new AccountsTableEntry
             {
