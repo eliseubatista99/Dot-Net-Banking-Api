@@ -15,11 +15,11 @@ namespace BankingAppDataTier.Contracts.Providers
 
         public List<AccountsTableEntry> GetAll();
 
-        public AccountsTableEntry? GetById(string id);
+        public List<AccountsTableEntry> GetAccountsOfClient(string clientId);
 
-        public AccountsTableEntry? GetByClientId(string id);
+        public AccountsTableEntry? GetAccountOfId(string id);
 
-        public bool Add(AccountsTableEntry entry);
+        public bool Add(AccountsTableEntry entry, string clientId);
 
         public bool Edit(AccountsTableEntry entry);
 

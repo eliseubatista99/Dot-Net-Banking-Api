@@ -1,12 +1,6 @@
-using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.Providers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
 
 namespace BankingAppDataTier
 {
@@ -15,10 +9,9 @@ namespace BankingAppDataTier
         static (IAuthenticationProvider authProvider, IServiceCollection serviceCollection) InjectDependencies(ref WebApplicationBuilder builder)
         {
             builder.Services.AddSingleton<IAuthenticationProvider, AuthenticationProvider>();
+            builder.Services.AddSingleton<IDatabaseProvider, DatabaseProvider>();
             builder.Services.AddSingleton<IDatabaseClientsProvider, DatabaseClientsProvider>();
             builder.Services.AddSingleton<IDatabaseAccountsProvider, DatabaseAccountsProvider>();
-            builder.Services.AddSingleton<IDatabaseClientAccountBridgeProvider, DatabaseClientAccountBridgeProvider>();
-            builder.Services.AddSingleton<IDatabaseInvestmentsAccountBridgeProvider, DatabaseInvestmentsAccountBridgeProvider>();
 
             var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
 

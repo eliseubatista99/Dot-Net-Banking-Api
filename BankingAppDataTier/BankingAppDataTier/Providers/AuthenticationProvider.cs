@@ -1,18 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Xml;
 
 namespace BankingAppDataTier.Providers
 {

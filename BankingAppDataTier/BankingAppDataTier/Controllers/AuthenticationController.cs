@@ -1,15 +1,6 @@
-﻿using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.MapperProfiles;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 
 namespace BankingAppDataTier.Controllers

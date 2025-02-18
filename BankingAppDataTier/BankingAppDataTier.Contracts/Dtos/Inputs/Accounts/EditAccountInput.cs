@@ -1,12 +1,14 @@
-﻿using System;
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingAppDataTier.Contracts.Database
+namespace BankingAppDataTier.Contracts.Dtos.Inputs
 {
-    public class AccountsTableEntry
+    public class EditAccountInput
     {
         /// <summary>
         /// Gets or sets the account id.
@@ -16,20 +18,20 @@ namespace BankingAppDataTier.Contracts.Database
         /// <summary>
         /// Gets or sets the account type.
         /// </summary>
-        public required string AccountType { get; set; }
+        public AccountType? AccountType { get; set; }
 
         /// <summary>
-        /// Gets or sets the account balance.
+        /// Gets or sets the balance.
         /// </summary>
-        public required decimal Balance { get; set; }
+        public decimal? Balance { get; set; }
 
         /// <summary>
-        /// Gets or sets the account name.
+        /// Gets or sets the name.
         /// </summary>
-        public required string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the account image.
+        /// Gets or sets the image in base64.
         /// </summary>
         public string? Image { get; set; }
 

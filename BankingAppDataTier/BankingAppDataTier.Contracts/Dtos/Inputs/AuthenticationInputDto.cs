@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingAppDataTier.Contracts.Dtos
+namespace BankingAppDataTier.Contracts.Dtos.Inputs
 {
     public class AuthenticationInputDto
     {

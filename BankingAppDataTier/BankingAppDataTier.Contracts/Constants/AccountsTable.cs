@@ -19,5 +19,17 @@ namespace BankingAppDataTier.Contracts.Constants
         public static string COLUMN_NAME = "ACCOUNT_NAME";
 
         public static string COLUMN_IMAGE = "IMAGE";
+
+        public static string COLUMN_SOURCE_ACCOUNT_ID = "SOURCE_ACCOUNT_ID";
+
+        public static string COLUMN_DURATION = "DURATION";
+
+        public static string COLUMN_INTEREST = "INTEREST";
+
+        public const string ACCOUNT_TYPE_CURRENT = "CU";
+
+        public const string ACCOUNT_TYPE_SAVINGS = "SA";
+
+        public const string ACCOUNT_TYPE_INVESTMENTS = "IN";
     }
 }

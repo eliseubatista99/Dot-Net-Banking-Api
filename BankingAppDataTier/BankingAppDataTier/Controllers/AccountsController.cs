@@ -1,10 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs;
+using BankingAppDataTier.Contracts.Dtos.Outputs;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 
 
 namespace BankingAppDataTier.Controllers
@@ -15,189 +17,174 @@ namespace BankingAppDataTier.Controllers
     public class AccountsController : Controller
     {
         private readonly ILogger<ClientsController> logger;
+        private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
-        private readonly IDatabaseClientAccountBridgeProvider databaseClientAccountBridgeProvider;
-        private readonly IDatabaseInvestmentsAccountBridgeProvider databaseInvestmentsAccountBridgeProvider;
 
-        public AccountsController(ILogger<ClientsController> _logger, IDatabaseAccountsProvider _dbAccountsProvider,
-            IDatabaseClientAccountBridgeProvider _dbClientAccountsBridgeProvider, IDatabaseInvestmentsAccountBridgeProvider _dbInvestmentsAccountBridgeProvider)
+        public AccountsController(ILogger<ClientsController> _logger, IDatabaseClientsProvider _dbClientsProvider,
+            IDatabaseAccountsProvider _dbAccountsProvider)
         {
             logger = _logger;
+            databaseClientsProvider = _dbClientsProvider;
             databaseAccountsProvider = _dbAccountsProvider;
-            databaseClientAccountBridgeProvider = _dbClientAccountsBridgeProvider;
-            databaseInvestmentsAccountBridgeProvider = _dbInvestmentsAccountBridgeProvider;
         }
 
-        [HttpGet()]
-        public List<AccountDto> GetAccounts()
+        [HttpGet("GetClientAccounts/{clientId}")]
+        public ActionResult<GetClientAccountsOutput> GetClientAccounts(string clientId)
         {
-            Request.Headers.TryGetValue("", out StringValues headerValue);
-            List<AccountDto> result = new List<AccountDto>();
+            var result = new List<AccountDto>();
 
-            var itemsInDb = databaseAccountsProvider.GetAll();
+            var clientInDb = databaseClientsProvider.GetById(clientId);
 
-            return itemsInDb.Select(item => AccountsMapperProfile.MapAccountsTableEntryToAccountDto(item)).ToList();
-        }
-
-        [HttpGet("{id}")]
-        public AccountDto GetAccount(string id)
-        {
-            List<AccountDto> result = new List<AccountDto>();
-
-            var itemInDb = databaseAccountsProvider.GetById(id);
-
-            if (itemInDb != null)
+            if (clientInDb == null)
             {
-                return AccountsMapperProfile.MapAccountsTableEntryToAccountDto(itemInDb);
+                return Ok(new GetClientAccountsOutput()
+                {
+                    Accounts = new List<AccountDto>(),
+                    Error = ClientsErrors.InvalidClientId,
+                });
             }
 
-            return null;
+            var clientAccountsInDb = databaseAccountsProvider.GetAccountsOfClient(clientId);
+
+            if (clientAccountsInDb == null || clientAccountsInDb.Count == 0)
+            {
+                return Ok(new GetClientAccountsOutput()
+                {
+                    Accounts = new List<AccountDto>(),
+                });
+            }
+
+            result = clientAccountsInDb.Select(acc => AccountsMapperProfile.MapAccountsTableEntryToAccountDto(acc)).ToList();
+
+            return Ok(new GetClientAccountsOutput()
+            {
+                Accounts = result,
+            });
+        }
+
+        [HttpGet("GetAccountById/{id}")]
+        public ActionResult<GetAccountByIdOutput> GetAccountById(string id)
+        {
+            var itemInDb = databaseAccountsProvider.GetAccountOfId(id);
+
+            if (itemInDb == null)
+            {
+                return NotFound(new GetAccountByIdOutput()
+                {
+                    Account = null,
+                    Error = AccountsErrors.InvalidAccountId,
+                });
+            }
+
+            return Ok(new GetAccountByIdOutput()
+            {
+                Account = AccountsMapperProfile.MapAccountsTableEntryToAccountDto(itemInDb),
+            });
         }
 
         [HttpPost("AddAccount")]
-        public bool AddAccount([FromBody] AccountDto item, string clientId)
+        public ActionResult<AddAccountOutput> AddAccount([FromBody] AddAccountInput input)
         {
-            var entry = AccountsMapperProfile.MapAccountDtoToAccountsTableEntry(item);
-            var clientAccountBridgeEntry = new ClientAccountBridgeTableEntry() { Id = $"{clientId}_{entry.AccountId}", AccountId = entry.AccountId, ClientId = clientId };
+            if (input.Account.AccountType == AccountType.Investments)
+            {
+                if (input.Account.SourceAccountId == null || input.Account.Duration == null || input.Account.Interest == null)
+                {
+                    return BadRequest(new AddAccountOutput
+                    {
+                        Error = AccountsErrors.MissingInvestementsAccountDetails,
+                    });
+                }
+            }
 
-            var result = databaseAccountsProvider.Add(entry);
+            var clientInDb = databaseClientsProvider.GetById(input.ClientId);
+
+            if (clientInDb == null)
+            {
+                return Ok(new GetClientAccountsOutput()
+                {
+                    Accounts = new List<AccountDto>(),
+                    Error = ClientsErrors.InvalidClientId,
+                });
+            }
+
+            var entry = AccountsMapperProfile.MapAccountDtoToAccountsTableEntry(input.Account);
+
+            var result = databaseAccountsProvider.Add(entry, input.ClientId);
 
             if (!result)
             {
-                return false;
+                return new InternalServerError(new AddAccountOutput
+                {
+                    Error = AccountsErrors.FailedToCreateNewAccount,
+                });
             }
 
-            result = databaseClientAccountBridgeProvider.Add(clientAccountBridgeEntry);
-
-            if (!result)
-            {
-                return false;
-            }
-
-            return result;
-        }
-
-        [HttpPost("AddInvestmentsAccount")]
-        public bool AddInvestementsAccount([FromBody] AccountDto item, string clientId, string sourceAccountId, int duration, decimal interest)
-        {
-            var entry = AccountsMapperProfile.MapAccountDtoToAccountsTableEntry(item);
-            var clientAccountBridgeEntry = new ClientAccountBridgeTableEntry() { Id = $"{clientId}_{entry.AccountId}", AccountId = entry.AccountId, ClientId = clientId };
-
-            var result = databaseAccountsProvider.Add(entry);
-
-            if (!result)
-            {
-                return false;
-            }
-
-            result = databaseClientAccountBridgeProvider.Add(clientAccountBridgeEntry);
-
-            if (!result)
-            {
-                return false;
-            }
-
-            if (item.AccountType == AccountType.Savings)
-            {
-                var investmentAccountBridgeEntry = new InvestmentsAccountBridgeTableEntry() { Id = $"{entry.AccountId}_{sourceAccountId}", 
-                    SourceAccountId = sourceAccountId, InvestmentsAccountId = entry.AccountId, Duration = duration, Interest = interest };
-
-                result = databaseInvestmentsAccountBridgeProvider.Add(investmentAccountBridgeEntry);
-            }
-
-            if (!result)
-            {
-                return false;
-            }
-
-            return result;
+            return Ok(new AddAccountOutput());
         }
 
         [HttpPatch("EditAccount")]
-        public bool EditAccount([FromBody] AccountDto item)
+        public ActionResult<EditAccountOutput> EditAccount([FromBody] EditAccountInput input)
         {
-            var entry = AccountsMapperProfile.MapAccountDtoToAccountsTableEntry(item);
-
-            var entryInDb = databaseAccountsProvider.GetById(entry.AccountId);
+            var entryInDb = databaseAccountsProvider.GetAccountOfId(input.AccountId);
 
             if (entryInDb == null)
             {
-                return false;
+                return NotFound(new EditAccountOutput
+                {
+                    Error = AccountsErrors.InvalidAccountId
+                });
             }
 
-            var result = databaseAccountsProvider.Edit(entry);
+            entryInDb.Balance = input.Balance != null ? input.Balance.GetValueOrDefault() : entryInDb.Balance;
+            entryInDb.AccountType = input.AccountType != null ? 
+                AccountsMapperProfile.MaAccountTypeEnumToStringAccountType(input.AccountType.GetValueOrDefault()) : entryInDb.AccountType;
+            entryInDb.Image = input.Image != null ? input.Image : entryInDb.Image;
+            entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
+            entryInDb.SourceAccountId = input.SourceAccountId != null ? input.SourceAccountId : entryInDb.SourceAccountId;
+            entryInDb.Duration = input.Duration != null ? input.Duration : entryInDb.Duration;
+            entryInDb.Interest = input.Interest != null ? input.Interest : entryInDb.Interest;
+
+
+            var result = databaseAccountsProvider.Edit(entryInDb);
 
             if (!result)
             {
-                return false;
+                return new InternalServerError(new EditAccountOutput
+                {
+                    Error = AccountsErrors.FailedToUpdateAccount,
+                });
             }
 
-            return result;
+            return Ok(new EditAccountOutput());
         }
 
         [HttpDelete("DeleteAccount/{accountId}")]
-        public bool DeleteAccount(string accountId)
+        public ActionResult<DeleteAccountOutput> DeleteAccount(string accountId)
         {
             var result = false;
-            var entryInDb = databaseAccountsProvider.GetById(accountId);
+            var entryInDb = databaseAccountsProvider.GetAccountOfId(accountId);
 
             if (entryInDb == null)
             {
-                return false;
+                return NotFound(new DeleteAccountOutput
+                {
+                    Error = AccountsErrors.InvalidAccountId,
+                });
             }
 
             var accountType = AccountsMapperProfile.MapStringAccountTypeToAccountTypeEnum(entryInDb.AccountType);
 
-            if (accountType == AccountType.Savings)
-            {
-                var investmentsAccountBridgeEntryInDb = databaseInvestmentsAccountBridgeProvider.GetByInvestmentsAccountId(entryInDb.AccountId);
-
-                if (investmentsAccountBridgeEntryInDb == null)
-                {
-                    return false;
-                }
-
-                result = databaseInvestmentsAccountBridgeProvider.Delete(investmentsAccountBridgeEntryInDb.Id);
-
-                if (!result)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                var investmentsAccountBridgeEntriesInDb = databaseInvestmentsAccountBridgeProvider.GetInvestmentsAccountsOfAccount(entryInDb.AccountId);
-
-                // If there are associated investments accounts, throw error. Need to delete those first
-                if (investmentsAccountBridgeEntriesInDb != null && investmentsAccountBridgeEntriesInDb.Count > 0)
-                {
-                    return false;
-                }
-            }
-
-
-            var clientAccountBridgeEntryInDb = databaseClientAccountBridgeProvider.GetByAccountId(entryInDb.AccountId);
-
-            if (clientAccountBridgeEntryInDb == null)
-            {
-                return false;
-            }
-
-            result = databaseClientAccountBridgeProvider.Delete(clientAccountBridgeEntryInDb.Id);
+            result = databaseAccountsProvider.Delete(accountId);
 
             if (!result)
             {
-                return false;
+                return new InternalServerError(new DeleteAccountOutput
+                {
+                    Error = AccountsErrors.FailedToDeleteAccount,
+                });
             }
 
-            result = databaseAccountsProvider.Delete(entryInDb.AccountId);
-
-            if (!result)
-            {
-                return false;
-            }
-
-            return result;
+            return Ok(new DeleteAccountOutput());
         }
 
     }

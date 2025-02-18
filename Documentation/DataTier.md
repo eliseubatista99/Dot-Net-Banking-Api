@@ -34,9 +34,9 @@ An account will always be associated with one or more clients (as it can have mu
 
 I will call this table ClientAccountBridge, with the following structure:
 
-    - ID: PRIMARY KEY VARCHAR(64)
-    - ClientID: FOREIGN KEY VARCHAR(64)
-    - AccountID: FOREIGNK KEY VARCHAR(64)
+    - ID: PRIMARY KEY VARCHAR(64) NOT NULL,
+    - ClientID: FOREIGN KEY VARCHAR(64) NOT NULL,
+    - AccountID: FOREIGN KEY VARCHAR(64) NOT NULL,
 
 This way, when we need to retrieve all accounts associated with a specific user, we can query the ClientAccountBridge table using the desired ClientID.
 
@@ -44,21 +44,16 @@ Typically, an account has two balances: the available balance and the pending ba
 
 For this application, we will assume that all transfers are immediate, so we will only maintain a single balance.
 
-Funds placed in an investment account must return to the source account once the investment period ends. To manage this relationship, we need a table that links investment accounts to their respective source accounts. This table will be called InvestmentsAccountBridge and will have the following structure:
+Funds placed in an investment account must return to the source account once the investment period ends. The account structure will look something like this:
 
-    - ID: PRIMARY KEY VARCHAR(64)
-    - SourceAccountId: FOREIGN KEY VARCHAR(64)
-    - InvestmentsAccountId: FOREIGN KEY VARCHAR(64)
-    - Duration: Integer //Number of months for an investment account
+    - AccountId: VARCHAR (64) NOT NULL,
+    - AccoutType: CHAR (2) NOT NULL,
+    - Balance: DECIMAL (20,2) NOT NULL,
+    - AccountName: VARCHAR(64) NOT NULL,
+    - AccountImage VARCHAR(MAX) NOT NULL,
+    - SourceAccountId: FOREIGN KEY VARCHAR(64),
+    - Duration: Integer, //Number of months for an investment account
     - Interest: DECIMAL (3,2)
-
-Then, the account structure will look something like this:
-
-    - AccountId: VARCHAR (64)
-    - AccoutType: CHAR (2)
-    - Balance: DECIMAL (20,2)
-    - AccountName: VARCHAR(64)
-    - AccountImage VARCHAR(MAX)
 
 ### Cards
 

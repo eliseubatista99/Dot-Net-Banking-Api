@@ -1,5 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Constants;
+﻿using BankingAppDataTier.Contracts.Constants;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 
@@ -15,14 +14,12 @@ namespace BankingAppDataTier.Database
 
             InitializeClients();
             InitializeAccounts();
-            InitializeClientAccountBridge();
-            InitializeInvestmentsAccountBridge();
         }
 
         private void InitializeClients()
         {
             var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseClientsProvider>();
-            dbProvider.CreateTableIfNotExists();
+            dbProvider!.CreateTableIfNotExists();
 
             var elementsInDb = dbProvider.GetAll();
 
@@ -63,7 +60,7 @@ namespace BankingAppDataTier.Database
         private void InitializeAccounts()
         {
             var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseAccountsProvider>();
-            dbProvider.CreateTableIfNotExists();
+            dbProvider!.CreateTableIfNotExists();
 
             var elementsInDb = dbProvider.GetAll();
 
@@ -77,99 +74,38 @@ namespace BankingAppDataTier.Database
                 new AccountsTableEntry
                 {
                     AccountId = "ACJW000000",
-                    AccountType = "CU",
+                    AccountType = AccountsTable.ACCOUNT_TYPE_CURRENT,
                     Balance = 1000,
                     Name = "Jonh Wick Current Account",
-                    Image = DefaultBase64Img.Content,
-                }
+                    //Image = DefaultBase64Img.Content,
+                },
+                "JW0000000"
             );
 
             dbProvider.Add(
                 new AccountsTableEntry
                 {
                     AccountId = "ACJW000001",
-                    AccountType = "SA",
+                    AccountType = AccountsTable.ACCOUNT_TYPE_SAVINGS,
                     Balance = 2000,
                     Name = "Jonh Wick Savings Account",
-                }
+                },
+                "JW0000000"
             );
 
             dbProvider.Add(
-                new AccountsTableEntry
-                {
-                    AccountId = "ACJW000002",
-                    AccountType = "IN",
-                    Balance = 3000,
-                    Name = "Jonh Wick Investments Account",
-                }
-            );
+                 new AccountsTableEntry
+                 {
+                     AccountId = "ACJW000002",
+                     AccountType = AccountsTable.ACCOUNT_TYPE_INVESTMENTS,
+                     Balance = 3000,
+                     Name = "Jonh Wick Investments Account",
+                     SourceAccountId = "ACJW000000",
+                     Duration = 6,
+                     Interest = 3.5M,
+                 },
+                "JW0000000"
+            );        
         }
-
-        private void InitializeClientAccountBridge()
-        {
-            var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseClientAccountBridgeProvider>();
-            dbProvider.CreateTableIfNotExists();
-
-            var elementsInDb = dbProvider.GetAll();
-
-            //If the database already has entries, don't add anything
-            if (elementsInDb.Count > 0)
-            {
-                return;
-            }
-
-            dbProvider.Add(
-                new ClientAccountBridgeTableEntry
-                {
-                    Id = "JW0000000_ACJW000000",
-                    AccountId = "ACJW000000",
-                    ClientId = "JW0000000",
-                }
-            );
-
-            dbProvider.Add(
-               new ClientAccountBridgeTableEntry
-               {
-                   Id = "JW0000000_ACJW000001",
-                   AccountId = "ACJW000001",
-                   ClientId = "JW0000000",
-               }
-           );
-
-            dbProvider.Add(
-               new ClientAccountBridgeTableEntry
-               {
-                   Id = "JW0000000_ACJW000002",
-                   AccountId = "ACJW000002",
-                   ClientId = "JW0000000",
-               }
-           );
-        }
-
-        private void InitializeInvestmentsAccountBridge()
-        {
-            var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseInvestmentsAccountBridgeProvider>();
-            dbProvider.CreateTableIfNotExists();
-
-            var elementsInDb = dbProvider.GetAll();
-
-            //If the database already has entries, don't add anything
-            if (elementsInDb.Count > 0)
-            {
-                return;
-            }
-
-            dbProvider.Add(
-                new InvestmentsAccountBridgeTableEntry
-                {
-                    Id = "ACJW000000_ACJW000002",
-                    SourceAccountId = "ACJW000000",
-                    InvestmentsAccountId = "ACJW000002",
-                    Duration = 6,
-                    Interest = 3.5M,
-                }
-            );
-        }
-
     }
 }
