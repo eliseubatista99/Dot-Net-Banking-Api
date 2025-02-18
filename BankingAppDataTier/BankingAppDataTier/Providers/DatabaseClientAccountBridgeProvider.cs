@@ -109,8 +109,11 @@ namespace BankingAppDataTier.Providers
 
                 var sqlReader = this.SqlCommnand.ExecuteReader();
 
-                result = ClientAccountBridgeMapperProfile.MapSqlDataToClientAccountBridgeTableEntry(sqlReader);
-
+                if (sqlReader.HasRows)
+                {
+                    sqlReader.Read();
+                    result = ClientAccountBridgeMapperProfile.MapSqlDataToClientAccountBridgeTableEntry(sqlReader);
+                }
 
                 SqlConnection.Close();
 
@@ -167,11 +170,13 @@ namespace BankingAppDataTier.Providers
 
                 var sqlReader = this.SqlCommnand.ExecuteReader();
 
-                sqlReader!.Read();
+                if (sqlReader.HasRows)
+                {
+                    sqlReader.Read();
+                    var dataEntry = ClientAccountBridgeMapperProfile.MapSqlDataToClientAccountBridgeTableEntry(sqlReader);
 
-                var dataEntry = ClientAccountBridgeMapperProfile.MapSqlDataToClientAccountBridgeTableEntry(sqlReader);
-
-                result = dataEntry.ClientId;
+                    result = dataEntry.ClientId;
+                }
 
                 SqlConnection.Close();
 

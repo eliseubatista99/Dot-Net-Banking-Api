@@ -99,6 +99,8 @@ namespace BankingAppDataTier.Providers
         {
             try
             {
+                AccountsTableEntry? result = null;
+
                 this.SqlCommnand.Parameters.Clear();
                 this.SqlCommnand.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
 
@@ -106,21 +108,15 @@ namespace BankingAppDataTier.Providers
 
                 var sqlReader = this.SqlCommnand.ExecuteReader();
 
-                //Read one time
-                sqlReader.Read();
-
-                //If no entry was found, return nothing
-                if (sqlReader == null || !sqlReader.HasRows)
+                if (sqlReader.HasRows)
                 {
-                    SqlConnection.Close();
-                    return null;
+                    sqlReader.Read();
+                    result = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
                 }
-
-                var dataEntry = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
 
                 SqlConnection.Close();
 
-                return dataEntry;
+                return result;
             }
             catch (Exception ex)
             {
@@ -133,6 +129,8 @@ namespace BankingAppDataTier.Providers
         {
             try
             {
+                AccountsTableEntry? result = null;
+
                 this.SqlCommnand.Parameters.Clear();
                 this.SqlCommnand.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
 
@@ -140,21 +138,15 @@ namespace BankingAppDataTier.Providers
 
                 var sqlReader = this.SqlCommnand.ExecuteReader();
 
-                //Read one time
-                sqlReader.Read();
-
-                //If no entry was found, return nothing
-                if (sqlReader == null || !sqlReader.HasRows)
+                if (sqlReader.HasRows)
                 {
-                    SqlConnection.Close();
-                    return null;
+                    sqlReader.Read();
+                    result = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
                 }
-
-                var dataEntry = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
 
                 SqlConnection.Close();
 
-                return dataEntry;
+                return result;
             }
             catch (Exception ex)
             {

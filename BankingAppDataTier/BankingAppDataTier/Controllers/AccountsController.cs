@@ -9,7 +9,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace BankingAppDataTier.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class AccountsController : Controller
@@ -114,7 +114,7 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPatch("EditAccount")]
-        public bool EditAccount([FromBody] AccountDto item, string clientId)
+        public bool EditAccount([FromBody] AccountDto item)
         {
             var entry = AccountsMapperProfile.MapAccountDtoToAccountsTableEntry(item);
 
@@ -156,30 +156,22 @@ namespace BankingAppDataTier.Controllers
                 {
                     return false;
                 }
+
+                result = databaseInvestmentsAccountBridgeProvider.Delete(investmentsAccountBridgeEntryInDb.Id);
+
+                if (!result)
+                {
+                    return false;
+                }
             }
             else
             {
                 var investmentsAccountBridgeEntriesInDb = databaseInvestmentsAccountBridgeProvider.GetInvestmentsAccountsOfAccount(entryInDb.AccountId);
 
-                if (investmentsAccountBridgeEntriesInDb == null)
+                // If there are associated investments accounts, throw error. Need to delete those first
+                if (investmentsAccountBridgeEntriesInDb != null && investmentsAccountBridgeEntriesInDb.Count > 0)
                 {
                     return false;
-                }
-
-                investmentsAccountBridgeEntriesInDb = investmentsAccountBridgeEntriesInDb.Select(acc =>
-                {
-                    acc.SourceAccountId = entryInDb.AccountId;
-                    return acc;
-                }).ToList();
-
-                foreach(var acc in investmentsAccountBridgeEntriesInDb)
-                {
-                    result = databaseInvestmentsAccountBridgeProvider.Delete(acc.Id);
-
-                    if (!result)
-                    {
-                        return false;
-                    }
                 }
             }
 
@@ -191,7 +183,7 @@ namespace BankingAppDataTier.Controllers
                 return false;
             }
 
-            result = databaseClientAccountBridgeProvider.Delete(entryInDb.AccountId);
+            result = databaseClientAccountBridgeProvider.Delete(clientAccountBridgeEntryInDb.Id);
 
             if (!result)
             {
