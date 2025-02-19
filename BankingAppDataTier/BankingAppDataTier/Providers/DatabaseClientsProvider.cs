@@ -2,6 +2,7 @@
 using BankingAppDataTier.Contracts.Constants;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.Data.SqlClient;
 
@@ -12,226 +13,240 @@ namespace BankingAppDataTier.Providers
 
         private IConfiguration Configuration;
 
-        private SqlConnection SqlConnection;
-        private SqlCommand SqlCommnand;
+        private string connectionString;
 
         public DatabaseClientsProvider(IConfiguration configuration)
         {
             this.Configuration = configuration;
 
-            var connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection);
-            this.SqlConnection = new SqlConnection(connectionString);
-
-            this.SqlCommnand = new SqlCommand();
-
-            this.SqlCommnand.Connection = SqlConnection;
-            this.SqlCommnand.CommandType = System.Data.CommandType.Text;
-            this.SqlCommnand.Parameters.Clear();
+            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection);
         }
 
         public bool CreateTableIfNotExists()
         {
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                this.SqlCommnand.Parameters.Clear();
-                this.SqlCommnand.CommandText = $"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{ClientsTable.TABLE_NAME}]')  AND type in (N'U')) " +
-                    $"BEGIN " +
-                    $"CREATE TABLE {ClientsTable.TABLE_NAME} " +
-                    $"(" +
-                    $"{ClientsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
-                    $"{ClientsTable.COLUMN_PASSWORD} VARCHAR(64) NOT NULL," +
-                    $"{ClientsTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
-                    $"{ClientsTable.COLUMN_SURNAME} VARCHAR(64) NOT NULL," +
-                    $"{ClientsTable.COLUMN_BIRTH_DATE} DATE NOT NULL," +
-                    $"{ClientsTable.COLUMN_VAT_NUMBER} VARCHAR(30) NOT NULL," +
-                    $"{ClientsTable.COLUMN_PHONE_NUMBER} VARCHAR(20) NOT NULL," +
-                    $"{ClientsTable.COLUMN_EMAIL} VARCHAR(60) NOT NULL," +
-                    $"PRIMARY KEY ({ClientsTable.COLUMN_ID} )" +
-                    $") " +
-                    $"END";
+                connection.Open();
 
-                SqlConnection.Open();
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
 
-                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
+                try
+                {
+                    command.CommandText = $"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{ClientsTable.TABLE_NAME}]')  AND type in (N'U')) " +
+                        $"BEGIN " +
+                        $"CREATE TABLE {ClientsTable.TABLE_NAME} " +
+                        $"(" +
+                        $"{ClientsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
+                        $"{ClientsTable.COLUMN_PASSWORD} VARCHAR(64) NOT NULL," +
+                        $"{ClientsTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
+                        $"{ClientsTable.COLUMN_SURNAME} VARCHAR(64) NOT NULL," +
+                        $"{ClientsTable.COLUMN_BIRTH_DATE} DATE NOT NULL," +
+                        $"{ClientsTable.COLUMN_VAT_NUMBER} VARCHAR(30) NOT NULL," +
+                        $"{ClientsTable.COLUMN_PHONE_NUMBER} VARCHAR(20) NOT NULL," +
+                        $"{ClientsTable.COLUMN_EMAIL} VARCHAR(60) NOT NULL," +
+                        $"PRIMARY KEY ({ClientsTable.COLUMN_ID} )" +
+                        $") " +
+                        $"END";
 
-                SqlConnection.Close();
+                    command.ExecuteNonQuery();
 
-                return affectedRows != -1;
-            }
-            catch (Exception ex)
-            {
-                SqlConnection.Close();
-                return false;
+                    // Attempt to commit the transaction.
+                    transaction.Commit();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 
         public List<ClientsTableEntry> GetAll()
         {
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 List<ClientsTableEntry> result = new List<ClientsTableEntry>();
 
-                this.SqlCommnand.Parameters.Clear();
-                this.SqlCommnand.CommandText = $"SELECT * FROM {ClientsTable.TABLE_NAME}";
+                connection.Open();
 
-                SqlConnection.Open();
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
 
-                var sqlReader = this.SqlCommnand.ExecuteReader();
-
-                while (sqlReader!.Read())
+                try
                 {
-                    var dataEntry = ClientsMapperProfile.MapSqlDataToClientTableEntry(sqlReader);
+                    command.CommandText = $"SELECT * FROM {ClientsTable.TABLE_NAME}";
 
-                    result.Add(dataEntry);
+                    var sqlReader = command.ExecuteReader();
+
+                    while (sqlReader!.Read())
+                    {
+                        var dataEntry = ClientsMapperProfile.MapSqlDataToClientTableEntry(sqlReader);
+
+                        result.Add(dataEntry);
+                    }
+
+                    return result;
                 }
-
-                SqlConnection.Close();
-
-                return result;
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
-            catch (Exception ex)
-            {
-                SqlConnection.Close();
-                return new List<ClientsTableEntry>();
-            } 
         }
 
         public ClientsTableEntry? GetById(string id)
         {
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                this.SqlCommnand.Parameters.Clear();
-                this.SqlCommnand.CommandText = $"SELECT * FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
+                ClientsTableEntry? result = null;
 
-                SqlConnection.Open();
+                connection.Open();
 
-                var sqlReader = this.SqlCommnand.ExecuteReader();
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
 
-                //Read one time
-                sqlReader.Read();
-
-                //If no entry was found, return nothing
-                if (sqlReader == null || !sqlReader.HasRows)
+                try
                 {
-                    SqlConnection.Close();
-                    return null;
+                    command.CommandText = $"SELECT * FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
+
+                    var sqlReader = command.ExecuteReader();
+
+                    if (sqlReader.HasRows)
+                    {
+                        sqlReader.Read();
+                        result = ClientsMapperProfile.MapSqlDataToClientTableEntry(sqlReader);
+                    }
+
+                    return result;
                 }
-
-                var dataEntry = ClientsMapperProfile.MapSqlDataToClientTableEntry(sqlReader);
-
-                SqlConnection.Close();
-
-                return dataEntry;
-            }
-            catch (Exception ex)
-            {
-                SqlConnection.Close();
-                return null;
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 
         public bool Add(ClientsTableEntry entry)
         {
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                this.SqlCommnand.Parameters.Clear();
-                this.SqlCommnand.CommandText = $"INSERT INTO {ClientsTable.TABLE_NAME} " +
-                    $"({ClientsTable.COLUMN_ID}, {ClientsTable.COLUMN_PASSWORD}, {ClientsTable.COLUMN_NAME}, {ClientsTable.COLUMN_SURNAME}, {ClientsTable.COLUMN_BIRTH_DATE}, " +
-                    $"{ClientsTable.COLUMN_VAT_NUMBER}, {ClientsTable.COLUMN_PHONE_NUMBER}, {ClientsTable.COLUMN_EMAIL}) " +
-                    $"VALUES " +
-                    $"('{entry.Id}', '{entry.Password}', '{entry.Name}', '{entry.Surname}', '{entry.BirthDate.ToString("yyyy-MM-dd")}', '{entry.VATNumber}', '{entry.PhoneNumber}', '{entry.Email}');";
+                connection.Open();
 
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
 
-                SqlConnection.Open();
+                try
+                {
+                    command.CommandText = $"INSERT INTO {ClientsTable.TABLE_NAME} " +
+                        $"({ClientsTable.COLUMN_ID}, {ClientsTable.COLUMN_PASSWORD}, {ClientsTable.COLUMN_NAME}, {ClientsTable.COLUMN_SURNAME}, {ClientsTable.COLUMN_BIRTH_DATE}, " +
+                        $"{ClientsTable.COLUMN_VAT_NUMBER}, {ClientsTable.COLUMN_PHONE_NUMBER}, {ClientsTable.COLUMN_EMAIL}) " +
+                        $"VALUES " +
+                        $"('{entry.Id}', '{entry.Password}', '{entry.Name}', '{entry.Surname}', '{entry.BirthDate.ToString("yyyy-MM-dd")}', '{entry.VATNumber}', '{entry.PhoneNumber}', '{entry.Email}');";
 
-                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
 
-                SqlConnection.Close();
+                    // Attempt to commit the transaction.
+                    transaction.Commit();
 
-                return affectedRows != -1;
-            }
-            catch (Exception ex)
-            {
-                SqlConnection.Close();
-                return false;
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 
         public bool Edit(ClientsTableEntry entry)
         {
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                this.SqlCommnand.Parameters.Clear();
-                this.SqlCommnand.CommandText = $"UPDATE {ClientsTable.TABLE_NAME} " +
-                    $"SET {ClientsTable.COLUMN_ID} = {entry.Id}, " +
-                    $"{ClientsTable.TABLE_NAME} = {entry.Name}, " +
-                    $"{ClientsTable.COLUMN_SURNAME} = {entry.Surname}, " +
-                    $"{ClientsTable.COLUMN_BIRTH_DATE} = {entry.BirthDate}, " +
-                    $"{ClientsTable.COLUMN_VAT_NUMBER} = {entry.VATNumber}, " +
-                    $"{ClientsTable.COLUMN_PHONE_NUMBER} = {entry.PhoneNumber}, " +
-                    $"{ClientsTable.COLUMN_EMAIL} = {entry.Email} " +
+                connection.Open();
+
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
+
+                try
+                {
+                    command.CommandText = $"UPDATE {ClientsTable.TABLE_NAME} " +
+                    $"SET {ClientsTable.COLUMN_ID} = '{entry.Id}', " +
+                    $"{ClientsTable.COLUMN_NAME} = '{entry.Name}', " +
+                    $"{ClientsTable.COLUMN_SURNAME} = '{entry.Surname}', " +
+                    $"{ClientsTable.COLUMN_BIRTH_DATE} = '{entry.BirthDate.ToString("yyyy-MM-dd")}', " +
+                    $"{ClientsTable.COLUMN_VAT_NUMBER} = '{entry.VATNumber}', " +
+                    $"{ClientsTable.COLUMN_PHONE_NUMBER} = '{entry.PhoneNumber}', " +
+                    $"{ClientsTable.COLUMN_EMAIL} = '{entry.Email}' " +
                     $"WHERE {ClientsTable.COLUMN_ID} = '{entry.Id}';";
 
+                    command.ExecuteNonQuery();
 
-                SqlConnection.Open();
+                    // Attempt to commit the transaction.
+                    transaction.Commit();
 
-                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
-
-                SqlConnection.Close();
-
-                return affectedRows != -1;
-            }
-            catch (Exception ex)
-            {
-                SqlConnection.Close();
-                return false;
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 
         public bool ChangePassword(string id, string password)
         {
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                this.SqlCommnand.Parameters.Clear();
-                this.SqlCommnand.CommandText = $"UPDATE {ClientsTable.TABLE_NAME} " +
-                    $"SET {ClientsTable.COLUMN_PASSWORD} = {password} " +
+                connection.Open();
+
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
+
+                try
+                {
+                    command.CommandText = $"UPDATE {ClientsTable.TABLE_NAME} " +
+                    $"SET {ClientsTable.COLUMN_PASSWORD} = '{password}' " +
                     $"WHERE {ClientsTable.COLUMN_ID} = '{id}';";
 
+                    command.ExecuteNonQuery();
 
-                SqlConnection.Open();
+                    // Attempt to commit the transaction.
+                    transaction.Commit();
 
-                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
-
-                SqlConnection.Close();
-
-                return affectedRows != -1;
-            }
-            catch (Exception ex)
-            {
-                SqlConnection.Close();
-                return false;
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 
         public bool Delete(string id)
         {
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                this.SqlCommnand.Parameters.Clear();
-                this.SqlCommnand.CommandText = $"DELETE FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
+                connection.Open();
 
-                SqlConnection.Open();
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
 
-                var affectedRows = this.SqlCommnand.ExecuteNonQuery();
+                try
+                {
+                    command.CommandText = $"DELETE FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
 
-                SqlConnection.Close();
+                    command.ExecuteNonQuery();
 
-                return affectedRows != -1;
-            }
-            catch (Exception ex)
-            {
-                SqlConnection.Close();
-                return false;
+                    // Attempt to commit the transaction.
+                    transaction.Commit();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
     }

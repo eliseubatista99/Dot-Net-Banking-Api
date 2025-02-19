@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs
 {
-    public class EditAccountOutput : BaseOutput
+    public class VoidOutput : BaseOutput
     {
     }
 }

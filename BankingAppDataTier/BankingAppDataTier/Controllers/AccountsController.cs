@@ -37,7 +37,7 @@ namespace BankingAppDataTier.Controllers
 
             if (clientInDb == null)
             {
-                return Ok(new GetClientAccountsOutput()
+                return BadRequest(new GetClientAccountsOutput()
                 {
                     Accounts = new List<AccountDto>(),
                     Error = ClientsErrors.InvalidClientId,
@@ -83,13 +83,13 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost("AddAccount")]
-        public ActionResult<AddAccountOutput> AddAccount([FromBody] AddAccountInput input)
+        public ActionResult<VoidOutput> AddAccount([FromBody] AddAccountInput input)
         {
             if (input.Account.AccountType == AccountType.Investments)
             {
                 if (input.Account.SourceAccountId == null || input.Account.Duration == null || input.Account.Interest == null)
                 {
-                    return BadRequest(new AddAccountOutput
+                    return BadRequest(new VoidOutput
                     {
                         Error = AccountsErrors.MissingInvestementsAccountDetails,
                     });
@@ -100,10 +100,19 @@ namespace BankingAppDataTier.Controllers
 
             if (clientInDb == null)
             {
-                return Ok(new GetClientAccountsOutput()
+                return BadRequest(new VoidOutput()
                 {
-                    Accounts = new List<AccountDto>(),
                     Error = ClientsErrors.InvalidClientId,
+                });
+            }
+
+            var accountInDb = databaseAccountsProvider.GetAccountOfId(input.Account.Id);
+
+            if (accountInDb == null)
+            {
+                return BadRequest(new VoidOutput()
+                {
+                    Error = AccountsErrors.IdAlreadyInUse,
                 });
             }
 
@@ -113,23 +122,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new AddAccountOutput
+                return new InternalServerError(new VoidOutput
                 {
-                    Error = AccountsErrors.FailedToCreateNewAccount,
+                    Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new AddAccountOutput());
+            return Ok(new VoidOutput());
         }
 
         [HttpPatch("EditAccount")]
-        public ActionResult<EditAccountOutput> EditAccount([FromBody] EditAccountInput input)
+        public ActionResult<VoidOutput> EditAccount([FromBody] EditAccountInput input)
         {
             var entryInDb = databaseAccountsProvider.GetAccountOfId(input.AccountId);
 
             if (entryInDb == null)
             {
-                return NotFound(new EditAccountOutput
+                return BadRequest(new VoidOutput
                 {
                     Error = AccountsErrors.InvalidAccountId
                 });
@@ -149,42 +158,40 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new EditAccountOutput
+                return new InternalServerError(new VoidOutput
                 {
-                    Error = AccountsErrors.FailedToUpdateAccount,
+                    Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new EditAccountOutput());
+            return Ok(new VoidOutput());
         }
 
-        [HttpDelete("DeleteAccount/{accountId}")]
-        public ActionResult<DeleteAccountOutput> DeleteAccount(string accountId)
+        [HttpDelete("DeleteAccount/{id}")]
+        public ActionResult<VoidOutput> DeleteAccount(string id)
         {
             var result = false;
-            var entryInDb = databaseAccountsProvider.GetAccountOfId(accountId);
+            var entryInDb = databaseAccountsProvider.GetAccountOfId(id);
 
             if (entryInDb == null)
             {
-                return NotFound(new DeleteAccountOutput
+                return BadRequest(new VoidOutput
                 {
                     Error = AccountsErrors.InvalidAccountId,
                 });
             }
 
-            var accountType = AccountsMapperProfile.MapStringAccountTypeToAccountTypeEnum(entryInDb.AccountType);
-
-            result = databaseAccountsProvider.Delete(accountId);
+            result = databaseAccountsProvider.Delete(id);
 
             if (!result)
             {
-                return new InternalServerError(new DeleteAccountOutput
+                return new InternalServerError(new VoidOutput
                 {
-                    Error = AccountsErrors.FailedToDeleteAccount,
+                    Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new DeleteAccountOutput());
+            return Ok(new VoidOutput());
         }
 
     }

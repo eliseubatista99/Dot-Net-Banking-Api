@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs
 {
-    public class AddAccountOutput : BaseOutput
+    public class GetClientByIdOutput : BaseOutput
     {
+        public required ClientDto? Client { get; set; }
     }
 }

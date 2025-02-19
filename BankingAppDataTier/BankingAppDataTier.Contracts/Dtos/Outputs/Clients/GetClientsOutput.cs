@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs
 {
-    public class DeleteAccountOutput : BaseOutput
+    public class GetClientsOutput : BaseOutput
     {
+        public required List<ClientDto> Clients { get; set; }
     }
 }

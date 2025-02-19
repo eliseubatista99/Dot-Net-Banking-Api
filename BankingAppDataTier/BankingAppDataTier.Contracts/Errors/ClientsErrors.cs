@@ -10,5 +10,7 @@ namespace BankingAppDataTier.Contracts.Errors
     public static class ClientsErrors
     {
         public static BankingAppDataTierError InvalidClientId = new BankingAppDataTierError { Code = "InvalidClientId", Message = "No Client Found For The Specified Client Id" };
+
+        public static BankingAppDataTierError IdAlreadyInUse = new BankingAppDataTierError { Code = "IdAlreadyInUse", Message = "An Client With This Id Already Exists" };
     }
 }
