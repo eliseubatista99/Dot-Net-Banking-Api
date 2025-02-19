@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Clients
 {
-    public class ChangeClientPasswordInput
+    public class HasValidPasswordInput
     {
         /// <summary>
         /// Gets or sets the client id.

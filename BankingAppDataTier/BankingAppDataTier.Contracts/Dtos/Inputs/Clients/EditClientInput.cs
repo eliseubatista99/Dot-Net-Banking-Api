@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingAppDataTier.Contracts.Dtos.Inputs
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Clients
 {
     public class EditClientInput
     {

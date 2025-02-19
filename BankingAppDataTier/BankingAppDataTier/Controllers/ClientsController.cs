@@ -1,12 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
-using BankingAppDataTier.Providers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
@@ -63,6 +61,30 @@ namespace BankingAppDataTier.Controllers
             });
         }
 
+        [HttpPost("HasValidPassword")]
+        public ActionResult<HasValidPasswordOutput> HasValidPassword([FromBody] HasValidPasswordInput input)
+        {
+            List<ClientDto> result = new List<ClientDto>();
+
+            var itemInDb = databaseClientsProvider.GetById(input.Id);
+
+            if (itemInDb == null)
+            {
+                return NotFound(new HasValidPasswordOutput()
+                {
+                    Result = false,
+                    Error = ClientsErrors.InvalidClientId,
+                });
+            }
+
+            var validPassword = input.PassWord.Equals(itemInDb.Password);
+
+            return Ok(new HasValidPasswordOutput
+            {
+                Result = validPassword,
+            });
+        }
+
         [HttpPost("AddClient")]
         public ActionResult<VoidOutput> AddClient([FromBody] AddClientInput input)
         {
@@ -70,9 +92,8 @@ namespace BankingAppDataTier.Controllers
 
             if (clientInDb != null)
             {
-                return BadRequest(new GetClientAccountsOutput()
+                return BadRequest(new VoidOutput()
                 {
-                    Accounts = new List<AccountDto>(),
                     Error = ClientsErrors.IdAlreadyInUse,
                 });
             }
@@ -126,7 +147,7 @@ namespace BankingAppDataTier.Controllers
             return Ok(new VoidOutput());
         }
 
-        [HttpPatch("ChangePassword")]
+        [HttpPost("ChangePassword")]
         public ActionResult<VoidOutput> ChangePassword([FromBody] ChangeClientPasswordInput input)
         {
             var entryInDb = databaseClientsProvider.GetById(input.Id);

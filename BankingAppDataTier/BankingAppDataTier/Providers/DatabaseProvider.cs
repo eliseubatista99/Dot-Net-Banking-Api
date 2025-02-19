@@ -1,8 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.MapperProfiles;
 using Microsoft.Data.SqlClient;
 
 namespace BankingAppDataTier.Providers

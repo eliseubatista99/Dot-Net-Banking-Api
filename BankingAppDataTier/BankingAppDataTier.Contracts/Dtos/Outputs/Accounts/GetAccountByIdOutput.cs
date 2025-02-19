@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingAppDataTier.Contracts.Dtos.Outputs
+namespace BankingAppDataTier.Contracts.Dtos.Outputs.Accounts
 {
     public class GetAccountByIdOutput : BaseOutput
     {

@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingAppDataTier.Contracts.Dtos.Outputs.Accounts
+namespace BankingAppDataTier.Contracts.Dtos.Outputs.Clients
 {
-    public class GetClientAccountsOutput: BaseOutput
+    public class HasValidPasswordOutput : BaseOutput
     {
-        public required List<AccountDto> Accounts {  get; set; }
+        public required bool Result { get; set; }
     }
 }
