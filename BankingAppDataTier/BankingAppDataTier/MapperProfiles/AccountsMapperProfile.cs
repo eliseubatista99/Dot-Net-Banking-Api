@@ -1,4 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Enums;
@@ -8,7 +9,7 @@ namespace BankingAppDataTier.MapperProfiles
 {
     public static class AccountsMapperProfile
     {
-        public static AccountsTableEntry MapSqlDataToAccountsTableEntry(SqlDataReader sqlReader)
+        public static AccountsTableEntry MapSqlDataToTableEntry(SqlDataReader sqlReader)
         {
             var accountImage = (sqlReader[AccountsTable.COLUMN_IMAGE]).ToString();
 
@@ -33,9 +34,9 @@ namespace BankingAppDataTier.MapperProfiles
         {
             return value switch
             {
-                AccountsTable.ACCOUNT_TYPE_CURRENT => AccountType.Current,
-                AccountsTable.ACCOUNT_TYPE_SAVINGS => AccountType.Savings,
-                AccountsTable.ACCOUNT_TYPE_INVESTMENTS => AccountType.Investments,
+                BankingAppDataTierConstants.ACCOUNT_TYPE_CURRENT => AccountType.Current,
+                BankingAppDataTierConstants.ACCOUNT_TYPE_SAVINGS => AccountType.Savings,
+                BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS => AccountType.Investments,
                 _ => AccountType.None,
             };
         }
@@ -44,14 +45,14 @@ namespace BankingAppDataTier.MapperProfiles
         {
             return value switch
             {
-                AccountType.Current => AccountsTable.ACCOUNT_TYPE_CURRENT,
-                AccountType.Savings => AccountsTable.ACCOUNT_TYPE_SAVINGS,
-                AccountType.Investments => AccountsTable.ACCOUNT_TYPE_INVESTMENTS,
+                AccountType.Current => BankingAppDataTierConstants.ACCOUNT_TYPE_CURRENT,
+                AccountType.Savings => BankingAppDataTierConstants.ACCOUNT_TYPE_SAVINGS,
+                AccountType.Investments => BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS,
                 _ => ""
             };
         }
 
-        public static AccountDto MapAccountsTableEntryToAccountDto(AccountsTableEntry tableEntry)
+        public static AccountDto MapTableEntryToDto(AccountsTableEntry tableEntry)
         {
             return new AccountDto
             {
@@ -66,7 +67,7 @@ namespace BankingAppDataTier.MapperProfiles
             };
         }
 
-        public static AccountsTableEntry MapAccountDtoToAccountsTableEntry(AccountDto dto)
+        public static AccountsTableEntry MapDtoToTableEntry(AccountDto dto)
         {
             return new AccountsTableEntry
             {

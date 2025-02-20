@@ -9,9 +9,10 @@ namespace BankingAppDataTier
         static (IAuthenticationProvider authProvider, IServiceCollection serviceCollection) InjectDependencies(ref WebApplicationBuilder builder)
         {
             builder.Services.AddSingleton<IAuthenticationProvider, AuthenticationProvider>();
-            builder.Services.AddSingleton<IDatabaseProvider, DatabaseProvider>();
             builder.Services.AddSingleton<IDatabaseClientsProvider, DatabaseClientsProvider>();
             builder.Services.AddSingleton<IDatabaseAccountsProvider, DatabaseAccountsProvider>();
+            builder.Services.AddSingleton<IDatabasePlasticsProvider, DatabasePlasticsProvider>();
+            builder.Services.AddSingleton<IDatabaseCardsProvider, DatabaseCardsProvider>();
 
             var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
 

@@ -54,7 +54,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            result = clientAccountsInDb.Select(acc => AccountsMapperProfile.MapAccountsTableEntryToAccountDto(acc)).ToList();
+            result = clientAccountsInDb.Select(acc => AccountsMapperProfile.MapTableEntryToDto(acc)).ToList();
 
             return Ok(new GetClientAccountsOutput()
             {
@@ -65,7 +65,7 @@ namespace BankingAppDataTier.Controllers
         [HttpGet("GetAccountById/{id}")]
         public ActionResult<GetAccountByIdOutput> GetAccountById(string id)
         {
-            var itemInDb = databaseAccountsProvider.GetAccountOfId(id);
+            var itemInDb = databaseAccountsProvider.GetById(id);
 
             if (itemInDb == null)
             {
@@ -78,7 +78,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetAccountByIdOutput()
             {
-                Account = AccountsMapperProfile.MapAccountsTableEntryToAccountDto(itemInDb),
+                Account = AccountsMapperProfile.MapTableEntryToDto(itemInDb),
             });
         }
 
@@ -106,7 +106,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var accountInDb = databaseAccountsProvider.GetAccountOfId(input.Account.Id);
+            var accountInDb = databaseAccountsProvider.GetById(input.Account.Id);
 
             if (accountInDb == null)
             {
@@ -116,7 +116,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = AccountsMapperProfile.MapAccountDtoToAccountsTableEntry(input.Account);
+            var entry = AccountsMapperProfile.MapDtoToTableEntry(input.Account);
 
             var result = databaseAccountsProvider.Add(entry, input.ClientId);
 
@@ -134,7 +134,7 @@ namespace BankingAppDataTier.Controllers
         [HttpPatch("EditAccount")]
         public ActionResult<VoidOutput> EditAccount([FromBody] EditAccountInput input)
         {
-            var entryInDb = databaseAccountsProvider.GetAccountOfId(input.AccountId);
+            var entryInDb = databaseAccountsProvider.GetById(input.AccountId);
 
             if (entryInDb == null)
             {
@@ -171,7 +171,7 @@ namespace BankingAppDataTier.Controllers
         public ActionResult<VoidOutput> DeleteAccount(string id)
         {
             var result = false;
-            var entryInDb = databaseAccountsProvider.GetAccountOfId(id);
+            var entryInDb = databaseAccountsProvider.GetById(id);
 
             if (entryInDb == null)
             {

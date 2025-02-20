@@ -1,4 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Constants;
+﻿using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using Microsoft.Data.SqlClient;
@@ -7,7 +7,7 @@ namespace BankingAppDataTier.MapperProfiles
 {
     public static class ClientsMapperProfile
     {
-        public static ClientsTableEntry MapSqlDataToClientTableEntry(SqlDataReader sqlReader)
+        public static ClientsTableEntry MapSqlDataToTableEntry(SqlDataReader sqlReader)
         {
             return new ClientsTableEntry
             {
@@ -22,7 +22,7 @@ namespace BankingAppDataTier.MapperProfiles
             };
         }
 
-        public static ClientDto MapClientTableEntryToClientDto(ClientsTableEntry tableEntry)
+        public static ClientDto MapTableEntryToDto(ClientsTableEntry tableEntry)
         {
             return new ClientDto
             {
@@ -36,7 +36,7 @@ namespace BankingAppDataTier.MapperProfiles
             };
         }
 
-        public static ClientsTableEntry MapClientDtoToClientTableEntry(ClientDto dto)
+        public static ClientsTableEntry MapDtoToTableEntry(ClientDto dto)
         {
             return new ClientsTableEntry
             {

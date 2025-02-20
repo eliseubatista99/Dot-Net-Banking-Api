@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingAppDataTier.Contracts.Constants
+namespace BankingAppDataTier.Contracts.Constants.Database
 {
     public static class AccountsTable
     {
@@ -25,11 +25,5 @@ namespace BankingAppDataTier.Contracts.Constants
         public static string COLUMN_DURATION = "DURATION";
 
         public static string COLUMN_INTEREST = "INTEREST";
-
-        public const string ACCOUNT_TYPE_CURRENT = "CU";
-
-        public const string ACCOUNT_TYPE_SAVINGS = "SA";
-
-        public const string ACCOUNT_TYPE_INVESTMENTS = "IN";
     }
 }

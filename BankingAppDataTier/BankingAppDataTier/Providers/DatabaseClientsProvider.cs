@@ -1,5 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
@@ -81,7 +81,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = ClientsMapperProfile.MapSqlDataToClientTableEntry(sqlReader);
+                        var dataEntry = ClientsMapperProfile.MapSqlDataToTableEntry(sqlReader);
 
                         result.Add(dataEntry);
                     }
@@ -90,7 +90,6 @@ namespace BankingAppDataTier.Providers
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
                     throw;
                 }
             }
@@ -115,14 +114,13 @@ namespace BankingAppDataTier.Providers
                     if (sqlReader.HasRows)
                     {
                         sqlReader.Read();
-                        result = ClientsMapperProfile.MapSqlDataToClientTableEntry(sqlReader);
+                        result = ClientsMapperProfile.MapSqlDataToTableEntry(sqlReader);
                     }
 
                     return result;
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
                     throw;
                 }
             }

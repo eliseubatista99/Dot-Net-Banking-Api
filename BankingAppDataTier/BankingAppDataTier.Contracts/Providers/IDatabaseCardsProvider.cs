@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace BankingAppDataTier.Contracts.Providers
 {
-    public interface IDatabaseAccountsProvider
+    public interface IDatabaseCardsProvider
     {
         public bool CreateTableIfNotExists();
 
-        public List<AccountsTableEntry> GetAll();
+        public List<CardsTableEntry> GetAll();
 
-        public List<AccountsTableEntry> GetAccountsOfClient(string clientId);
+        public List<CardsTableEntry> GetCardsOfAccount(string accountId);
 
-        public AccountsTableEntry? GetById(string id);
+        public CardsTableEntry? GetCardById(string id);
 
-        public bool Add(AccountsTableEntry entry, string clientId);
+        public bool Add(CardsTableEntry entry, string clientId);
 
-        public bool Edit(AccountsTableEntry entry);
+        public bool Edit(CardsTableEntry entry);
 
         public bool Delete(string id);
     }

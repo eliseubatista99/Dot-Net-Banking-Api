@@ -1,5 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
@@ -43,7 +44,7 @@ namespace BankingAppDataTier.Providers
                         $"{AccountsTable.COLUMN_IMAGE} VARCHAR(MAX)," +
                         $"{AccountsTable.COLUMN_SOURCE_ACCOUNT_ID} VARCHAR(64)," +
                         $"{AccountsTable.COLUMN_DURATION} INTEGER," +
-                        $"{AccountsTable.COLUMN_INTEREST} DECIMAL(3,2)," +
+                        $"{AccountsTable.COLUMN_INTEREST} DECIMAL(5,2)," +
                         $"PRIMARY KEY ({AccountsTable.COLUMN_ID} )" +
                         $") " +
                         $"END";
@@ -98,7 +99,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var clientAccountEntry = ClientAccountBridgeMapperProfile.MapSqlDataToClientAccountBridgeTableEntry(sqlReader);
+                            var clientAccountEntry = ClientAccountBridgeMapperProfile.MapSqlDataToTableEntry(sqlReader);
 
                             accountIdsOfClient.Add(clientAccountEntry.AccountId);
                         }
@@ -112,7 +113,7 @@ namespace BankingAppDataTier.Providers
                         {
                             sqlReader.Read();
 
-                            var dataEntry = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
+                            var dataEntry = AccountsMapperProfile.MapSqlDataToTableEntry(sqlReader);
 
                             result.Add(dataEntry);
                         }
@@ -122,7 +123,6 @@ namespace BankingAppDataTier.Providers
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
                     throw;
                 }
             }
@@ -146,7 +146,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
+                        var dataEntry = AccountsMapperProfile.MapSqlDataToTableEntry(sqlReader);
 
                         result.Add(dataEntry);
                     }
@@ -155,13 +155,12 @@ namespace BankingAppDataTier.Providers
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
                     throw;
                 }
             }
         }
 
-        public AccountsTableEntry? GetAccountOfId(string id)
+        public AccountsTableEntry? GetById(string id)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -180,14 +179,13 @@ namespace BankingAppDataTier.Providers
                     if (sqlReader.HasRows)
                     {
                         sqlReader.Read();
-                        result = AccountsMapperProfile.MapSqlDataToAccountsTableEntry(sqlReader);
+                        result = AccountsMapperProfile.MapSqlDataToTableEntry(sqlReader);
                     }
 
                     return result;
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
                     throw;
                 }
             }
@@ -294,7 +292,7 @@ namespace BankingAppDataTier.Providers
                 $"({AccountsTable.COLUMN_ID}, {AccountsTable.COLUMN_TYPE}, {AccountsTable.COLUMN_BALANCE}, {AccountsTable.COLUMN_NAME}, " +
                 $"{AccountsTable.COLUMN_IMAGE}";
 
-            if (entry.AccountType == AccountsTable.ACCOUNT_TYPE_INVESTMENTS)
+            if (entry.AccountType == BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS)
             {
                 result += $", {AccountsTable.COLUMN_SOURCE_ACCOUNT_ID}, {AccountsTable.COLUMN_DURATION}, {AccountsTable.COLUMN_INTEREST}";
             }
@@ -302,7 +300,7 @@ namespace BankingAppDataTier.Providers
             result += $") VALUES " +
                 $"('{entry.AccountId}', '{entry.AccountType}', '{entry.Balance}', '{entry.Name}', '{entry.Image}'";
 
-            if (entry.AccountType == AccountsTable.ACCOUNT_TYPE_INVESTMENTS)
+            if (entry.AccountType == BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS)
             {
                 result += $", '{entry.SourceAccountId}', '{entry.Duration}', '{entry.Interest}'";
             }
@@ -321,7 +319,7 @@ namespace BankingAppDataTier.Providers
                     $"{AccountsTable.COLUMN_IMAGE} = '{entry.Image}'";
                    
 
-            if (entry.AccountType == AccountsTable.ACCOUNT_TYPE_INVESTMENTS)
+            if (entry.AccountType == BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS)
             {
                 result += $", {AccountsTable.COLUMN_SOURCE_ACCOUNT_ID} = '{entry.SourceAccountId}', " +
                     $"{AccountsTable.COLUMN_DURATION} = '{entry.Duration}', " +

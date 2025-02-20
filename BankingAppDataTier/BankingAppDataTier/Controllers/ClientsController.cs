@@ -35,7 +35,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetClientsOutput
             {
-                Clients = itemsInDb.Select(client => ClientsMapperProfile.MapClientTableEntryToClientDto(client)).ToList()
+                Clients = itemsInDb.Select(client => ClientsMapperProfile.MapTableEntryToDto(client)).ToList()
             });
         }
 
@@ -57,7 +57,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetClientByIdOutput
             {
-                Client = ClientsMapperProfile.MapClientTableEntryToClientDto(itemInDb),
+                Client = ClientsMapperProfile.MapTableEntryToDto(itemInDb),
             });
         }
 
@@ -98,7 +98,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = ClientsMapperProfile.MapClientDtoToClientTableEntry(input.Client);
+            var entry = ClientsMapperProfile.MapDtoToTableEntry(input.Client);
             entry.Password = input.PassWord;
 
             var result = databaseClientsProvider.Add(entry);

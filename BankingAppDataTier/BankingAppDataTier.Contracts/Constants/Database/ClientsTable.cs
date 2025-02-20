@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingAppDataTier.Contracts.Constants
+namespace BankingAppDataTier.Contracts.Constants.Database
 {
     public static class ClientsTable
     {

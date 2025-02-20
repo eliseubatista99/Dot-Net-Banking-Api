@@ -1,4 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Constants;
+﻿using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using Microsoft.Data.SqlClient;
 
@@ -6,7 +6,7 @@ namespace BankingAppDataTier.MapperProfiles
 {
     public static class ClientAccountBridgeMapperProfile
     {
-        public static ClientAccountBridgeTableEntry MapSqlDataToClientAccountBridgeTableEntry(SqlDataReader sqlReader)
+        public static ClientAccountBridgeTableEntry MapSqlDataToTableEntry(SqlDataReader sqlReader)
         {
             return new ClientAccountBridgeTableEntry
             {
