@@ -12,6 +12,8 @@ namespace BankingAppDataTier.Contracts.Constants.Database
 
         public static string COLUMN_ID = "ID";
 
+        public static string COLUMN_OWNER_CLIENT_ID = "OWNER_CLIENT_ID";
+
         public static string COLUMN_TYPE = "ACCOUNT_TYPE";
 
         public static string COLUMN_BALANCE = "BALANCE";

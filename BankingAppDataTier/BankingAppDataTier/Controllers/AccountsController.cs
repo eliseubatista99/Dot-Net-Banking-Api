@@ -96,7 +96,7 @@ namespace BankingAppDataTier.Controllers
                 }
             }
 
-            var clientInDb = databaseClientsProvider.GetById(input.ClientId);
+            var clientInDb = databaseClientsProvider.GetById(input.Account.OwnerCliendId);
 
             if (clientInDb == null)
             {
@@ -118,7 +118,7 @@ namespace BankingAppDataTier.Controllers
 
             var entry = AccountsMapperProfile.MapDtoToTableEntry(input.Account);
 
-            var result = databaseAccountsProvider.Add(entry, input.ClientId);
+            var result = databaseAccountsProvider.Add(entry);
 
             if (!result)
             {

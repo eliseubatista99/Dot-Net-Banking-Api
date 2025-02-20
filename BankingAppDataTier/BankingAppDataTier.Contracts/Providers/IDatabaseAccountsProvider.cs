@@ -19,7 +19,7 @@ namespace BankingAppDataTier.Contracts.Providers
 
         public AccountsTableEntry? GetById(string id);
 
-        public bool Add(AccountsTableEntry entry, string clientId);
+        public bool Add(AccountsTableEntry entry);
 
         public bool Edit(AccountsTableEntry entry);
 

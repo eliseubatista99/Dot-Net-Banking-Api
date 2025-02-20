@@ -20,6 +20,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new AccountsTableEntry
             {
                 AccountId = sqlReader[AccountsTable.COLUMN_ID].ToString()!,
+                OwnerCliendId = sqlReader[AccountsTable.COLUMN_OWNER_CLIENT_ID].ToString()!,
                 AccountType = sqlReader[AccountsTable.COLUMN_TYPE].ToString()!,
                 Balance = Convert.ToDecimal(sqlReader[AccountsTable.COLUMN_BALANCE].ToString())!,
                 Name = sqlReader[AccountsTable.COLUMN_NAME].ToString()!,
@@ -57,6 +58,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new AccountDto
             {
                 Id = tableEntry.AccountId,
+                OwnerCliendId = tableEntry.OwnerCliendId,
                 AccountType = MapStringAccountTypeToAccountTypeEnum(tableEntry.AccountType),
                 Balance = tableEntry.Balance,
                 Name = tableEntry.Name,
@@ -72,6 +74,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new AccountsTableEntry
             {
                 AccountId = dto.Id,
+                OwnerCliendId= dto.OwnerCliendId,
                 AccountType = MaAccountTypeEnumToStringAccountType(dto.AccountType),
                 Balance = dto.Balance,
                 Name = dto.Name,

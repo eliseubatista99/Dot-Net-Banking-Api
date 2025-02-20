@@ -10,7 +10,5 @@ namespace BankingAppDataTier.Contracts.Dtos.Inputs.Accounts
     public class AddAccountInput
     {
         public required AccountDto Account { get; set; }
-
-        public required string ClientId { get; set; }
     }
 }

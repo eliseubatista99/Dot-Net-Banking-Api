@@ -38,6 +38,7 @@ namespace BankingAppDataTier.Providers
                         $"CREATE TABLE {AccountsTable.TABLE_NAME} " +
                         $"(" +
                         $"{AccountsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
+                        $"{AccountsTable.COLUMN_OWNER_CLIENT_ID} VARCHAR(64) NOT NULL," +
                         $"{AccountsTable.COLUMN_TYPE} CHAR(2) NOT NULL," +
                         $"{AccountsTable.COLUMN_BALANCE} DECIMAL(20,2) NOT NULL," +
                         $"{AccountsTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
@@ -45,24 +46,10 @@ namespace BankingAppDataTier.Providers
                         $"{AccountsTable.COLUMN_SOURCE_ACCOUNT_ID} VARCHAR(64)," +
                         $"{AccountsTable.COLUMN_DURATION} INTEGER," +
                         $"{AccountsTable.COLUMN_INTEREST} DECIMAL(5,2)," +
-                        $"PRIMARY KEY ({AccountsTable.COLUMN_ID} )" +
+                        $"PRIMARY KEY ({AccountsTable.COLUMN_ID} )," +
+                        $"FOREIGN KEY ({AccountsTable.COLUMN_OWNER_CLIENT_ID}) REFERENCES {ClientsTable.TABLE_NAME}({ClientsTable.COLUMN_ID})" +
                         $") " +
                         $"END";
-
-                    command.ExecuteNonQuery();
-
-                    command.CommandText = $"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{ClientAccountBridgeTable.TABLE_NAME}]')  AND type in (N'U')) " +
-                    $"BEGIN " +
-                    $"CREATE TABLE {ClientAccountBridgeTable.TABLE_NAME} " +
-                    $"(" +
-                    $"{ClientAccountBridgeTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
-                    $"{ClientAccountBridgeTable.COLUMN_ACCOUNT_ID} VARCHAR(64) NOT NULL," +
-                    $"{ClientAccountBridgeTable.COLUMN_CLIENT_ID} VARCHAR(64) NOT NULL," +
-                    $"PRIMARY KEY ({ClientAccountBridgeTable.COLUMN_ID} )," +
-                    $"FOREIGN KEY ({ClientAccountBridgeTable.COLUMN_ACCOUNT_ID}) REFERENCES {AccountsTable.TABLE_NAME}({AccountsTable.COLUMN_ID})," +
-                    $"FOREIGN KEY ({ClientAccountBridgeTable.COLUMN_CLIENT_ID}) REFERENCES {ClientsTable.TABLE_NAME}({ClientsTable.COLUMN_ID})" +
-                    $") " +
-                    $"END";
 
                     command.ExecuteNonQuery();
 
@@ -93,31 +80,17 @@ namespace BankingAppDataTier.Providers
                 {
                     var accountIdsOfClient = new List<string>();
 
-                    command.CommandText = $"SELECT * FROM {ClientAccountBridgeTable.TABLE_NAME} WHERE {ClientAccountBridgeTable.COLUMN_CLIENT_ID} = '{clientId}'";
+                    command.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_OWNER_CLIENT_ID} = '{clientId}'";
 
                     using (var sqlReader = command.ExecuteReader())
                     {
                         while (sqlReader!.Read())
                         {
-                            var clientAccountEntry = ClientAccountBridgeMapperProfile.MapSqlDataToTableEntry(sqlReader);
-
-                            accountIdsOfClient.Add(clientAccountEntry.AccountId);
-                        }
-                    }
-
-                    foreach (var accountId in accountIdsOfClient)
-                    {
-                        command.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{accountId}'";
-
-                        using (var sqlReader = command.ExecuteReader())
-                        {
-                            sqlReader.Read();
-
                             var dataEntry = AccountsMapperProfile.MapSqlDataToTableEntry(sqlReader);
 
                             result.Add(dataEntry);
                         }
-                    }                 
+                    }        
 
                     return result;
                 }
@@ -191,7 +164,7 @@ namespace BankingAppDataTier.Providers
             }
         }
 
-        public bool Add(AccountsTableEntry entry, string clientId)
+        public bool Add(AccountsTableEntry entry)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -202,15 +175,6 @@ namespace BankingAppDataTier.Providers
                 try
                 {
                     command.CommandText =  this.BuildAddCommand(entry);
-
-                    command.ExecuteNonQuery();
-
-                    var clientAccountBridgeEntry = new ClientAccountBridgeTableEntry() { Id = $"{clientId}_{entry.AccountId}", AccountId = entry.AccountId, ClientId = clientId };
-
-                    command.CommandText = $"INSERT INTO {ClientAccountBridgeTable.TABLE_NAME} " +
-                        $"({ClientAccountBridgeTable.COLUMN_ID}, {ClientAccountBridgeTable.COLUMN_ACCOUNT_ID}, {ClientAccountBridgeTable.COLUMN_CLIENT_ID}) " +
-                        $"VALUES " +
-                        $"('{clientAccountBridgeEntry.Id}', '{clientAccountBridgeEntry.AccountId}', '{clientAccountBridgeEntry.ClientId}');";
 
                     command.ExecuteNonQuery();
 
@@ -264,10 +228,6 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    command.CommandText = $"DELETE FROM {ClientAccountBridgeTable.TABLE_NAME} WHERE {ClientAccountBridgeTable.COLUMN_ID} = '{id}'";
-
-                    command.ExecuteNonQuery();
-
                     command.CommandText = $"DELETE FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
 
                     command.ExecuteNonQuery();
@@ -289,7 +249,7 @@ namespace BankingAppDataTier.Providers
         private string BuildAddCommand(AccountsTableEntry entry)
         {
             var result = $"INSERT INTO {AccountsTable.TABLE_NAME} " +
-                $"({AccountsTable.COLUMN_ID}, {AccountsTable.COLUMN_TYPE}, {AccountsTable.COLUMN_BALANCE}, {AccountsTable.COLUMN_NAME}, " +
+                $"({AccountsTable.COLUMN_ID}, {AccountsTable.COLUMN_OWNER_CLIENT_ID}, {AccountsTable.COLUMN_TYPE}, {AccountsTable.COLUMN_BALANCE}, {AccountsTable.COLUMN_NAME}, " +
                 $"{AccountsTable.COLUMN_IMAGE}";
 
             if (entry.AccountType == BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS)
@@ -298,7 +258,7 @@ namespace BankingAppDataTier.Providers
             }
 
             result += $") VALUES " +
-                $"('{entry.AccountId}', '{entry.AccountType}', '{entry.Balance}', '{entry.Name}', '{entry.Image}'";
+                $"('{entry.AccountId}', '{entry.OwnerCliendId}','{entry.AccountType}', '{entry.Balance}', '{entry.Name}', '{entry.Image}'";
 
             if (entry.AccountType == BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS)
             {
@@ -313,7 +273,8 @@ namespace BankingAppDataTier.Providers
         private string BuildEditCommand(AccountsTableEntry entry)
         {
             var result = $"UPDATE {AccountsTable.TABLE_NAME} " +
-                    $"SET {AccountsTable.COLUMN_TYPE} = '{entry.AccountType}', " +
+                    $"SET {AccountsTable.COLUMN_OWNER_CLIENT_ID} = '{entry.OwnerCliendId}', " +
+                    $"{AccountsTable.COLUMN_TYPE} = '{entry.AccountType}', " +
                     $"{AccountsTable.COLUMN_BALANCE} = '{entry.Balance}', " +
                     $"{AccountsTable.COLUMN_NAME} = '{entry.Name}', " +
                     $"{AccountsTable.COLUMN_IMAGE} = '{entry.Image}'";

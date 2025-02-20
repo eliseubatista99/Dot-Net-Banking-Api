@@ -14,6 +14,11 @@ namespace BankingAppDataTier.Contracts.Database
         public required string AccountId { get; set; }
 
         /// <summary>
+        /// Gets or sets the account id.
+        /// </summary>
+        public required string OwnerCliendId { get; set; }
+
+        /// <summary>
         /// Gets or sets the account type.
         /// </summary>
         public required string AccountType { get; set; }
