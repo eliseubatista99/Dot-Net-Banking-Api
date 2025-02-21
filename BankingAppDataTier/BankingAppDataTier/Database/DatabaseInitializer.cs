@@ -16,7 +16,7 @@ namespace BankingAppDataTier.Database
             InitializeClients();
             InitializeAccounts();
             InitializePlastics();
-            //InitalizeCards();
+            InitalizeCards();
         }
 
         private void InitializeClients()

@@ -12,17 +12,18 @@ namespace BankingAppDataTier.MapperProfiles
         public static CardsTableEntry MapSqlDataToTableEntry(SqlDataReader sqlReader)
         {
             var balance = sqlReader[CardsTable.COLUMN_BALANCE];
-            var paymentDate = sqlReader[CardsTable.COLUMN_PAYMENT_DATE];
+            var paymentDate = sqlReader[CardsTable.COLUMN_PAYMENT_DAY];
+            var activationDate = sqlReader[CardsTable.COLUMN_ACTIVATION_DATE];
 
             return new CardsTableEntry
             {
                 Id = sqlReader[CardsTable.COLUMN_ID].ToString()!,
                 CardType = sqlReader[CardsTable.COLUMN_TYPE].ToString()!,
                 RelatedAccountID = sqlReader[CardsTable.COLUMN_RELATED_ACCOUNT_ID].ToString()!,
-                PlasticId = sqlReader[CardsTable.COLUMN_TYPE].ToString()!,
-                RequestDate = Convert.ToDateTime(sqlReader[AccountsTable.COLUMN_BALANCE].ToString())!,
-                ActivationDate = Convert.ToDateTime(sqlReader[AccountsTable.COLUMN_BALANCE].ToString())!,
-                ExpirationDate = Convert.ToDateTime(sqlReader[AccountsTable.COLUMN_BALANCE].ToString())!,
+                PlasticId = sqlReader[CardsTable.COLUMN_PLASTIC_ID].ToString()!,
+                RequestDate = Convert.ToDateTime(sqlReader[CardsTable.COLUMN_REQUEST_DATE].ToString())!,
+                ActivationDate = activationDate is System.DBNull ? null : Convert.ToDateTime(activationDate),
+                ExpirationDate = Convert.ToDateTime(sqlReader[CardsTable.COLUMN_EXPIRATION_DATE].ToString())!,
                 Balance = balance is System.DBNull ? null : Convert.ToDecimal(balance),
                 PaymentDay = paymentDate is System.DBNull ? null : Convert.ToInt16(paymentDate),
             };

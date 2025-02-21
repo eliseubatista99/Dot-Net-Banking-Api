@@ -20,7 +20,7 @@ namespace BankingAppDataTier.Contracts.Constants.Database
 
         public static string COLUMN_BALANCE = "BALANCE";
 
-        public static string COLUMN_PAYMENT_DATE = "PAYMENT_DATE";
+        public static string COLUMN_PAYMENT_DAY = "PAYMENT_DAY";
 
         public static string COLUMN_REQUEST_DATE = "REQUEST_DATE";
 

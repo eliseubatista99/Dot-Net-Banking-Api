@@ -40,10 +40,11 @@ namespace BankingAppDataTier.Providers
                         $"CREATE TABLE {CardsTable.TABLE_NAME} " +
                         $"(" +
                         $"{CardsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
+                        $"{CardsTable.COLUMN_RELATED_ACCOUNT_ID} VARCHAR(64) NOT NULL," +
                         $"{CardsTable.COLUMN_TYPE} CHAR(2) NOT NULL," +
                         $"{CardsTable.COLUMN_PLASTIC_ID} VARCHAR(64) NOT NULL," +
-                        $"{CardsTable.COLUMN_BALANCE} DECIMAL(20,2) NOT NULL," +
-                        $"{CardsTable.COLUMN_PAYMENT_DATE} DATE," +
+                        $"{CardsTable.COLUMN_BALANCE} DECIMAL(20,2)," +
+                        $"{CardsTable.COLUMN_PAYMENT_DAY} INT," +
                         $"{CardsTable.COLUMN_REQUEST_DATE} DATE NOT NULL," +
                         $"{CardsTable.COLUMN_ACTIVATION_DATE} DATE," +
                         $"{CardsTable.COLUMN_EXPIRATION_DATE} DATE NOT NULL," +
@@ -263,11 +264,16 @@ namespace BankingAppDataTier.Providers
 
             if (entry.CardType != BankingAppDataTierConstants.CARD_TYPE_DEBIT)
             {
-                result += $", {CardsTable.COLUMN_BALANCE}, {CardsTable.COLUMN_PAYMENT_DATE}";
+                result += $", {CardsTable.COLUMN_BALANCE}";
+            }
+
+            if (entry.CardType == BankingAppDataTierConstants.CARD_TYPE_CREDIT)
+            {
+                result += $", {CardsTable.COLUMN_PAYMENT_DAY}";
             }
 
             result += $") VALUES " +
-                $"('{entry.Id}', '{entry.CardType}', '{entry.PlasticId}', '{entry.RelatedAccountID}' " +
+                $"('{entry.Id}', '{entry.CardType}', '{entry.PlasticId}', '{entry.RelatedAccountID}', " +
                 $"'{entry.RequestDate.ToString("yyyy-MM-dd")}', '{entry.ExpirationDate.ToString("yyyy-MM-dd")}'";
 
             if (entry.ActivationDate != null)
@@ -277,7 +283,12 @@ namespace BankingAppDataTier.Providers
 
             if (entry.CardType != BankingAppDataTierConstants.CARD_TYPE_DEBIT)
             {
-                result += $", '{entry.Balance}', '{entry.PaymentDay.GetValueOrDefault()}'";
+                result += $", '{entry.Balance}'";
+            }
+
+            if (entry.CardType == BankingAppDataTierConstants.CARD_TYPE_CREDIT)
+            {
+                result += $", '{entry.PaymentDay.GetValueOrDefault()}'";
             }
 
             result += ");";
@@ -291,8 +302,8 @@ namespace BankingAppDataTier.Providers
                     $"SET {CardsTable.COLUMN_TYPE} = '{entry.CardType}', " +
                     $"{CardsTable.COLUMN_RELATED_ACCOUNT_ID} = '{entry.RelatedAccountID}', " +
                     $"{CardsTable.COLUMN_PLASTIC_ID} = '{entry.PlasticId}', " +
-                    $"{CardsTable.COLUMN_REQUEST_DATE} = '{entry.RequestDate}', " +
-                    $"{CardsTable.COLUMN_EXPIRATION_DATE} = '{entry.ExpirationDate}'";
+                    $"{CardsTable.COLUMN_REQUEST_DATE} = '{entry.RequestDate.ToString("yyyy-MM-dd")}', " +
+                    $"{CardsTable.COLUMN_EXPIRATION_DATE} = '{entry.ExpirationDate.ToString("yyyy-MM-dd")}'";
 
 
             if (entry.ActivationDate != null)
@@ -303,7 +314,7 @@ namespace BankingAppDataTier.Providers
             if (entry.CardType != BankingAppDataTierConstants.CARD_TYPE_DEBIT)
             {
                 result += $", {CardsTable.COLUMN_BALANCE} = '{entry.Balance}', " +
-                    $"{CardsTable.COLUMN_PAYMENT_DATE} = '{entry.PaymentDay.GetValueOrDefault()}'";
+                    $"{CardsTable.COLUMN_PAYMENT_DAY} = '{entry.PaymentDay.GetValueOrDefault()}'";
             }
 
             result += $"WHERE {CardsTable.COLUMN_ID} = '{entry.Id}';";
