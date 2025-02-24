@@ -4,12 +4,13 @@ using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Enums;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles
 {
     public static class CardsMapperProfile
     {
-        public static CardsTableEntry MapSqlDataToTableEntry(SqlDataReader sqlReader)
+        public static CardsTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
         {
             var balance = sqlReader[CardsTable.COLUMN_BALANCE];
             var paymentDate = sqlReader[CardsTable.COLUMN_PAYMENT_DAY];

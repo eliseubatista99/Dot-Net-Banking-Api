@@ -4,12 +4,13 @@ using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Enums;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles
 {
     public static class PlasticsMapperProfile
     {
-        public static PlasticTableEntry MapSqlDataToTableEntry(SqlDataReader sqlReader)
+        public static PlasticTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
         {
             var image = (sqlReader[PlasticsTable.COLUMN_IMAGE]).ToString();
             var cashback = sqlReader[PlasticsTable.COLUMN_CASHBACK];

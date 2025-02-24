@@ -7,6 +7,7 @@ using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BankingAppDataTier.Providers
@@ -27,7 +28,7 @@ namespace BankingAppDataTier.Providers
 
         public bool CreateTableIfNotExists()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -35,9 +36,7 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    command.CommandText = $"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{CardsTable.TABLE_NAME}]')  AND type in (N'U')) " +
-                        $"BEGIN " +
-                        $"CREATE TABLE {CardsTable.TABLE_NAME} " +
+                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {CardsTable.TABLE_NAME}" +
                         $"(" +
                         $"{CardsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{CardsTable.COLUMN_RELATED_ACCOUNT_ID} VARCHAR(64) NOT NULL," +
@@ -51,8 +50,7 @@ namespace BankingAppDataTier.Providers
                         $"PRIMARY KEY ({CardsTable.COLUMN_ID} )," +
                         $"FOREIGN KEY ({CardsTable.COLUMN_RELATED_ACCOUNT_ID}) REFERENCES {AccountsTable.TABLE_NAME}({AccountsTable.COLUMN_ID})," +
                         $"FOREIGN KEY ({CardsTable.COLUMN_PLASTIC_ID}) REFERENCES {PlasticsTable.TABLE_NAME}({PlasticsTable.COLUMN_ID})" +
-                        $")" +
-                        $"END";
+                        $")";
 
                     command.ExecuteNonQuery();
 
@@ -73,7 +71,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Add(CardsTableEntry entry, string accountId)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -90,7 +88,7 @@ namespace BankingAppDataTier.Providers
 
                     return true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     transaction.Rollback();
                     throw;
@@ -101,7 +99,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Delete(string id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -118,7 +116,7 @@ namespace BankingAppDataTier.Providers
 
                     return true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     transaction.Rollback();
                     throw;
@@ -128,7 +126,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Edit(CardsTableEntry entry)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -155,7 +153,7 @@ namespace BankingAppDataTier.Providers
 
         public List<CardsTableEntry> GetAll()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 List<CardsTableEntry> result = new List<CardsTableEntry>();
 
@@ -187,7 +185,7 @@ namespace BankingAppDataTier.Providers
 
         public CardsTableEntry? GetCardById(string id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 CardsTableEntry? result = null;
 
@@ -218,7 +216,7 @@ namespace BankingAppDataTier.Providers
 
         public List<CardsTableEntry> GetCardsOfAccount(string accountId)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 List<CardsTableEntry> result = new List<CardsTableEntry>();
 

@@ -6,6 +6,7 @@ using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace BankingAppDataTier.Providers
 {
@@ -24,7 +25,7 @@ namespace BankingAppDataTier.Providers
 
         public bool CreateTableIfNotExists()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -32,19 +33,16 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    command.CommandText = $"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{PlasticsTable.TABLE_NAME}]')  AND type in (N'U')) " +
-                        $"BEGIN " +
-                        $"CREATE TABLE {PlasticsTable.TABLE_NAME} " +
+                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {PlasticsTable.TABLE_NAME}" +
                         $"(" +
                         $"{PlasticsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{PlasticsTable.COLUMN_TYPE} VARCHAR(64) NOT NULL," +
                         $"{PlasticsTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
                         $"{PlasticsTable.COLUMN_CASHBACK} DECIMAL(5,2)," +
                         $"{PlasticsTable.COLUMN_COMISSION} DECIMAL(5,2)," +
-                        $"{PlasticsTable.COLUMN_IMAGE} VARCHAR(MAX)," +
+                        $"{PlasticsTable.COLUMN_IMAGE} VARCHAR," +
                         $"PRIMARY KEY ({PlasticsTable.COLUMN_ID} )" +
-                        $") " +
-                        $"END";
+                        $") ";
 
                     command.ExecuteNonQuery();
 
@@ -64,7 +62,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Add(PlasticTableEntry entry)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -96,7 +94,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Delete(string id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -124,7 +122,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Edit(PlasticTableEntry entry)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -158,7 +156,7 @@ namespace BankingAppDataTier.Providers
 
         public List<PlasticTableEntry> GetAll()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 List<PlasticTableEntry> result = new List<PlasticTableEntry>();
 
@@ -190,7 +188,7 @@ namespace BankingAppDataTier.Providers
 
         public PlasticTableEntry? GetById(string id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 PlasticTableEntry? result = null;
 
@@ -221,7 +219,7 @@ namespace BankingAppDataTier.Providers
 
         public List<PlasticTableEntry> GetPlasticsOfCardType(CardType type)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 List<PlasticTableEntry> result = null;
 

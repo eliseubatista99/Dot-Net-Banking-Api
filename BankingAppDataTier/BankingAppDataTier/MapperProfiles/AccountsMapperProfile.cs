@@ -4,12 +4,13 @@ using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Enums;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles
 {
     public static class AccountsMapperProfile
     {
-        public static AccountsTableEntry MapSqlDataToTableEntry(SqlDataReader sqlReader)
+        public static AccountsTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
         {
             var accountImage = (sqlReader[AccountsTable.COLUMN_IMAGE]).ToString();
 

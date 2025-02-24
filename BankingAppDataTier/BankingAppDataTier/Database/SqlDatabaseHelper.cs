@@ -1,13 +1,14 @@
 ﻿using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace BankingAppDataTier.Database
 {
     public static class SqlDatabaseHelper
     {
-        public static (SqlTransaction transaction, SqlCommand command) InitialzieSqlTransaction(SqlConnection connection)
+        public static (NpgsqlTransaction transaction, NpgsqlCommand command) InitialzieSqlTransaction(NpgsqlConnection connection)
         {
-            SqlCommand command = connection.CreateCommand();
-            SqlTransaction transaction;
+            NpgsqlCommand command = connection.CreateCommand();
+            NpgsqlTransaction transaction;
 
             // Start a local transaction.
             transaction = connection.BeginTransaction();

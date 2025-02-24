@@ -2,12 +2,13 @@
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles
 {
     public static class ClientsMapperProfile
     {
-        public static ClientsTableEntry MapSqlDataToTableEntry(SqlDataReader sqlReader)
+        public static ClientsTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
         {
             return new ClientsTableEntry
             {

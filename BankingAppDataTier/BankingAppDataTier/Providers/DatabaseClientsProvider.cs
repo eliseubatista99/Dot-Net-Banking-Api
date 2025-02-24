@@ -5,6 +5,7 @@ using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace BankingAppDataTier.Providers
 {
@@ -24,7 +25,7 @@ namespace BankingAppDataTier.Providers
 
         public bool CreateTableIfNotExists()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -32,9 +33,7 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    command.CommandText = $"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{ClientsTable.TABLE_NAME}]')  AND type in (N'U')) " +
-                        $"BEGIN " +
-                        $"CREATE TABLE {ClientsTable.TABLE_NAME} " +
+                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {ClientsTable.TABLE_NAME}" +
                         $"(" +
                         $"{ClientsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{ClientsTable.COLUMN_PASSWORD} VARCHAR(64) NOT NULL," +
@@ -45,8 +44,7 @@ namespace BankingAppDataTier.Providers
                         $"{ClientsTable.COLUMN_PHONE_NUMBER} VARCHAR(20) NOT NULL," +
                         $"{ClientsTable.COLUMN_EMAIL} VARCHAR(60) NOT NULL," +
                         $"PRIMARY KEY ({ClientsTable.COLUMN_ID} )" +
-                        $") " +
-                        $"END";
+                        $")";
 
                     command.ExecuteNonQuery();
 
@@ -65,7 +63,7 @@ namespace BankingAppDataTier.Providers
 
         public List<ClientsTableEntry> GetAll()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 List<ClientsTableEntry> result = new List<ClientsTableEntry>();
 
@@ -97,7 +95,7 @@ namespace BankingAppDataTier.Providers
 
         public ClientsTableEntry? GetById(string id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 ClientsTableEntry? result = null;
 
@@ -128,7 +126,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Add(ClientsTableEntry entry)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -159,7 +157,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Edit(ClientsTableEntry entry)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -194,7 +192,7 @@ namespace BankingAppDataTier.Providers
 
         public bool ChangePassword(string id, string password)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -223,7 +221,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Delete(string id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 

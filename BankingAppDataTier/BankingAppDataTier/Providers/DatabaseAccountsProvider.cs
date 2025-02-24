@@ -6,6 +6,7 @@ using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace BankingAppDataTier.Providers
 {
@@ -25,7 +26,7 @@ namespace BankingAppDataTier.Providers
 
         public bool CreateTableIfNotExists()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -33,23 +34,20 @@ namespace BankingAppDataTier.Providers
            
                 try
                 {
-                    command.CommandText = $"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{AccountsTable.TABLE_NAME}]')  AND type in (N'U')) " +
-                        $"BEGIN " +
-                        $"CREATE TABLE {AccountsTable.TABLE_NAME} " +
+                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {AccountsTable.TABLE_NAME}" +
                         $"(" +
                         $"{AccountsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{AccountsTable.COLUMN_OWNER_CLIENT_ID} VARCHAR(64) NOT NULL," +
                         $"{AccountsTable.COLUMN_TYPE} CHAR(2) NOT NULL," +
                         $"{AccountsTable.COLUMN_BALANCE} DECIMAL(20,2) NOT NULL," +
                         $"{AccountsTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
-                        $"{AccountsTable.COLUMN_IMAGE} VARCHAR(MAX)," +
+                        $"{AccountsTable.COLUMN_IMAGE} VARCHAR," +
                         $"{AccountsTable.COLUMN_SOURCE_ACCOUNT_ID} VARCHAR(64)," +
                         $"{AccountsTable.COLUMN_DURATION} INTEGER," +
                         $"{AccountsTable.COLUMN_INTEREST} DECIMAL(5,2)," +
                         $"PRIMARY KEY ({AccountsTable.COLUMN_ID} )," +
                         $"FOREIGN KEY ({AccountsTable.COLUMN_OWNER_CLIENT_ID}) REFERENCES {ClientsTable.TABLE_NAME}({ClientsTable.COLUMN_ID})" +
-                        $") " +
-                        $"END";
+                        $")";
 
                     command.ExecuteNonQuery();
 
@@ -68,7 +66,7 @@ namespace BankingAppDataTier.Providers
 
         public List<AccountsTableEntry> GetAccountsOfClient(string clientId)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 List<AccountsTableEntry> result = new List<AccountsTableEntry>();
 
@@ -103,7 +101,7 @@ namespace BankingAppDataTier.Providers
 
         public List<AccountsTableEntry> GetAll()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 List<AccountsTableEntry> result = new List<AccountsTableEntry>();
 
@@ -135,7 +133,7 @@ namespace BankingAppDataTier.Providers
 
         public AccountsTableEntry? GetById(string id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 AccountsTableEntry? result = null;
 
@@ -166,7 +164,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Add(AccountsTableEntry entry)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -193,7 +191,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Edit(AccountsTableEntry entry)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -220,7 +218,7 @@ namespace BankingAppDataTier.Providers
 
         public bool Delete(string id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
