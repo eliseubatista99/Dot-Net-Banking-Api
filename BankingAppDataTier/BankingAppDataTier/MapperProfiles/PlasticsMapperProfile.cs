@@ -32,7 +32,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new PlasticDto
             {
                 Id = tableEntry.Id,
-                CardType = MapStringCardTypeToCardTypeEnum(tableEntry.CardType),
+                CardType = EnumsMapperProfile.MapCardTypeFromString(tableEntry.CardType),
                 Name = tableEntry.Name,
                 Cashback = tableEntry.Cashback,
                 Commission = tableEntry.Commission,
@@ -45,35 +45,11 @@ namespace BankingAppDataTier.MapperProfiles
             return new PlasticTableEntry
             {
                 Id = dto.Id,
-                CardType = MapCardTypeEnumToStringCardType(dto.CardType),
+                CardType = EnumsMapperProfile.MapCardTypeEnumToStringCardType(dto.CardType),
                 Name = dto.Name,
                 Cashback = dto.Cashback,
                 Commission = dto.Commission,
                 Image = dto.Image
-            };
-        }
-
-        public static string MapCardTypeEnumToStringCardType(CardType value)
-        {
-            return value switch
-            {
-                CardType.Debit => BankingAppDataTierConstants.CARD_TYPE_DEBIT,
-                CardType.Credit => BankingAppDataTierConstants.CARD_TYPE_CREDIT,
-                CardType.PrePaid => BankingAppDataTierConstants.CARD_TYPE_PRE_PAID,
-                CardType.Meal => BankingAppDataTierConstants.CARD_TYPE_MEAL,
-                _ => ""
-            };
-        }
-
-        public static CardType MapStringCardTypeToCardTypeEnum(string value)
-        {
-            return value switch
-            {
-                BankingAppDataTierConstants.CARD_TYPE_DEBIT => CardType.Debit,
-                BankingAppDataTierConstants.CARD_TYPE_CREDIT => CardType.Credit,
-                BankingAppDataTierConstants.CARD_TYPE_PRE_PAID => CardType.PrePaid,
-                BankingAppDataTierConstants.CARD_TYPE_MEAL => CardType.Meal,
-                _ => CardType.None,
             };
         }
     }

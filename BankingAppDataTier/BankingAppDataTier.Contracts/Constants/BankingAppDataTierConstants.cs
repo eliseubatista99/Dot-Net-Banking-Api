@@ -21,5 +21,11 @@ namespace BankingAppDataTier.Contracts.Constants
         public const string CARD_TYPE_PRE_PAID = "PP";
 
         public const string CARD_TYPE_MEAL = "ME";
+
+        public const string LOAN_TYPE_AUTO = "AU";
+
+        public const string LOAN_TYPE_MORTAGAGE = "MO";
+
+        public const string LOAN_TYPE_PERSONAL = "PE";
     }
 }

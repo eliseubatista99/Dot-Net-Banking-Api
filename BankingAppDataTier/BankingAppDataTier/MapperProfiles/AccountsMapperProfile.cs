@@ -32,35 +32,13 @@ namespace BankingAppDataTier.MapperProfiles
             };
         }
 
-        public static AccountType MapStringAccountTypeToAccountTypeEnum(string value)
-        {
-            return value switch
-            {
-                BankingAppDataTierConstants.ACCOUNT_TYPE_CURRENT => AccountType.Current,
-                BankingAppDataTierConstants.ACCOUNT_TYPE_SAVINGS => AccountType.Savings,
-                BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS => AccountType.Investments,
-                _ => AccountType.None,
-            };
-        }
-
-        public static string MaAccountTypeEnumToStringAccountType(AccountType value)
-        {
-            return value switch
-            {
-                AccountType.Current => BankingAppDataTierConstants.ACCOUNT_TYPE_CURRENT,
-                AccountType.Savings => BankingAppDataTierConstants.ACCOUNT_TYPE_SAVINGS,
-                AccountType.Investments => BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS,
-                _ => ""
-            };
-        }
-
         public static AccountDto MapTableEntryToDto(AccountsTableEntry tableEntry)
         {
             return new AccountDto
             {
                 Id = tableEntry.AccountId,
                 OwnerCliendId = tableEntry.OwnerCliendId,
-                AccountType = MapStringAccountTypeToAccountTypeEnum(tableEntry.AccountType),
+                AccountType = EnumsMapperProfile.MapAccountTypeFromString(tableEntry.AccountType),
                 Balance = tableEntry.Balance,
                 Name = tableEntry.Name,
                 Image = tableEntry.Image,
@@ -76,7 +54,7 @@ namespace BankingAppDataTier.MapperProfiles
             {
                 AccountId = dto.Id,
                 OwnerCliendId= dto.OwnerCliendId,
-                AccountType = MaAccountTypeEnumToStringAccountType(dto.AccountType),
+                AccountType = EnumsMapperProfile.MapAccountTypeToString(dto.AccountType),
                 Balance = dto.Balance,
                 Name = dto.Name,
                 Image = dto.Image,

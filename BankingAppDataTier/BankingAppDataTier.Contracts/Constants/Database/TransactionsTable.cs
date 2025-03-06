@@ -12,6 +12,8 @@ namespace BankingAppDataTier.Contracts.Constants.Database
 
         public static string COLUMN_ID = "ID";
 
+        public static string COLUMN_TRANSACTION_DATE = "TRANSACTION_DATE";
+
         public static string COLUMN_DESCRIPTION = "DESCRIPTION";
 
         public static string COLUMN_SOURCE_ACCOUNT = "SOURCE_ACCOUNT";

@@ -29,37 +29,13 @@ namespace BankingAppDataTier.MapperProfiles
                 PaymentDay = paymentDate is System.DBNull ? null : Convert.ToInt16(paymentDate),
             };
         }
-
-        public static CardType MapStringCardTypeToCardTypeEnum(string value)
-        {
-            return value switch
-            {
-                BankingAppDataTierConstants.CARD_TYPE_DEBIT => CardType.Debit,
-                BankingAppDataTierConstants.CARD_TYPE_CREDIT => CardType.Credit,
-                BankingAppDataTierConstants.CARD_TYPE_PRE_PAID => CardType.PrePaid,
-                BankingAppDataTierConstants.CARD_TYPE_MEAL => CardType.Meal,
-                _ => CardType.None,
-            };
-        }
-
-        public static string MapCardTypeEnumToStringCardType(CardType value)
-        {
-            return value switch
-            {
-                CardType.Debit => BankingAppDataTierConstants.CARD_TYPE_DEBIT,
-                CardType.Credit => BankingAppDataTierConstants.CARD_TYPE_CREDIT,
-                CardType.PrePaid => BankingAppDataTierConstants.CARD_TYPE_PRE_PAID,
-                CardType.Meal => BankingAppDataTierConstants.CARD_TYPE_MEAL,
-                _ => ""
-            };
-        }
-
+    
         public static CardDto MapTableEntryToDto(CardsTableEntry tableEntry)
         {
             return new CardDto
             {
                 Id = tableEntry.Id,
-                CardType = MapStringCardTypeToCardTypeEnum(tableEntry.CardType),
+                CardType = EnumsMapperProfile.MapCardTypeFromString(tableEntry.CardType),
                 RelatedAccountID = tableEntry.RelatedAccountID,
                 PlasticId = tableEntry.PlasticId,
                 Balance = tableEntry.Balance,
@@ -75,7 +51,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new CardsTableEntry
             {
                 Id = dto.Id,
-                CardType = MapCardTypeEnumToStringCardType(dto.CardType),
+                CardType = EnumsMapperProfile.MapCardTypeEnumToStringCardType(dto.CardType),
                 RelatedAccountID = dto.RelatedAccountID,
                 PlasticId = dto.PlasticId,
                 Balance = dto.Balance,

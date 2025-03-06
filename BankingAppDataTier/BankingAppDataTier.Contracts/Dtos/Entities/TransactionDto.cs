@@ -22,7 +22,7 @@ namespace BankingAppDataTier.Contracts.Dtos.Entitites
         /// <summary>
         /// Gets or sets the Description.
         /// </summary>
-        public required string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the Amount.
@@ -32,7 +32,7 @@ namespace BankingAppDataTier.Contracts.Dtos.Entitites
         /// <summary>
         /// Gets or sets the Amount.
         /// </summary>
-        public required decimal Fees { get; set; }
+        public decimal? Fees { get; set; }
 
         /// <summary>
         /// Gets or sets the Amount.
@@ -52,7 +52,7 @@ namespace BankingAppDataTier.Contracts.Dtos.Entitites
         /// <summary>
         /// Gets or sets the Destination Name.
         /// </summary>
-        public string? DestinationName { get; set; }
+        public required string DestinationName { get; set; }
 
         /// <summary>
         /// Gets or sets the Source Card.
