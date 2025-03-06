@@ -16,6 +16,7 @@ namespace BankingAppDataTier.MapperProfiles
             {
                 Id = sqlReader[LoansTable.COLUMN_ID].ToString()!,
                 StartDate = Convert.ToDateTime(sqlReader[LoansTable.COLUMN_START_DATE].ToString())!,
+                RelatedAccount = sqlReader[LoansTable.COLUMN_RELATED_ACCOUNT].ToString()!,
                 RelatedOffer = sqlReader[LoansTable.COLUMN_RELATED_OFFER].ToString()!,
                 Duration = Convert.ToInt16(sqlReader[LoansTable.COLUMN_DURATION].ToString())!,
                 Amount = Convert.ToDecimal(sqlReader[LoansTable.COLUMN_AMOUNT].ToString())!,
@@ -28,6 +29,7 @@ namespace BankingAppDataTier.MapperProfiles
             {
                 Id = tableEntry.Id,
                 StartDate = tableEntry.StartDate,
+                RelatedAccount = tableEntry.RelatedAccount,
                 RelatedOffer = tableEntry.RelatedOffer,
                 Duration = tableEntry.Duration,
                 Amount = tableEntry.Amount,
@@ -40,6 +42,7 @@ namespace BankingAppDataTier.MapperProfiles
             {
                 Id = dto.Id,
                 StartDate = dto.StartDate,
+                RelatedAccount = dto.RelatedAccount,
                 RelatedOffer = dto.RelatedOffer,
                 Duration = dto.Duration,
                 Amount = dto.Amount,

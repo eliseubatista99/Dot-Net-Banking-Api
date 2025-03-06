@@ -20,6 +20,11 @@ namespace BankingAppDataTier.Contracts.Dtos.Entitites
         public required DateTime StartDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the related account.
+        /// </summary>
+        public required string RelatedAccount { get; set; }
+
+        /// <summary>
         /// Gets or sets the related offer.
         /// </summary>
         public required string RelatedOffer { get; set; }

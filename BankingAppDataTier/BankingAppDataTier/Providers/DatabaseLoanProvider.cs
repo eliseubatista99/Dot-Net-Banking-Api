@@ -37,11 +37,13 @@ namespace BankingAppDataTier.Providers
                     command.CommandText = $"CREATE TABLE IF NOT EXISTS {LoansTable.TABLE_NAME}" +
                         $"(" +
                         $"{LoansTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
+                        $"{LoansTable.COLUMN_RELATED_ACCOUNT} VARCHAR(64) NOT NULL," +
                         $"{LoansTable.COLUMN_START_DATE} DATE NOT NULL," +
                         $"{LoansTable.COLUMN_RELATED_OFFER} VARCHAR(64) NOT NULL," +
                         $"{LoansTable.COLUMN_DURATION} INTEGER NOT NULL," +
                         $"{LoansTable.COLUMN_AMOUNT} DECIMAL(20,2) NOT NULL," +
                         $"PRIMARY KEY ({LoansTable.COLUMN_ID} )," +
+                        $"FOREIGN KEY ({LoansTable.COLUMN_RELATED_ACCOUNT}) REFERENCES {AccountsTable.TABLE_NAME}({AccountsTable.COLUMN_ID}), " +
                         $"FOREIGN KEY ({LoansTable.COLUMN_RELATED_OFFER}) REFERENCES {LoanOffersTable.TABLE_NAME}({LoanOffersTable.COLUMN_ID})" +
                         $")";
 
@@ -71,9 +73,9 @@ namespace BankingAppDataTier.Providers
                 try
                 {
                     command.CommandText = $"INSERT INTO {LoansTable.TABLE_NAME} " +
-                        $"({LoansTable.COLUMN_ID}, {LoansTable.COLUMN_START_DATE}, {LoansTable.COLUMN_RELATED_OFFER}, {LoansTable.COLUMN_DURATION}, {LoansTable.COLUMN_AMOUNT}) " +
+                        $"({LoansTable.COLUMN_ID}, {LoansTable.COLUMN_RELATED_ACCOUNT}, {LoansTable.COLUMN_START_DATE}, {LoansTable.COLUMN_RELATED_OFFER}, {LoansTable.COLUMN_DURATION}, {LoansTable.COLUMN_AMOUNT}) " +
                         $"VALUES " +
-                        $"('{entry.Id}', '{entry.StartDate.ToString("yyyy-MM-dd")}', '{entry.RelatedOffer}', '{entry.Duration}', '{entry.Amount}');";
+                        $"('{entry.Id}', '{entry.RelatedAccount}', '{entry.StartDate.ToString("yyyy-MM-dd")}', '{entry.RelatedOffer}', '{entry.Duration}', '{entry.Amount}');";
 
                     command.ExecuteNonQuery();
 
@@ -128,8 +130,8 @@ namespace BankingAppDataTier.Providers
                 try
                 {
                     command.CommandText = $"UPDATE {LoansTable.TABLE_NAME} " +
-                    $"SET {LoansTable.COLUMN_ID} = '{entry.Id}', " +
                     $"SET {LoansTable.COLUMN_START_DATE} = '{entry.StartDate}', " +
+                    $"{LoansTable.COLUMN_RELATED_ACCOUNT} = '{entry.RelatedAccount}', " +
                     $"{LoansTable.COLUMN_RELATED_OFFER} = '{entry.RelatedOffer}', " +
                     $"{LoansTable.COLUMN_DURATION} = '{entry.Duration}', " +
                     $"{LoansTable.COLUMN_AMOUNT} = '{entry.Amount}' " +
@@ -213,7 +215,7 @@ namespace BankingAppDataTier.Providers
             }
         }
 
-        public List<LoanTableEntry> GetByOffer(string relatedOffer)
+        public List<LoanTableEntry> GetByAccount(string relatedAccount)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
@@ -227,7 +229,7 @@ namespace BankingAppDataTier.Providers
                 {
                     var cardIdsOfAccount = new List<string>();
 
-                    command.CommandText = $"SELECT * FROM {LoansTable.TABLE_NAME} WHERE {LoansTable.COLUMN_RELATED_OFFER} = '{relatedOffer}'";
+                    command.CommandText = $"SELECT * FROM {LoansTable.TABLE_NAME} WHERE {LoansTable.COLUMN_RELATED_ACCOUNT} = '{relatedAccount}'";
 
                     using (var sqlReader = command.ExecuteReader())
                     {

@@ -14,6 +14,8 @@ namespace BankingAppDataTier.Contracts.Constants.Database
 
         public static string COLUMN_RELATED_OFFER = "RELATED_OFFER";
 
+        public static string COLUMN_RELATED_ACCOUNT = "RELATED_ACCOUNT";
+
         public static string COLUMN_START_DATE = "START_DATE";
 
         public static string COLUMN_DURATION = "DURATION";

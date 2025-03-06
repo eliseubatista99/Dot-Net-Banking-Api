@@ -1,0 +1,14 @@
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BankingAppDataTier.Contracts.Dtos.Outputs.Loans
+{
+    public class GetLoansOfClientOutput : BaseOutput
+    {
+        public required List<LoanDto> Loans { get; set; }
+    }
+}

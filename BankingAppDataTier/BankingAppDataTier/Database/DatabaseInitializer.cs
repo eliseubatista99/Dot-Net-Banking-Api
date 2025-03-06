@@ -397,6 +397,7 @@ namespace BankingAppDataTier.Database
                 new LoanTableEntry
                 {
                     Id = "L01",
+                    RelatedAccount = "ACJW000000",
                     StartDate = new DateTime(2025, 02, 03),
                     RelatedOffer = "LO01",
                     Duration = 24,
