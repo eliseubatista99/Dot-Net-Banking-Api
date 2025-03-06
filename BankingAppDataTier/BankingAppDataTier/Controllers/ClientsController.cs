@@ -51,7 +51,7 @@ namespace BankingAppDataTier.Controllers
                 return NotFound(new GetClientByIdOutput()
                 {
                     Client = null,
-                    Error = ClientsErrors.InvalidClientId,
+                    Error = GenericErrors.InvalidId,
                 });
             }
 
@@ -73,7 +73,7 @@ namespace BankingAppDataTier.Controllers
                 return NotFound(new HasValidPasswordOutput()
                 {
                     Result = false,
-                    Error = ClientsErrors.InvalidClientId,
+                    Error = GenericErrors.InvalidId,
                 });
             }
 
@@ -94,7 +94,7 @@ namespace BankingAppDataTier.Controllers
             {
                 return BadRequest(new VoidOutput()
                 {
-                    Error = ClientsErrors.IdAlreadyInUse,
+                    Error = GenericErrors.IdAlreadyInUse,
                 });
             }
 
@@ -123,7 +123,7 @@ namespace BankingAppDataTier.Controllers
             {
                 return BadRequest(new VoidOutput
                 {
-                    Error = ClientsErrors.InvalidClientId
+                    Error = GenericErrors.InvalidId
                 });
             }
 
@@ -156,7 +156,7 @@ namespace BankingAppDataTier.Controllers
             {
                 return NotFound(new VoidOutput
                 {
-                    Error = ClientsErrors.InvalidClientId
+                    Error = GenericErrors.InvalidId
                 });
             }
 
@@ -184,7 +184,7 @@ namespace BankingAppDataTier.Controllers
             {
                 return NotFound(new VoidOutput
                 {
-                    Error = ClientsErrors.InvalidClientId,
+                    Error = GenericErrors.InvalidId,
                 });
             }
 

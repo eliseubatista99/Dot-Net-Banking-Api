@@ -40,7 +40,7 @@ namespace BankingAppDataTier.Controllers
                 return BadRequest(new GetClientAccountsOutput()
                 {
                     Accounts = new List<AccountDto>(),
-                    Error = ClientsErrors.InvalidClientId,
+                    Error = GenericErrors.InvalidId,
                 });
             }
 
@@ -72,7 +72,7 @@ namespace BankingAppDataTier.Controllers
                 return NotFound(new GetAccountByIdOutput()
                 {
                     Account = null,
-                    Error = AccountsErrors.InvalidAccountId,
+                    Error = GenericErrors.InvalidId,
                 });
             }
 
@@ -102,7 +102,7 @@ namespace BankingAppDataTier.Controllers
             {
                 return BadRequest(new VoidOutput()
                 {
-                    Error = ClientsErrors.InvalidClientId,
+                    Error = AccountsErrors.InvalidOwnerId,
                 });
             }
 
@@ -112,7 +112,7 @@ namespace BankingAppDataTier.Controllers
             {
                 return BadRequest(new VoidOutput()
                 {
-                    Error = AccountsErrors.IdAlreadyInUse,
+                    Error = GenericErrors.IdAlreadyInUse,
                 });
             }
 
@@ -140,7 +140,7 @@ namespace BankingAppDataTier.Controllers
             {
                 return BadRequest(new VoidOutput
                 {
-                    Error = AccountsErrors.InvalidAccountId
+                    Error = GenericErrors.InvalidId
                 });
             }
 
@@ -177,7 +177,7 @@ namespace BankingAppDataTier.Controllers
             {
                 return BadRequest(new VoidOutput
                 {
-                    Error = AccountsErrors.InvalidAccountId,
+                    Error = GenericErrors.InvalidId,
                 });
             }
 

@@ -41,6 +41,7 @@ namespace BankingAppDataTier.Providers
                         $"{PlasticsTable.COLUMN_CASHBACK} DECIMAL(5,2)," +
                         $"{PlasticsTable.COLUMN_COMISSION} DECIMAL(5,2)," +
                         $"{PlasticsTable.COLUMN_IMAGE} VARCHAR," +
+                        $"{PlasticsTable.COLUMN_IS_ACTIVE} BOOL NOT NULL," +
                         $"PRIMARY KEY ({PlasticsTable.COLUMN_ID} )" +
                         $") ";
 
@@ -72,10 +73,10 @@ namespace BankingAppDataTier.Providers
                 {
                     command.CommandText = $"INSERT INTO {PlasticsTable.TABLE_NAME} " +
                         $"({PlasticsTable.COLUMN_ID}, {PlasticsTable.COLUMN_TYPE}, {PlasticsTable.COLUMN_NAME}, {PlasticsTable.COLUMN_CASHBACK}, " +
-                        $"{PlasticsTable.COLUMN_COMISSION}, {PlasticsTable.COLUMN_IMAGE}) " +
+                        $"{PlasticsTable.COLUMN_COMISSION}, {PlasticsTable.COLUMN_IMAGE}, {PlasticsTable.COLUMN_IS_ACTIVE}) " +
                         $"VALUES " +
                         $"('{entry.Id}', '{entry.CardType}', '{entry.Name}', '{entry.Cashback.GetValueOrDefault()}', " +
-                        $"'{entry.Commission.GetValueOrDefault()}', '{entry.Image}');";
+                        $"'{entry.Commission.GetValueOrDefault()}', '{entry.Image}', '{entry.IsActive}');";
 
                     command.ExecuteNonQuery();
 
@@ -136,7 +137,8 @@ namespace BankingAppDataTier.Providers
                     $"{PlasticsTable.COLUMN_NAME} = '{entry.Name}', " +
                     $"{PlasticsTable.COLUMN_CASHBACK} = '{entry.Cashback}', " +
                     $"{PlasticsTable.COLUMN_COMISSION} = '{entry.Commission}', " +
-                    $"{PlasticsTable.COLUMN_IMAGE} = '{entry.Image}'" +
+                    $"{PlasticsTable.COLUMN_IMAGE} = '{entry.Image}', " +
+                    $"{PlasticsTable.COLUMN_IS_ACTIVE} = '{entry.IsActive}'" +
                     $"WHERE {PlasticsTable.COLUMN_ID} = '{entry.Id}';";
 
                     command.ExecuteNonQuery();
@@ -221,7 +223,7 @@ namespace BankingAppDataTier.Providers
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
-                List<PlasticTableEntry> result = null;
+                List<PlasticTableEntry> result = new List<PlasticTableEntry>();
 
                 connection.Open();
 

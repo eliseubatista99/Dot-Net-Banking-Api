@@ -1,0 +1,200 @@
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Dtos.Outputs;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.MapperProfiles;
+using Microsoft.AspNetCore.Mvc;
+
+
+namespace BankingAppDataTier.Controllers
+{
+    //[Authorize]
+    [ApiController]
+    [Route("[controller]")]
+    public class PlasticsController : Controller
+    {
+        private readonly ILogger<ClientsController> logger;
+        private readonly IDatabasePlasticsProvider databasePlasticsProvider;
+
+        public PlasticsController(ILogger<ClientsController> _logger, IDatabasePlasticsProvider _dbPlasticsProvider)
+        {
+            logger = _logger;
+            databasePlasticsProvider = _dbPlasticsProvider;
+        }
+
+        [HttpGet("GetPlasticsOfType/{cardType}&{includeInactive}")]
+        public ActionResult<GetPlasticsOfTypeOutput> GetPlasticsOfType(CardType cardType, bool includeInactive = false)
+        {
+            var result = new List<PlasticDto>();
+
+            var plasticsInDb = databasePlasticsProvider.GetPlasticsOfCardType(cardType, includeInactive != true);
+
+            if (plasticsInDb == null || plasticsInDb.Count == 0)
+            {
+                return BadRequest(new GetPlasticsOfTypeOutput()
+                {
+                    Plastics = new List<PlasticDto>(),
+                    Error = PlasticsErrors.InvalidCardType,
+                });
+            }
+
+            result = plasticsInDb.Select(acc => PlasticsMapperProfile.MapTableEntryToDto(acc)).ToList();
+
+            return Ok(new GetPlasticsOfTypeOutput()
+            {
+                Plastics = result,
+            });
+        }
+
+        [HttpGet("GetPlasticById/{id}")]
+        public ActionResult<GetPlasticByIdOutput> GetPlasticById(string id)
+        {
+            var itemInDb = databasePlasticsProvider.GetById(id);
+
+            if (itemInDb == null)
+            {
+                return NotFound(new GetPlasticByIdOutput()
+                {
+                    Plastic = null,
+                    Error = GenericErrors.InvalidId,
+                });
+            }
+
+            return Ok(new GetPlasticByIdOutput()
+            {
+                Plastic = PlasticsMapperProfile.MapTableEntryToDto(itemInDb),
+            });
+        }
+
+        [HttpPost("AddPlastic")]
+        public ActionResult<VoidOutput> AddPlastic([FromBody] AddPlasticInput input)
+        {
+            var plasticInDb = databasePlasticsProvider.GetById(input.Plastic.Id);
+
+            if (plasticInDb != null)
+            {
+                return BadRequest(new VoidOutput()
+                {
+                    Error = GenericErrors.IdAlreadyInUse,
+                });
+            }
+
+            var entry = PlasticsMapperProfile.MapDtoToTableEntry(input.Plastic);
+            entry.IsActive = true;
+
+            var result = databasePlasticsProvider.Add(entry);
+
+            if (!result)
+            {
+                return new InternalServerError(new VoidOutput
+                {
+                    Error = GenericErrors.FailedToPerformDatabaseOperation,
+                });
+            }
+
+            return Ok(new VoidOutput());
+        }
+
+        [HttpPatch("EditPlastic")]
+        public ActionResult<VoidOutput> EditPlastic([FromBody] EditPlasticInput input)
+        {
+            var entryInDb = databasePlasticsProvider.GetById(input.Id);
+
+            if (entryInDb == null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = GenericErrors.InvalidId
+                });
+            }
+
+            entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
+            entryInDb.CardType = input.CardType != null ?
+                EnumsMapperProfile.MapCardTypeToString(input.CardType.GetValueOrDefault()) : entryInDb.CardType;
+            entryInDb.Cashback = input.Cashback != null ? input.Cashback : entryInDb.Cashback;
+            entryInDb.Commission = input.Commission != null ? input.Commission : entryInDb.Commission;
+            entryInDb.Image = input.Image != null ? input.Image : entryInDb.Image;
+
+
+            var result = databasePlasticsProvider.Edit(entryInDb);
+
+            if (!result)
+            {
+                return new InternalServerError(new VoidOutput
+                {
+                    Error = GenericErrors.FailedToPerformDatabaseOperation,
+                });
+            }
+
+            return Ok(new VoidOutput());
+        }
+
+        [HttpPatch("ActivateOrDeactivatePlastic")]
+        public ActionResult<VoidOutput> ActivateOrDeactivatePlastic([FromBody] ActivateOrDeactivatePlasticInput input)
+        {
+            var entryInDb = databasePlasticsProvider.GetById(input.Id);
+
+            if (entryInDb == null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = GenericErrors.InvalidId
+                });
+            }
+
+            if (input.Active == entryInDb.IsActive)
+            {
+                return Ok(new VoidOutput());
+            }
+
+            entryInDb.IsActive = input.Active;
+
+            var result = databasePlasticsProvider.Edit(entryInDb);
+
+            if (!result)
+            {
+                return new InternalServerError(new VoidOutput
+                {
+                    Error = GenericErrors.FailedToPerformDatabaseOperation,
+                });
+            }
+
+            return Ok(new VoidOutput());
+        }
+
+
+        [HttpDelete("DeletePlastic/{id}")]
+        public ActionResult<VoidOutput> DeleteAccount(string id)
+        {
+            var result = false;
+            var entryInDb = databasePlasticsProvider.GetById(id);
+
+            if (entryInDb == null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = GenericErrors.InvalidId,
+                });
+            }
+
+            result = databasePlasticsProvider.Delete(id);
+
+            if (!result)
+            {
+                return new InternalServerError(new VoidOutput
+                {
+                    Error = GenericErrors.FailedToPerformDatabaseOperation,
+                });
+            }
+
+            return Ok(new VoidOutput());
+        }
+
+    }
+}
