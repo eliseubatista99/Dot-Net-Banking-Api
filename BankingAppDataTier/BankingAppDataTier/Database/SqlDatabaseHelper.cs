@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Npgsql;
+﻿using Npgsql;
 
 namespace BankingAppDataTier.Database
 {

@@ -1,14 +1,8 @@
 ﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entities;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;

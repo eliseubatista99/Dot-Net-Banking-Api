@@ -1,7 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
-using Microsoft.Data.SqlClient;
 using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles

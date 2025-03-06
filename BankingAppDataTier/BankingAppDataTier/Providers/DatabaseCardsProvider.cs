@@ -1,14 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Constants;
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
-using Microsoft.Data.SqlClient;
 using Npgsql;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BankingAppDataTier.Providers
 {

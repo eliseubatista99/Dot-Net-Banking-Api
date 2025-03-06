@@ -1,11 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
-using Microsoft.Data.SqlClient;
 using Npgsql;
 
 namespace BankingAppDataTier.Providers

@@ -1,9 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;

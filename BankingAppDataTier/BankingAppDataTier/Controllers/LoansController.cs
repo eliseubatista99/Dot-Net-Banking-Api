@@ -1,14 +1,8 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
+﻿using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
-using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
@@ -51,7 +45,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            result = itemsInDb.Select(i => LoansMapperProfile.MapTableEntryToDto(i)).ToList();
+            result = itemsInDb.Select(i => this.BuildLoanDto(i)).ToList();
 
             return Ok(new GetLoansOfAccountOutput()
             {
@@ -78,7 +72,7 @@ namespace BankingAppDataTier.Controllers
             {
                 var itemsInDb = databaseLoansProvider.GetByAccount(account.AccountId);
 
-                var loansOfAccount = itemsInDb.Select(i => LoansMapperProfile.MapTableEntryToDto(i)).ToList();
+                var loansOfAccount = itemsInDb.Select(i => this.BuildLoanDto(i)).ToList();
 
                 result.AddRange(loansOfAccount);
             }
@@ -105,7 +99,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetLoanByIdOutput()
             {
-                Loan = LoansMapperProfile.MapTableEntryToDto(itemInDb),
+                Loan = this.BuildLoanDto(itemInDb),
             });
         }
 
@@ -239,6 +233,22 @@ namespace BankingAppDataTier.Controllers
             }
 
             return Ok(new VoidOutput());
+        }
+
+        private LoanDto BuildLoanDto(LoanTableEntry entry)
+        {
+            var loan = LoansMapperProfile.MapTableEntryToDto(entry);
+            var offerData = databaseLoanOffersProvider.GetById(loan.RelatedOffer);
+
+            if (offerData == null)
+            {
+                return loan;
+            }
+
+            loan.LoanType = EnumsMapperProfile.MapLoanTypeFromString(offerData.LoanType);
+            loan.Interest = offerData.Interest;
+
+            return loan;
         }
 
     }

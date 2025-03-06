@@ -1,11 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Database;
-using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BankingAppDataTier.Contracts.Database;
 
 namespace BankingAppDataTier.Contracts.Providers
 {
