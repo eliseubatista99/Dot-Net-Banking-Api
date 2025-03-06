@@ -16,7 +16,10 @@ namespace BankingAppDataTier.Database
             InitializeClients();
             InitializeAccounts();
             InitializePlastics();
-            InitalizeCards();
+            InitializeCards();
+            //InitializeTransactions();
+            //InitializeLoanOffers();
+            //InitializeLoans();
         }
 
         private void InitializeClients()
@@ -185,7 +188,7 @@ namespace BankingAppDataTier.Database
             );
         }
 
-        private void InitalizeCards()
+        private void InitializeCards()
         {
             var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseCardsProvider>();
             dbProvider!.CreateTableIfNotExists();
@@ -258,6 +261,134 @@ namespace BankingAppDataTier.Database
                 "ACJW000000"
             );
 
+        }
+
+        private void InitializeTransactions()
+        {
+            var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseTransactionsProvider>();
+            dbProvider!.CreateTableIfNotExists();
+
+            var elementsInDb = dbProvider.GetAll();
+
+            //If the database already has entries, don't add anything
+            if (elementsInDb.Count > 0)
+            {
+                return;
+            }
+
+            dbProvider.Add(
+                new TransactionTableEntry
+                {
+                    Id = "T001",
+                    TransactionDate = new DateTime(2025, 02, 10),
+                    Description = "Test transfer",
+                    Amount = 100.35M,
+                    Fees = 1.25M,
+                    Urgent = true,
+                    SourceAccount = "ACJW000000",
+                    DestinationName = "Eletricity Company",
+                }
+            );
+
+            dbProvider.Add(
+                new TransactionTableEntry
+                {
+                    Id = "T001",
+                    TransactionDate = new DateTime(2025, 02, 10),
+                    Description = "Test transfer from card",
+                    Amount = 100.35M,
+                    Fees = 1.25M,
+                    Urgent = true,
+                    SourceCard = "ACJW000000_DB01",
+                    DestinationName = "Water Company",
+                }
+            );
+
+        }
+
+        private void InitializeLoanOffers()
+        {
+            var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseLoanOfferProvider>();
+            dbProvider!.CreateTableIfNotExists();
+
+            var elementsInDb = dbProvider.GetAll();
+
+            //If the database already has entries, don't add anything
+            if (elementsInDb.Count > 0)
+            {
+                return;
+            }
+
+            dbProvider.Add(
+                new LoanOfferTableEntry
+                {
+                    Id = "LO01",
+                    LoanType = "AU",
+                    MaxEffort = 30,
+                    Fee = 7.0M,
+                    IsActive = true,
+                }
+            );
+
+            dbProvider.Add(
+               new LoanOfferTableEntry
+               {
+                   Id = "LO02",
+                   LoanType = "MO",
+                   MaxEffort = 40,
+                   Fee = 3.0M,
+                   IsActive = true,
+               }
+            );
+
+            dbProvider.Add(
+               new LoanOfferTableEntry
+               {
+                   Id = "LO03",
+                   LoanType = "PE",
+                   MaxEffort = 25,
+                   Fee = 10.0M,
+                   IsActive = true,
+               }
+            );
+
+            dbProvider.Add(
+                new LoanOfferTableEntry
+                {
+                    Id = "LO04",
+                    LoanType = "AU",
+                    MaxEffort = 20,
+                    Fee = 3.0M,
+                    IsActive = false,
+                }
+            );
+
+
+        }
+
+        private void InitializeLoans()
+        {
+            var dbProvider = this.serviceCollection.BuildServiceProvider().GetService<IDatabaseLoansProvider>();
+            dbProvider!.CreateTableIfNotExists();
+
+            var elementsInDb = dbProvider.GetAll();
+
+            //If the database already has entries, don't add anything
+            if (elementsInDb.Count > 0)
+            {
+                return;
+            }
+
+            dbProvider.Add(
+                new LoanTableEntry
+                {
+                    Id = "L01",
+                    StartDate = new DateTime(2025, 02, 03),
+                    RelatedOffer = "LO01",
+                    Duration = 24,
+                    Amount = 10000.0M,
+                }
+            );
         }
 
     }

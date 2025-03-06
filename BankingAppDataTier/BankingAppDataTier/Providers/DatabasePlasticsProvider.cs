@@ -229,7 +229,7 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    var typeAsString = PlasticsMapperProfile.MapCardTypeEnumToStringCardType(type);
+                    var typeAsString = EnumsMapperProfile.MapCardTypeToString(type);
 
                     command.CommandText = $"SELECT * FROM {PlasticsTable.TABLE_NAME} WHERE {PlasticsTable.COLUMN_TYPE} = '{typeAsString}'";
 

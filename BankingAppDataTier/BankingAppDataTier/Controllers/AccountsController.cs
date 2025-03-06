@@ -146,7 +146,7 @@ namespace BankingAppDataTier.Controllers
 
             entryInDb.Balance = input.Balance != null ? input.Balance.GetValueOrDefault() : entryInDb.Balance;
             entryInDb.AccountType = input.AccountType != null ? 
-                AccountsMapperProfile.MaAccountTypeEnumToStringAccountType(input.AccountType.GetValueOrDefault()) : entryInDb.AccountType;
+                EnumsMapperProfile.MapAccountTypeToString(input.AccountType.GetValueOrDefault()) : entryInDb.AccountType;
             entryInDb.Image = input.Image != null ? input.Image : entryInDb.Image;
             entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
             entryInDb.SourceAccountId = input.SourceAccountId != null ? input.SourceAccountId : entryInDb.SourceAccountId;

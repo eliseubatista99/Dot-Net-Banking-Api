@@ -51,7 +51,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new CardsTableEntry
             {
                 Id = dto.Id,
-                CardType = EnumsMapperProfile.MapCardTypeEnumToStringCardType(dto.CardType),
+                CardType = EnumsMapperProfile.MapCardTypeToString(dto.CardType),
                 RelatedAccountID = dto.RelatedAccountID,
                 PlasticId = dto.PlasticId,
                 Balance = dto.Balance,

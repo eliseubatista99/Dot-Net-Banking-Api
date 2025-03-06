@@ -45,7 +45,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new PlasticTableEntry
             {
                 Id = dto.Id,
-                CardType = EnumsMapperProfile.MapCardTypeEnumToStringCardType(dto.CardType),
+                CardType = EnumsMapperProfile.MapCardTypeToString(dto.CardType),
                 Name = dto.Name,
                 Cashback = dto.Cashback,
                 Commission = dto.Commission,
