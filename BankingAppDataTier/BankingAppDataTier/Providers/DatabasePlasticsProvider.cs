@@ -219,7 +219,7 @@ namespace BankingAppDataTier.Providers
             }
         }
 
-        public List<PlasticTableEntry> GetPlasticsOfCardType(CardType type, bool onlyActive = false)
+        public List<PlasticTableEntry> GetPlasticsOfCardType(string cardType, bool onlyActive = false)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
@@ -231,9 +231,7 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    var typeAsString = EnumsMapperProfile.MapCardTypeToString(type);
-
-                    command.CommandText = $"SELECT * FROM {PlasticsTable.TABLE_NAME} WHERE {PlasticsTable.COLUMN_TYPE} = '{typeAsString}'";
+                    command.CommandText = $"SELECT * FROM {PlasticsTable.TABLE_NAME} WHERE {PlasticsTable.COLUMN_TYPE} = '{cardType}'";
 
                     if (onlyActive == true)
                     {

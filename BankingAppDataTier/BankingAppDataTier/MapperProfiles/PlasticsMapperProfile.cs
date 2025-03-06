@@ -38,6 +38,7 @@ namespace BankingAppDataTier.MapperProfiles
                 Cashback = tableEntry.Cashback,
                 Commission = tableEntry.Commission,
                 Image = tableEntry.Image,
+                IsActive = tableEntry.IsActive,
             };
         }
 
@@ -51,7 +52,7 @@ namespace BankingAppDataTier.MapperProfiles
                 Cashback = dto.Cashback,
                 Commission = dto.Commission,
                 Image = dto.Image,
-                IsActive = true,
+                IsActive = dto.IsActive.GetValueOrDefault(),
             };
         }
     }

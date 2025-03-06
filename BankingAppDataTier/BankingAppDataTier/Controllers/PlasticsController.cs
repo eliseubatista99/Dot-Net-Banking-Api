@@ -33,7 +33,9 @@ namespace BankingAppDataTier.Controllers
         {
             var result = new List<PlasticDto>();
 
-            var plasticsInDb = databasePlasticsProvider.GetPlasticsOfCardType(cardType, includeInactive != true);
+            var typeAsString = EnumsMapperProfile.MapCardTypeToString(cardType);
+
+            var plasticsInDb = databasePlasticsProvider.GetPlasticsOfCardType(typeAsString, includeInactive != true);
 
             if (plasticsInDb == null || plasticsInDb.Count == 0)
             {
@@ -85,7 +87,6 @@ namespace BankingAppDataTier.Controllers
             }
 
             var entry = PlasticsMapperProfile.MapDtoToTableEntry(input.Plastic);
-            entry.IsActive = true;
 
             var result = databasePlasticsProvider.Add(entry);
 

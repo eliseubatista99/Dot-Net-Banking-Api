@@ -30,6 +30,7 @@ namespace BankingAppDataTier.MapperProfiles
                 LoanType = EnumsMapperProfile.MapLoanTypeFromString(tableEntry.LoanType),
                 MaxEffort = tableEntry.MaxEffort,
                 Interest = tableEntry.Interest,
+                IsActive = tableEntry.IsActive,
             };
         }
 
@@ -41,7 +42,7 @@ namespace BankingAppDataTier.MapperProfiles
                 LoanType = EnumsMapperProfile.MapLoanTypeToString(dto.LoanType),
                 MaxEffort = dto.MaxEffort,
                 Interest = dto.Interest,
-                IsActive = true
+                IsActive = dto.IsActive.GetValueOrDefault(),
             };
         }
     }
