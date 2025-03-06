@@ -36,7 +36,7 @@ namespace BankingAppDataTier.Providers
                         $"(" +
                         $"{TransactionsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{TransactionsTable.COLUMN_TRANSACTION_DATE} DATE NOT NULL," +
-                        $"{TransactionsTable.COLUMN_DESCRIPTION} VARCHAR(64)" +
+                        $"{TransactionsTable.COLUMN_DESCRIPTION} VARCHAR(64)," +
                         $"{TransactionsTable.COLUMN_SOURCE_ACCOUNT} VARCHAR(64)," +
                         $"{TransactionsTable.COLUMN_DESTINATION_NAME} VARCHAR(64) NOT NULL," +
                         $"{TransactionsTable.COLUMN_DESTINATION_ACCOUNT} VARCHAR(64)," +

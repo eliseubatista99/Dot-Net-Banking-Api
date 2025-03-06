@@ -8,7 +8,7 @@ namespace BankingAppDataTier.Contracts.Constants.Database
 {
     public static class TransactionsTable
     {
-        public static string TABLE_NAME = "´TRANSACTIONS";
+        public static string TABLE_NAME = "TRANSACTIONS";
 
         public static string COLUMN_ID = "ID";
 

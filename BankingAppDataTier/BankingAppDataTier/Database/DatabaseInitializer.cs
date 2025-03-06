@@ -17,9 +17,9 @@ namespace BankingAppDataTier.Database
             InitializeAccounts();
             InitializePlastics();
             InitializeCards();
-            //InitializeTransactions();
-            //InitializeLoanOffers();
-            //InitializeLoans();
+            InitializeTransactions();
+            InitializeLoanOffers();
+            InitializeLoans();
         }
 
         private void InitializeClients()
@@ -293,7 +293,7 @@ namespace BankingAppDataTier.Database
             dbProvider.Add(
                 new TransactionTableEntry
                 {
-                    Id = "T001",
+                    Id = "T002",
                     TransactionDate = new DateTime(2025, 02, 10),
                     Description = "Test transfer from card",
                     Amount = 100.35M,
