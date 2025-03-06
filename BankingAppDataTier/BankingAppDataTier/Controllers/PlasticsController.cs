@@ -21,11 +21,12 @@ namespace BankingAppDataTier.Controllers
     {
         private readonly ILogger<ClientsController> logger;
         private readonly IDatabasePlasticsProvider databasePlasticsProvider;
-
-        public PlasticsController(ILogger<ClientsController> _logger, IDatabasePlasticsProvider _dbPlasticsProvider)
+        private readonly IDatabaseCardsProvider databaseCardsProvider;
+        public PlasticsController(ILogger<ClientsController> _logger, IDatabasePlasticsProvider _dbPlasticsProvider, IDatabaseCardsProvider _dbCardsProvider)
         {
             logger = _logger;
             databasePlasticsProvider = _dbPlasticsProvider;
+            databaseCardsProvider = _dbCardsProvider;
         }
 
         [HttpGet("GetPlasticsOfType/{cardType}&{includeInactive}")]
@@ -115,8 +116,6 @@ namespace BankingAppDataTier.Controllers
             }
 
             entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
-            entryInDb.CardType = input.CardType != null ?
-                EnumsMapperProfile.MapCardTypeToString(input.CardType.GetValueOrDefault()) : entryInDb.CardType;
             entryInDb.Cashback = input.Cashback != null ? input.Cashback : entryInDb.Cashback;
             entryInDb.Commission = input.Commission != null ? input.Commission : entryInDb.Commission;
             entryInDb.Image = input.Image != null ? input.Image : entryInDb.Image;
@@ -180,6 +179,16 @@ namespace BankingAppDataTier.Controllers
                 return BadRequest(new VoidOutput
                 {
                     Error = GenericErrors.InvalidId,
+                });
+            }
+
+            var cardsWithThisPlastic = databaseCardsProvider.GetCardsWithPlastic(id);
+
+            if (cardsWithThisPlastic != null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = PlasticsErrors.CantDeleteWithRelatedCards,
                 });
             }
 

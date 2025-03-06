@@ -16,11 +16,6 @@ namespace BankingAppDataTier.Contracts.Dtos.Inputs.Cards
         public required string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the loan type.
-        /// </summary>
-        public LoanType? LoanType { get; set; }
-
-        /// <summary>
         /// Gets or sets the max effort.
         /// </summary>
         public int? MaxEffort { get; set; }

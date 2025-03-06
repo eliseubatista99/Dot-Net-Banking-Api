@@ -17,6 +17,8 @@ namespace BankingAppDataTier.Contracts.Providers
 
         public List<CardsTableEntry> GetCardsOfAccount(string accountId);
 
+        public List<CardsTableEntry> GetCardsWithPlastic(string plasticId);
+
         public CardsTableEntry? GetById(string id);
 
         public bool Add(CardsTableEntry entry);

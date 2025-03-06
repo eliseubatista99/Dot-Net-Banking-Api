@@ -249,6 +249,41 @@ namespace BankingAppDataTier.Providers
             }
         }
 
+        public List<CardsTableEntry> GetCardsWithPlastic(string plasticId)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            {
+                List<CardsTableEntry> result = new List<CardsTableEntry>();
+
+                connection.Open();
+
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
+
+                try
+                {
+                    var cardIdsOfAccount = new List<string>();
+
+                    command.CommandText = $"SELECT * FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_PLASTIC_ID} = '{plasticId}'";
+
+                    using (var sqlReader = command.ExecuteReader())
+                    {
+                        while (sqlReader!.Read())
+                        {
+                            var dataEntry = CardsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+
+                            result.Add(dataEntry);
+                        }
+                    }
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
         private string BuildAddCommand(CardsTableEntry entry)
         {
             var result = $"INSERT INTO {CardsTable.TABLE_NAME} " +

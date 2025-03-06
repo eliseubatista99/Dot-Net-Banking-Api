@@ -16,16 +16,6 @@ namespace BankingAppDataTier.Contracts.Dtos.Inputs.Cards
         public required string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the related account id.
-        /// </summary>
-        public string? RelatedAccountID { get; set; }
-
-        /// <summary>
-        /// Gets or sets the plastic id.
-        /// </summary>
-        public string? PlasticId { get; set; }
-
-        /// <summary>
         /// Gets or sets the account balance.
         /// </summary>
         public decimal? Balance { get; set; }

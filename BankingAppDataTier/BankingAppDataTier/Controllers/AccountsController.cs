@@ -19,13 +19,17 @@ namespace BankingAppDataTier.Controllers
         private readonly ILogger<ClientsController> logger;
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
+        private readonly IDatabaseCardsProvider databaseCardsProvider;
+        private readonly IDatabaseLoansProvider databaseLoansProvider;
 
         public AccountsController(ILogger<ClientsController> _logger, IDatabaseClientsProvider _dbClientsProvider,
-            IDatabaseAccountsProvider _dbAccountsProvider)
+            IDatabaseAccountsProvider _dbAccountsProvider, IDatabaseCardsProvider _dbCardsProvider, IDatabaseLoansProvider _dbLoansProvider)
         {
             logger = _logger;
             databaseClientsProvider = _dbClientsProvider;
             databaseAccountsProvider = _dbAccountsProvider;
+            databaseCardsProvider = _dbCardsProvider;
+            databaseLoansProvider = _dbLoansProvider;
         }
 
         [HttpGet("GetClientAccounts/{clientId}")]
@@ -144,9 +148,20 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
+            if(input.SourceAccountId != null)
+            {
+                var sourceAccountInDb = databaseAccountsProvider.GetById(input.SourceAccountId);
+
+                if (sourceAccountInDb == null)
+                {
+                    return BadRequest(new VoidOutput
+                    {
+                        Error = AccountsErrors.InvalidSourceAccount,
+                    });
+                }
+            }
+          
             entryInDb.Balance = input.Balance != null ? input.Balance.GetValueOrDefault() : entryInDb.Balance;
-            entryInDb.AccountType = input.AccountType != null ? 
-                EnumsMapperProfile.MapAccountTypeToString(input.AccountType.GetValueOrDefault()) : entryInDb.AccountType;
             entryInDb.Image = input.Image != null ? input.Image : entryInDb.Image;
             entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
             entryInDb.SourceAccountId = input.SourceAccountId != null ? input.SourceAccountId : entryInDb.SourceAccountId;
@@ -178,6 +193,26 @@ namespace BankingAppDataTier.Controllers
                 return BadRequest(new VoidOutput
                 {
                     Error = GenericErrors.InvalidId,
+                });
+            }
+
+            var cardsOfAccount = databaseCardsProvider.GetCardsOfAccount(entryInDb.AccountId);
+
+            if (cardsOfAccount != null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = AccountsErrors.CantCloseWithRelatedCards,
+                });
+            }
+
+            var loansOfAccount = databaseLoansProvider.GetByAccount(entryInDb.AccountId);
+
+            if (loansOfAccount != null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = AccountsErrors.CantCloseWithActiveLoans,
                 });
             }
 

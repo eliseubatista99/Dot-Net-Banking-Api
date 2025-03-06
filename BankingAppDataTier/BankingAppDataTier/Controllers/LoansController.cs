@@ -24,13 +24,16 @@ namespace BankingAppDataTier.Controllers
     {
         private readonly ILogger<ClientsController> logger;
         private readonly IDatabaseLoansProvider databaseLoansProvider;
+        private readonly IDatabaseLoanOfferProvider databaseLoanOffersProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public LoansController(ILogger<ClientsController> _logger, IDatabaseLoansProvider _dbLoansProvider, IDatabaseAccountsProvider _dbAccountsProvider)
+        public LoansController(ILogger<ClientsController> _logger, IDatabaseLoansProvider _dbLoansProvider, 
+            IDatabaseAccountsProvider _dbAccountsProvider, IDatabaseLoanOfferProvider _dbLoanOffersProvider)
         {
             logger = _logger;
             databaseLoansProvider = _dbLoansProvider;
             databaseAccountsProvider = _dbAccountsProvider;
+            databaseLoanOffersProvider = _dbLoanOffersProvider;
         }
 
         [HttpGet("GetLoansOfAccount/{account}")]
@@ -119,6 +122,16 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
+            var relatedOffer = databaseLoanOffersProvider.GetById(input.Loan.RelatedOffer);
+
+            if (relatedOffer == null)
+            {
+                return BadRequest(new VoidOutput()
+                {
+                    Error = LoansErrors.InvalidRelatedOffer,
+                });
+            }
+
             var entry = LoansMapperProfile.MapDtoToTableEntry(input.Loan);
 
             var result = databaseLoansProvider.Add(entry);
@@ -146,6 +159,41 @@ namespace BankingAppDataTier.Controllers
                     Error = GenericErrors.InvalidId
                 });
             }
+
+            if(input.RelatedOffer != null)
+            {
+                var relatedOffer = databaseLoanOffersProvider.GetById(input.RelatedOffer);
+
+                if (relatedOffer == null)
+                {
+                    return BadRequest(new VoidOutput()
+                    {
+                        Error = LoansErrors.InvalidRelatedOffer,
+                    });
+                }
+
+                if (relatedOffer.LoanType != entryInDb.RelatedOffer)
+                {
+                    return BadRequest(new VoidOutput()
+                    {
+                        Error = LoansErrors.CantChangeLoanType,
+                    });
+                }
+            }
+
+            if (input.RelatedAccount != null)
+            {
+                var relatedAccount = databaseAccountsProvider.GetById(input.RelatedAccount);
+
+                if (relatedAccount == null)
+                {
+                    return BadRequest(new VoidOutput()
+                    {
+                        Error = LoansErrors.InvalidRelatedAccount,
+                    });
+                }
+            }
+
 
             entryInDb.StartDate = input.StartDate != null ? input.StartDate.GetValueOrDefault() : entryInDb.StartDate;
             entryInDb.RelatedAccount = input.RelatedAccount != null ? input.RelatedAccount : entryInDb.RelatedAccount;

@@ -23,11 +23,13 @@ namespace BankingAppDataTier.Controllers
     {
         private readonly ILogger<ClientsController> logger;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
+        private readonly IDatabasePlasticsProvider databasePlasticsProvider;
 
-        public CardsController(ILogger<ClientsController> _logger, IDatabaseCardsProvider _dbCardsProvider)
+        public CardsController(ILogger<ClientsController> _logger, IDatabaseCardsProvider _dbCardsProvider, IDatabasePlasticsProvider _dbPlasticsProvider)
         {
             logger = _logger;
             databaseCardsProvider = _dbCardsProvider;
+            databasePlasticsProvider = _dbPlasticsProvider;
         }
 
         [HttpGet("GetCardsOfAccount/{account}")]
@@ -101,6 +103,16 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
+            var relatedPlastic = databasePlasticsProvider.GetById(input.Card.PlasticId);
+
+            if (relatedPlastic == null)
+            {
+                return BadRequest(new VoidOutput()
+                {
+                    Error = CardsErrors.InvalidPlastic,
+                });
+            }
+
             var entry = CardsMapperProfile.MapDtoToTableEntry(input.Card);
 
             var result = databaseCardsProvider.Add(entry);
@@ -129,8 +141,6 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            entryInDb.RelatedAccountID = input.RelatedAccountID != null ? input.RelatedAccountID : entryInDb.RelatedAccountID;
-            entryInDb.PlasticId = input.PlasticId != null ? input.PlasticId : entryInDb.PlasticId;
             entryInDb.Balance = input.Balance != null ? input.Balance : entryInDb.Balance;
             entryInDb.PaymentDay = input.PaymentDay != null ? input.PaymentDay : entryInDb.PaymentDay;
             entryInDb.RequestDate = input.RequestDate != null ? input.RequestDate.GetValueOrDefault() : entryInDb.RequestDate;

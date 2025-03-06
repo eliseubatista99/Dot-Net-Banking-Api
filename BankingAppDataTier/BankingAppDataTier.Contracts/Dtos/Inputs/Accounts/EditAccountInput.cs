@@ -16,11 +16,6 @@ namespace BankingAppDataTier.Contracts.Dtos.Inputs.Accounts
         public required string AccountId { get; set; }
 
         /// <summary>
-        /// Gets or sets the account type.
-        /// </summary>
-        public AccountType? AccountType { get; set; }
-
-        /// <summary>
         /// Gets or sets the balance.
         /// </summary>
         public decimal? Balance { get; set; }

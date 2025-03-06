@@ -18,11 +18,13 @@ namespace BankingAppDataTier.Controllers
     {
         private readonly ILogger<ClientsController> logger;
         private readonly IDatabaseClientsProvider databaseClientsProvider;
+        private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public ClientsController(ILogger<ClientsController> _logger, IDatabaseClientsProvider _dbClientsProvider)
+        public ClientsController(ILogger<ClientsController> _logger, IDatabaseClientsProvider _dbClientsProvider, IDatabaseAccountsProvider _dbAccountsProvider)
         {
             logger = _logger;
             databaseClientsProvider = _dbClientsProvider;
+            databaseAccountsProvider = _dbAccountsProvider;
         }
 
         [HttpGet("GetClients")]
@@ -185,6 +187,16 @@ namespace BankingAppDataTier.Controllers
                 return NotFound(new VoidOutput
                 {
                     Error = GenericErrors.InvalidId,
+                });
+            }
+
+            var accountsOfClient = databaseAccountsProvider.GetAccountsOfClient(entryInDb.Id);
+
+            if (accountsOfClient != null)
+            {
+                return NotFound(new VoidOutput
+                {
+                    Error = ClientsErrors.CantCloseWithActiveAccounts,
                 });
             }
 

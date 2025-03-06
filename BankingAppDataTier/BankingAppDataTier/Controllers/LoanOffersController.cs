@@ -25,12 +25,14 @@ namespace BankingAppDataTier.Controllers
     public class LoanOffersController : Controller
     {
         private readonly ILogger<ClientsController> logger;
+        private readonly IDatabaseLoansProvider databaseLoansProvider;
         private readonly IDatabaseLoanOfferProvider databaseLoanOffersProvider;
 
-        public LoanOffersController(ILogger<ClientsController> _logger, IDatabaseLoanOfferProvider _dbLoanOffersProvider)
+        public LoanOffersController(ILogger<ClientsController> _logger, IDatabaseLoanOfferProvider _dbLoanOffersProvider, IDatabaseLoansProvider _dbLoansProvider)
         {
             logger = _logger;
             databaseLoanOffersProvider = _dbLoanOffersProvider;
+            databaseLoansProvider = _dbLoansProvider;
         }
 
         [HttpGet("GetLoanOfferByType/{loanType}&{includeInactive}")]
@@ -119,7 +121,6 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            entryInDb.LoanType = input.LoanType != null ? EnumsMapperProfile.MapLoanTypeToString(input.LoanType.GetValueOrDefault()) : entryInDb.LoanType;
             entryInDb.MaxEffort = input.MaxEffort != null ? input.MaxEffort.GetValueOrDefault() : entryInDb.MaxEffort;
             entryInDb.Interest = input.Interest != null ? input.Interest.GetValueOrDefault() : entryInDb.Interest;
 
@@ -181,6 +182,16 @@ namespace BankingAppDataTier.Controllers
                 return BadRequest(new VoidOutput
                 {
                     Error = GenericErrors.InvalidId,
+                });
+            }
+
+            var loansWithThisOffer = databaseLoansProvider.GetByOffer(entryInDb.Id);
+
+            if (loansWithThisOffer != null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = LoanOffersErrors.CantDeleteWithRelatedLoans,
                 });
             }
 

@@ -249,5 +249,40 @@ namespace BankingAppDataTier.Providers
                 }
             }
         }
+
+        public List<LoanTableEntry> GetByOffer(string loanOffer)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            {
+                List<LoanTableEntry> result = new List<LoanTableEntry>();
+
+                connection.Open();
+
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
+
+                try
+                {
+                    var cardIdsOfAccount = new List<string>();
+
+                    command.CommandText = $"SELECT * FROM {LoansTable.TABLE_NAME} WHERE {LoansTable.COLUMN_RELATED_OFFER} = '{loanOffer}'";
+
+                    using (var sqlReader = command.ExecuteReader())
+                    {
+                        while (sqlReader!.Read())
+                        {
+                            var dataEntry = LoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+
+                            result.Add(dataEntry);
+                        }
+                    }
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
     }
 }

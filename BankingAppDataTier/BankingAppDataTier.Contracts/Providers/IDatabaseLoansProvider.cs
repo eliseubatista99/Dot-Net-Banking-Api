@@ -19,6 +19,9 @@ namespace BankingAppDataTier.Contracts.Providers
 
         public List<LoanTableEntry> GetByAccount(string relatedAccount);
 
+        public List<LoanTableEntry> GetByOffer(string loanOffer);
+
+
         public bool Add(LoanTableEntry entry);
 
         public bool Edit(LoanTableEntry entry);

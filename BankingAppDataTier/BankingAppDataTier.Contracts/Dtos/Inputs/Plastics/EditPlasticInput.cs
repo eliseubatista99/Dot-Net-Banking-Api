@@ -16,11 +16,6 @@ namespace BankingAppDataTier.Contracts.Dtos.Inputs.Clients
         public required string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the card type.
-        /// </summary>
-        public CardType? CardType { get; set; }
-
-        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         public string? Name { get; set; }
