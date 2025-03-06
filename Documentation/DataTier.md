@@ -18,9 +18,9 @@ A home banking app is designed to be used by bank clients. A user must be identi
     - Password: VARCHAR (64) NOT NULL,
     - Name: VARCHAR(64) NOT NULL,
     - Surname: VARCHAR (64) NOT NULL,
-    - Date of birth: DATE NOT NULL,
-    - VAT:VARCHAR(30) NOT NULL,
-    - Phone Number : VARCHAR(20) NOT NULL,
+    - BirthDate: DATE NOT NULL,
+    - VATNumber: VARCHAR(30) NOT NULL,
+    - PhoneNumber : VARCHAR(20) NOT NULL,
     - Email: VARCHAR (60) NOT NULL,
 
 ### Accounts
@@ -30,15 +30,7 @@ To be a client of a bank, a person must have at least one account. There are mul
 Current Account: Primarily used for daily transactions, ensuring funds are readily available. This account comes with an associated card.
 Savings Account: Designed for saving money. This account does not require a card.
 Investment Account: Similar to a savings account, but its main purpose is to generate interest on deposited funds.
-An account will always be associated with one or more clients (as it can have multiple holders), so we need an intermediary table to establish the relationship between accounts and their holders.
-
-I will call this table ClientAccountBridge, with the following structure:
-
-    - ID: PRIMARY KEY VARCHAR(64) NOT NULL,
-    - ClientID: FOREIGN KEY VARCHAR(64) NOT NULL,
-    - AccountID: FOREIGN KEY VARCHAR(64) NOT NULL,
-
-This way, when we need to retrieve all accounts associated with a specific user, we can query the ClientAccountBridge table using the desired ClientID.
+An account can be associated with one or more clients (as it can have multiple holders), but in this project we will only allow one owner per account.
 
 Typically, an account has two balances: the available balance and the pending balance. Some payments and transfers temporarily block funds until they are processed. While blocked, the money still belongs to the client but cannot be used.
 
@@ -46,21 +38,17 @@ For this application, we will assume that all transfers are immediate, so we wil
 
 Funds placed in an investment account must return to the source account once the investment period ends. The account structure will look something like this:
 
-    - AccountId: VARCHAR (64) NOT NULL,
+    - Id: VARCHAR (64) NOT NULL,
+    - OwnerClientId: FOREIGN KEY VARCHAR(64) NOT NULL,
     - AccoutType: CHAR (2) NOT NULL,
     - Balance: DECIMAL (20,2) NOT NULL,
     - AccountName: VARCHAR(64) NOT NULL,
-    - AccountImage VARCHAR(MAX) NOT NULL,
+    - AccountImage VARCHAR,
     - SourceAccountId: FOREIGN KEY VARCHAR(64),
     - Duration: Integer, //Number of months for an investment account
     - Interest: DECIMAL (3,2)
 
 ### Cards
-
-As mentioned earlier, cards can be associated with current accounts. Therefore, before anything else, we need a bridge table to establish this relationship. This table will be called CardAccountBridge.
-
-    - AccountID: FOREIGN KEY VARCHAR(100)
-    - CardId: FOREIGN KEY VARCHAR(100)
 
 A card can come in several types:
 
@@ -72,12 +60,13 @@ Banks often offer premium cards, which come with benefits like cashbacks or disc
 
 The structure for the Card table will be as follows:
 
-    - CardId: PRIMARY KEY VARCHAR(100)
-    - CardType: CHAR(2)
-    - Plastic: FOREIGN KEY VARCHAR (100) // Plastic is explained in the next section
-    - Balance: DECIMAL (20,2) //Only applies to credit and prepaid cards
-    - PaymentDate: DATE //Only applies to credit
-    - RequestDate: DATE
+    - CardId: PRIMARY KEY VARCHAR(64)  NOT NULL,
+    - RelatedAccountId: FOREIGN KEY VARCHAR (64)
+    - CardType: CHAR(2)  NOT NULL,
+    - Plastic: FOREIGN KEY VARCHAR (64) NOT NULL,// Plastic is explained in the next section
+    - Balance: DECIMAL (20,2)  NOT NULL,//Only applies to credit and prepaid cards
+    - PaymentDay: INT //Only applies to credit
+    - RequestDate: DATE NOT NULL,
     - ActivationDate: DATE
     - ExpirationDate: DATE
 
@@ -98,10 +87,13 @@ Card: The client's card, which can be debit, credit, or prepaid. It has its own 
 Plastic: A type of card offered by the bank, which could be basic or premium and might include benefits like cashback.
 The structure for the Plastic table will be as follows:
 
-    - PlasticID. PRIMARY KEY VARCHAR(100)
-    - CardType: CHAR(2)
-    - Cashback: DECIMAL (3,2)
-    - Commission: DECIMAL (3,2)
+    - PlasticID. PRIMARY KEY VARCHAR(64) NOT NULL,
+    - CardType: CHAR(2) NOT NULL,
+    - Name: VARCHAR(64) NOT NULL,
+    - Cashback: DECIMAL (5,2)
+    - Commission: DECIMAL (5,2)
+    - IMAGE: VARCHAR,
+    - IsActive: BOOL NOT NULL,
 
 ### Transactions
 
@@ -111,16 +103,16 @@ It's common for fees to be applied in certain cases, such as urgent transfers or
 
 The Transaction table will include the following fields:
 
-    - TransactionID: VARCHAR(100)
-    - Date: DATE
-    - Description: VARCHAR(100)
-    - SourceAccount: FOREIGN KEY VARCHAR(100)
-    - DestinationName: VARCHAR(100)
-    - DestinationAccount: FOREIGN KEY VARCHAR(100)
-    - SourceCard: FOREIGN KEY VARCHAR(100) //In case the transaction was made with a card
-    - Amount: DECIMAL (20,2)
-    - Fees: DECIMAL (10, 2)
-    - Urgent: BOOL
+    - TransactionID: VARCHAR(64) NOT NULL,
+    - Date: DATE NOT NULL,
+    - Description: VARCHAR(64),
+    - SourceAccount: VARCHAR(64) //In case the transaction was made from an account
+    - DestinationName: VARCHAR(64) NOT NULL,
+    - DestinationAccount: VARCHAR(64),
+    - SourceCard: VARCHAR(64), //In case the transaction was made with a card
+    - Amount: DECIMAL (20,2) NOT NULL,
+    - Fees: DECIMAL (10, 2) NOT NULL,
+    - Urgent: BOOL NOT NULL,
 
 ### Loan Offers
 
@@ -137,17 +129,18 @@ While loans have their own specific characteristics, we will focus only on the a
 
 These common elements will be stored in the Loan table.
 
-    - LoanOfferId: PRIMARY KEY VARCHAR(100)
-    - LoanType: CHAR(2) //Auto, Housing, personal
-    - MaxEffort: INTEGER(3) // From 0 to 100
-    - Fee: DECIMAL (3,2)
+    - LoanOfferId: PRIMARY KEY VARCHAR(64) NOT NULL,
+    - LoanType: CHAR(2)  NOT NULL, //Auto, Housing, personal
+    - MaxEffort: INTEGER NOT NULL, // From 0 to 100
+    - Interest: DECIMAL (5,2)
+    - IsActive: BOOL NOT NULL,
 
 ### Loan
 
 After the client selects a loan offer, a loan entry will be created in the Loan table. The structure for this table will include the following fields:
 
-    - LoanId: PRIMARY KEY VARCHAR(100)
-    - LoanOfferId: FOREIGN KEY VARCHAR(100)
-    - LoanDuration: INTEGER(4) // Duration in months
-    - Amount: DECIMAL (20,2)
-    - FinalAmount DECIMAL (20,2) // How much the client will pay in the end
+    - LoanId: PRIMARY KEY VARCHAR(64) NOT NULL,
+    - StartDate: DATE NOT NULL,
+    - RelatedOffer: FOREIGN KEY VARCHAR(64) NOT NULL,
+    - LoanDuration: INTEGER NOT NULL, // Duration in months
+    - Amount: DECIMAL (20,2) NOT NULL,

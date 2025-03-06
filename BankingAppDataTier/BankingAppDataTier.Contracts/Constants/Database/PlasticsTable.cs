@@ -21,5 +21,8 @@ namespace BankingAppDataTier.Contracts.Constants.Database
         public static string COLUMN_COMISSION = "COMISSION";
 
         public static string COLUMN_IMAGE = "IMAGE";
+
+        public static string COLUMN_IS_ACTIVE = "IS_ACTIVE";
+
     }
 }

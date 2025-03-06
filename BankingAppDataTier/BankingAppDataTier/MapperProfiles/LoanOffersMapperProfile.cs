@@ -17,7 +17,7 @@ namespace BankingAppDataTier.MapperProfiles
                 Id = sqlReader[LoanOffersTable.COLUMN_ID].ToString()!,
                 LoanType = sqlReader[LoanOffersTable.COLUMN_TYPE].ToString()!,
                 MaxEffort = Convert.ToInt16(sqlReader[LoanOffersTable.COLUMN_MAX_EFFORT].ToString())!,
-                Fee = Convert.ToDecimal(sqlReader[LoanOffersTable.COLUMN_FEE].ToString())!,
+                Interest = Convert.ToDecimal(sqlReader[LoanOffersTable.COLUMN_INTEREST].ToString())!,
                 IsActive = Convert.ToBoolean(sqlReader[LoanOffersTable.COLUMN_IS_ACTIVE].ToString())!,
             };
         }
@@ -29,7 +29,7 @@ namespace BankingAppDataTier.MapperProfiles
                 Id = tableEntry.Id,
                 LoanType = EnumsMapperProfile.MapLoanTypeFromString(tableEntry.LoanType),
                 MaxEffort = tableEntry.MaxEffort,
-                Fee = tableEntry.Fee,
+                Interest = tableEntry.Interest,
             };
         }
 
@@ -40,7 +40,7 @@ namespace BankingAppDataTier.MapperProfiles
                 Id = dto.Id,
                 LoanType = EnumsMapperProfile.MapLoanTypeToString(dto.LoanType),
                 MaxEffort = dto.MaxEffort,
-                Fee = dto.Fee,
+                Interest = dto.Interest,
                 IsActive = true
             };
         }

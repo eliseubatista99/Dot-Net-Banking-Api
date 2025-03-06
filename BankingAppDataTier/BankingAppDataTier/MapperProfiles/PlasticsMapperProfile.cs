@@ -24,6 +24,7 @@ namespace BankingAppDataTier.MapperProfiles
                 Image = image,
                 Cashback = cashback is System.DBNull ? null : Convert.ToDecimal(cashback),
                 Commission = commission is System.DBNull ? null : Convert.ToDecimal(commission),
+                IsActive = Convert.ToBoolean(sqlReader[PlasticsTable.COLUMN_IS_ACTIVE].ToString())!,
             };
         }
 
@@ -36,7 +37,7 @@ namespace BankingAppDataTier.MapperProfiles
                 Name = tableEntry.Name,
                 Cashback = tableEntry.Cashback,
                 Commission = tableEntry.Commission,
-                Image = tableEntry.Image
+                Image = tableEntry.Image,
             };
         }
 
@@ -49,7 +50,8 @@ namespace BankingAppDataTier.MapperProfiles
                 Name = dto.Name,
                 Cashback = dto.Cashback,
                 Commission = dto.Commission,
-                Image = dto.Image
+                Image = dto.Image,
+                IsActive = true,
             };
         }
     }

@@ -133,6 +133,19 @@ namespace BankingAppDataTier.Database
                     Id = "DB_Basic",
                     CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
                     Name = "DotNet Basic",
+                    IsActive = true,
+                }
+            );
+
+            dbProvider.Add(
+                new PlasticTableEntry
+                {
+                    Id = "DB_Founder",
+                    CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
+                    Name = "DotNet Founder",
+                    Cashback = 10,
+                    Commission = 5,
+                    IsActive = false,
                 }
             );
 
@@ -144,6 +157,7 @@ namespace BankingAppDataTier.Database
                     Name = "DotNet Gold",
                     Cashback = 3,
                     Commission = 10,
+                    IsActive = true,
                 }
             );
 
@@ -154,6 +168,7 @@ namespace BankingAppDataTier.Database
                     CardType = BankingAppDataTierConstants.CARD_TYPE_CREDIT,
                     Name = "DotNet Classic",
                     Commission = 4,
+                    IsActive = true,
                 }
             );
 
@@ -165,6 +180,7 @@ namespace BankingAppDataTier.Database
                     Name = "DotNet Prestige",
                     Cashback = 3,
                     Commission = 12,
+                    IsActive = true,
                 }
             );
 
@@ -175,6 +191,7 @@ namespace BankingAppDataTier.Database
                     CardType = BankingAppDataTierConstants.CARD_TYPE_PRE_PAID,
                     Name = "DotNet Agile",
                     Commission = 1,
+                    IsActive = true,
                 }
             );
 
@@ -184,6 +201,7 @@ namespace BankingAppDataTier.Database
                     Id = "ME_TableSlide",
                     CardType = BankingAppDataTierConstants.CARD_TYPE_MEAL,
                     Name = "DotNet TableSlide",
+                    IsActive = true,
                 }
             );
         }
@@ -325,7 +343,7 @@ namespace BankingAppDataTier.Database
                     Id = "LO01",
                     LoanType = "AU",
                     MaxEffort = 30,
-                    Fee = 7.0M,
+                    Interest = 7.0M,
                     IsActive = true,
                 }
             );
@@ -336,7 +354,7 @@ namespace BankingAppDataTier.Database
                    Id = "LO02",
                    LoanType = "MO",
                    MaxEffort = 40,
-                   Fee = 3.0M,
+                   Interest = 3.0M,
                    IsActive = true,
                }
             );
@@ -347,7 +365,7 @@ namespace BankingAppDataTier.Database
                    Id = "LO03",
                    LoanType = "PE",
                    MaxEffort = 25,
-                   Fee = 10.0M,
+                   Interest = 10.0M,
                    IsActive = true,
                }
             );
@@ -358,7 +376,7 @@ namespace BankingAppDataTier.Database
                     Id = "LO04",
                     LoanType = "AU",
                     MaxEffort = 20,
-                    Fee = 3.0M,
+                    Interest = 3.0M,
                     IsActive = false,
                 }
             );

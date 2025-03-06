@@ -42,7 +42,7 @@ namespace BankingAppDataTier.Providers
                         $"{TransactionsTable.COLUMN_DESTINATION_ACCOUNT} VARCHAR(64)," +
                         $"{TransactionsTable.COLUMN_SOURCE_CARD} VARCHAR(64)," +
                         $"{TransactionsTable.COLUMN_AMOUNT} DECIMAL(20,2) NOT NULL," +
-                        $"{TransactionsTable.COLUMN_FEES} DECIMAL(5,2)," +
+                        $"{TransactionsTable.COLUMN_FEES} DECIMAL(10,2)," +
                         $"{TransactionsTable.COLUMN_URGENT} BOOL NOT NULL," +
                         $"PRIMARY KEY ({TransactionsTable.COLUMN_ID} )" +
                         $") ";

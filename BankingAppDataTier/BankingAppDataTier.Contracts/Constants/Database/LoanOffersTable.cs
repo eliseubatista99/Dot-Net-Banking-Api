@@ -16,7 +16,7 @@ namespace BankingAppDataTier.Contracts.Constants.Database
 
         public static string COLUMN_MAX_EFFORT = "MAX_EFFORT";
 
-        public static string COLUMN_FEE = "FEE";
+        public static string COLUMN_INTEREST = "INTEREST";
 
         public static string COLUMN_IS_ACTIVE = "IS_ACTIVE";
 

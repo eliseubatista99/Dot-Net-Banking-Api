@@ -38,7 +38,7 @@ namespace BankingAppDataTier.Providers
                         $"{LoanOffersTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{LoanOffersTable.COLUMN_TYPE} CHAR(2) NOT NULL," +
                         $"{LoanOffersTable.COLUMN_MAX_EFFORT} INTEGER NOT NULL," +
-                        $"{LoanOffersTable.COLUMN_FEE} DECIMAL(5,2) NOT NULL," +
+                        $"{LoanOffersTable.COLUMN_INTEREST} DECIMAL(5,2) NOT NULL," +
                         $"{LoanOffersTable.COLUMN_IS_ACTIVE} BOOL NOT NULL," +
                         $"PRIMARY KEY ({LoanOffersTable.COLUMN_ID} )" +
                         $")";
@@ -69,9 +69,9 @@ namespace BankingAppDataTier.Providers
                 try
                 {
                     command.CommandText = $"INSERT INTO {LoanOffersTable.TABLE_NAME} " +
-                        $"({LoanOffersTable.COLUMN_ID}, {LoanOffersTable.COLUMN_TYPE}, {LoanOffersTable.COLUMN_MAX_EFFORT}, {LoanOffersTable.COLUMN_FEE}, {LoanOffersTable.COLUMN_IS_ACTIVE}) " +
+                        $"({LoanOffersTable.COLUMN_ID}, {LoanOffersTable.COLUMN_TYPE}, {LoanOffersTable.COLUMN_MAX_EFFORT}, {LoanOffersTable.COLUMN_INTEREST}, {LoanOffersTable.COLUMN_IS_ACTIVE}) " +
                         $"VALUES " +
-                        $"('{entry.Id}', '{entry.LoanType}', '{entry.MaxEffort}', '{entry.Fee}', '{entry.IsActive}');";
+                        $"('{entry.Id}', '{entry.LoanType}', '{entry.MaxEffort}', '{entry.Interest}', '{entry.IsActive}');";
 
                     command.ExecuteNonQuery();
 
@@ -128,7 +128,7 @@ namespace BankingAppDataTier.Providers
                     command.CommandText = $"UPDATE {LoanOffersTable.TABLE_NAME} " +
                     $"SET {LoanOffersTable.COLUMN_TYPE} = '{entry.LoanType}', " +
                     $"{LoanOffersTable.COLUMN_MAX_EFFORT} = '{entry.MaxEffort}', " +
-                    $"{LoanOffersTable.COLUMN_FEE} = '{entry.Fee}', " +
+                    $"{LoanOffersTable.COLUMN_INTEREST} = '{entry.Interest}', " +
                     $"{LoanOffersTable.COLUMN_IS_ACTIVE} = '{entry.IsActive}' " +
                     $"WHERE {LoanOffersTable.COLUMN_ID} = '{entry.Id}';";
 

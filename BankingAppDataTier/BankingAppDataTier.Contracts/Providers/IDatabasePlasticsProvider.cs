@@ -17,7 +17,7 @@ namespace BankingAppDataTier.Contracts.Providers
 
         public PlasticTableEntry? GetById(string id);
 
-        public List<PlasticTableEntry> GetPlasticsOfCardType(CardType type);
+        public List<PlasticTableEntry> GetPlasticsOfCardType(CardType type, bool onlyActive = false);
 
         public bool Add(PlasticTableEntry entry);
 

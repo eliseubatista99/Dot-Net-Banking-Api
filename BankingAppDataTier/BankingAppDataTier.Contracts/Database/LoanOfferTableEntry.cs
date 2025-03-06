@@ -24,9 +24,9 @@ namespace BankingAppDataTier.Contracts.Database
         public required int MaxEffort { get; set; }
 
         /// <summary>
-        /// Gets or sets the fee.
+        /// Gets or sets the Interest.
         /// </summary>
-        public required decimal Fee { get; set; }
+        public required decimal Interest { get; set; }
 
         /// <summary>
         /// Gets or sets the is active flag.
