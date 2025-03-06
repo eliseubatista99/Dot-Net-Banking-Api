@@ -14,14 +14,14 @@ namespace BankingAppDataTier.Contracts.Database
         public required string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the card type.
-        /// </summary>
-        public required string CardType { get; set; }
-
-        /// <summary>
         /// Gets or sets the related account id.
         /// </summary>
         public required string RelatedAccountID { get; set; }
+
+        /// <summary>
+        /// Gets or sets the card name.
+        /// </summary>
+        public required string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the plastic id.

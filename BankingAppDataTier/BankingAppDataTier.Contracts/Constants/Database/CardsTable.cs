@@ -12,9 +12,9 @@ namespace BankingAppDataTier.Contracts.Constants.Database
 
         public static string COLUMN_ID = "ID";
 
-        public static string COLUMN_RELATED_ACCOUNT_ID = "RELATED_ACCOUNT_ID";
+        public static string COLUMN_NAME = "NAME";
 
-        public static string COLUMN_TYPE = "CARD_TYPE";
+        public static string COLUMN_RELATED_ACCOUNT_ID = "RELATED_ACCOUNT_ID";
 
         public static string COLUMN_PLASTIC_ID = "PLASTIC_ID";
 

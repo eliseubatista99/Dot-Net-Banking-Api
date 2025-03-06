@@ -37,7 +37,7 @@ namespace BankingAppDataTier.Contracts.Dtos.Entitites
         /// <summary>
         /// Gets or sets the image in base64.
         /// </summary>
-        public string? Image { get; set; }
+        public required string Image { get; set; }
 
         /// <summary>
         /// Gets or sets the is active flag.

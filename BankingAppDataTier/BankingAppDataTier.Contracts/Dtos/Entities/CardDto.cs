@@ -20,6 +20,16 @@ namespace BankingAppDataTier.Contracts.Dtos.Entitites
         public required CardType CardType { get; set; }
 
         /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        public required string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image in base64.
+        /// </summary>
+        public required string Image { get; set; }
+
+        /// <summary>
         /// Gets or sets the related account id.
         /// </summary>
         public required string RelatedAccountID { get; set; }

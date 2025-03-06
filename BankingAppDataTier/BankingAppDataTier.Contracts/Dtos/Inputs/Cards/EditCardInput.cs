@@ -16,6 +16,11 @@ namespace BankingAppDataTier.Contracts.Dtos.Inputs.Cards
         public required string Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Gets or sets the account balance.
         /// </summary>
         public decimal? Balance { get; set; }

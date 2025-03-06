@@ -1,4 +1,6 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+﻿using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entities;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
@@ -47,7 +49,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            result = cardsInDb.Select(acc => CardsMapperProfile.MapTableEntryToDto(acc)).ToList();
+            result = cardsInDb.Select(acc => this.BuildCardDto(acc)).ToList();
 
             return Ok(new GetCardsOfAccountOutput()
             {
@@ -71,7 +73,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetCardByIdOutput()
             {
-                Card = CardsMapperProfile.MapTableEntryToDto(itemInDb),
+                Card = this.BuildCardDto(itemInDb),
             });
         }
 
@@ -141,6 +143,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
+            entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
             entryInDb.Balance = input.Balance != null ? input.Balance : entryInDb.Balance;
             entryInDb.PaymentDay = input.PaymentDay != null ? input.PaymentDay : entryInDb.PaymentDay;
             entryInDb.RequestDate = input.RequestDate != null ? input.RequestDate.GetValueOrDefault() : entryInDb.RequestDate;
@@ -187,5 +190,20 @@ namespace BankingAppDataTier.Controllers
             return Ok(new VoidOutput());
         }
 
+        private CardDto BuildCardDto(CardsTableEntry entry)
+        {
+            var card = CardsMapperProfile.MapTableEntryToDto(entry);
+            var plasticData = databasePlasticsProvider.GetById(card.PlasticId);
+
+            if (plasticData == null)
+            {
+                return card;
+            }
+
+            card.CardType = EnumsMapperProfile.MapCardTypeFromString(plasticData.CardType);
+            card.Image = plasticData.Image;
+
+            return card;
+        }
     }
 }

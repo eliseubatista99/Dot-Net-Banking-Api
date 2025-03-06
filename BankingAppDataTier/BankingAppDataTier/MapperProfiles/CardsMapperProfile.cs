@@ -19,8 +19,8 @@ namespace BankingAppDataTier.MapperProfiles
             return new CardsTableEntry
             {
                 Id = sqlReader[CardsTable.COLUMN_ID].ToString()!,
-                CardType = sqlReader[CardsTable.COLUMN_TYPE].ToString()!,
                 RelatedAccountID = sqlReader[CardsTable.COLUMN_RELATED_ACCOUNT_ID].ToString()!,
+                Name = sqlReader[CardsTable.COLUMN_NAME].ToString()!,
                 PlasticId = sqlReader[CardsTable.COLUMN_PLASTIC_ID].ToString()!,
                 RequestDate = Convert.ToDateTime(sqlReader[CardsTable.COLUMN_REQUEST_DATE].ToString())!,
                 ActivationDate = activationDate is System.DBNull ? null : Convert.ToDateTime(activationDate),
@@ -35,7 +35,8 @@ namespace BankingAppDataTier.MapperProfiles
             return new CardDto
             {
                 Id = tableEntry.Id,
-                CardType = EnumsMapperProfile.MapCardTypeFromString(tableEntry.CardType),
+                Name = tableEntry.Name,
+                CardType = CardType.None,
                 RelatedAccountID = tableEntry.RelatedAccountID,
                 PlasticId = tableEntry.PlasticId,
                 Balance = tableEntry.Balance,
@@ -43,6 +44,7 @@ namespace BankingAppDataTier.MapperProfiles
                 ActivationDate = tableEntry.ActivationDate,
                 ExpirationDate = tableEntry.ExpirationDate,
                 PaymentDay = tableEntry.PaymentDay,
+                Image = string.Empty,
             };
         }
 
@@ -51,7 +53,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new CardsTableEntry
             {
                 Id = dto.Id,
-                CardType = EnumsMapperProfile.MapCardTypeToString(dto.CardType),
+                Name = dto.Name,
                 RelatedAccountID = dto.RelatedAccountID,
                 PlasticId = dto.PlasticId,
                 Balance = dto.Balance,

@@ -134,6 +134,7 @@ namespace BankingAppDataTier.Database
                     CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
                     Name = "DotNet Basic",
                     IsActive = true,
+                    Image = string.Empty,
                 }
             );
 
@@ -146,6 +147,7 @@ namespace BankingAppDataTier.Database
                     Cashback = 10,
                     Commission = 5,
                     IsActive = false,
+                    Image = string.Empty,
                 }
             );
 
@@ -158,6 +160,7 @@ namespace BankingAppDataTier.Database
                     Cashback = 3,
                     Commission = 10,
                     IsActive = true,
+                    Image = string.Empty,
                 }
             );
 
@@ -169,6 +172,7 @@ namespace BankingAppDataTier.Database
                     Name = "DotNet Classic",
                     Commission = 4,
                     IsActive = true,
+                    Image = string.Empty,
                 }
             );
 
@@ -181,6 +185,7 @@ namespace BankingAppDataTier.Database
                     Cashback = 3,
                     Commission = 12,
                     IsActive = true,
+                    Image = string.Empty,
                 }
             );
 
@@ -192,6 +197,7 @@ namespace BankingAppDataTier.Database
                     Name = "DotNet Agile",
                     Commission = 1,
                     IsActive = true,
+                    Image = string.Empty,
                 }
             );
 
@@ -202,6 +208,7 @@ namespace BankingAppDataTier.Database
                     CardType = BankingAppDataTierConstants.CARD_TYPE_MEAL,
                     Name = "DotNet TableSlide",
                     IsActive = true,
+                    Image = string.Empty,
                 }
             );
         }
@@ -223,7 +230,7 @@ namespace BankingAppDataTier.Database
                 new CardsTableEntry
                 {
                     Id = "ACJW000000_DB01",
-                    CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
+                    Name = "DB_Basic",
                     RelatedAccountID = "ACJW000000",
                     PlasticId = "DB_Basic",
                     RequestDate = new DateTime(2025, 01,01),
@@ -236,7 +243,7 @@ namespace BankingAppDataTier.Database
                 new CardsTableEntry
                 {
                     Id = "ACJW000000_PP01",
-                    CardType = BankingAppDataTierConstants.CARD_TYPE_PRE_PAID,
+                    Name = "PP_Agile",
                     RelatedAccountID = "ACJW000000",
                     PlasticId = "PP_Agile",
                     Balance = 100,
@@ -250,7 +257,7 @@ namespace BankingAppDataTier.Database
                 new CardsTableEntry
                 {
                     Id = "ACJW000000_CR01",
-                    CardType = BankingAppDataTierConstants.CARD_TYPE_CREDIT,
+                    Name = "CR_Prestige",
                     RelatedAccountID = "ACJW000000",
                     PlasticId = "CR_Prestige",
                     Balance = 100,
@@ -265,7 +272,7 @@ namespace BankingAppDataTier.Database
                 new CardsTableEntry
                 {
                     Id = "ACJW000000_ME01",
-                    CardType = BankingAppDataTierConstants.CARD_TYPE_MEAL,
+                    Name = "ME_TableSlide",
                     RelatedAccountID = "ACJW000000",
                     PlasticId = "ME_TableSlide",
                     Balance = 100,

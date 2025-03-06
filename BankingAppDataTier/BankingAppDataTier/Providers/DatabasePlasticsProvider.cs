@@ -40,7 +40,7 @@ namespace BankingAppDataTier.Providers
                         $"{PlasticsTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
                         $"{PlasticsTable.COLUMN_CASHBACK} DECIMAL(5,2)," +
                         $"{PlasticsTable.COLUMN_COMISSION} DECIMAL(5,2)," +
-                        $"{PlasticsTable.COLUMN_IMAGE} VARCHAR," +
+                        $"{PlasticsTable.COLUMN_IMAGE} VARCHAR NOT NULL," +
                         $"{PlasticsTable.COLUMN_IS_ACTIVE} BOOL NOT NULL," +
                         $"PRIMARY KEY ({PlasticsTable.COLUMN_ID} )" +
                         $") ";
