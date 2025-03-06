@@ -29,6 +29,22 @@ namespace BankingAppDataTier.Contracts.Dtos.Entitites
         public required string PlasticId { get; set; }
 
         /// <summary>
+        /// Gets or sets the request date.
+        /// </summary>
+        public required DateTime RequestDate { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets the expiration date.
+        /// </summary>
+        public required DateTime ExpirationDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the activation date.
+        /// </summary>
+        public DateTime? ActivationDate { get; set; }
+
+        /// <summary>
         /// Gets or sets the account balance.
         /// </summary>
         public decimal? Balance { get; set; }
@@ -37,21 +53,5 @@ namespace BankingAppDataTier.Contracts.Dtos.Entitites
         /// Gets or sets the payment day.
         /// </summary>
         public int? PaymentDay { get; set; }
-
-        /// <summary>
-        /// Gets or sets the request date.
-        /// </summary>
-        public required DateTime RequestDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the activation date.
-        /// </summary>
-        public DateTime? ActivationDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the expiration date.
-        /// </summary>
-        public required DateTime ExpirationDate { get; set; }
-
     }
 }

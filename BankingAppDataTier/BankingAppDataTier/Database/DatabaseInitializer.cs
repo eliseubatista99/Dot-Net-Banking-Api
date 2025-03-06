@@ -229,8 +229,7 @@ namespace BankingAppDataTier.Database
                     RequestDate = new DateTime(2025, 01,01),
                     ActivationDate = new DateTime(2025, 01,15),
                     ExpirationDate = new DateTime(2028, 01,15),
-                },
-                "ACJW000000"
+                }
             );
 
             dbProvider.Add(
@@ -244,8 +243,7 @@ namespace BankingAppDataTier.Database
                     RequestDate = new DateTime(2025, 01, 01),
                     ActivationDate = new DateTime(2025, 01, 15),
                     ExpirationDate = new DateTime(2028, 01, 15),
-                },
-                "ACJW000000"
+                }
             );
 
             dbProvider.Add(
@@ -260,8 +258,7 @@ namespace BankingAppDataTier.Database
                     RequestDate = new DateTime(2025, 01, 01),
                     ActivationDate = new DateTime(2025, 01, 15),
                     ExpirationDate = new DateTime(2028, 01, 15),
-                },
-                "ACJW000000"
+                }
             );
 
             dbProvider.Add(
@@ -275,8 +272,7 @@ namespace BankingAppDataTier.Database
                     RequestDate = new DateTime(2025, 01, 01),
                     ActivationDate = new DateTime(2025, 01, 15),
                     ExpirationDate = new DateTime(2028, 01, 15),
-                },
-                "ACJW000000"
+                }
             );
 
         }

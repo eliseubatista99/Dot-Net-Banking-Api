@@ -69,7 +69,7 @@ namespace BankingAppDataTier.Providers
         }
 
 
-        public bool Add(CardsTableEntry entry, string accountId)
+        public bool Add(CardsTableEntry entry)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
@@ -183,7 +183,7 @@ namespace BankingAppDataTier.Providers
             }
         }
 
-        public CardsTableEntry? GetCardById(string id)
+        public CardsTableEntry? GetById(string id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {

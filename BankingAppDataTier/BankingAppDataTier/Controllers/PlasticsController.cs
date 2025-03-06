@@ -37,10 +37,9 @@ namespace BankingAppDataTier.Controllers
 
             if (plasticsInDb == null || plasticsInDb.Count == 0)
             {
-                return BadRequest(new GetPlasticsOfTypeOutput()
+                return Ok(new GetPlasticsOfTypeOutput()
                 {
                     Plastics = new List<PlasticDto>(),
-                    Error = PlasticsErrors.InvalidCardType,
                 });
             }
 
@@ -170,7 +169,7 @@ namespace BankingAppDataTier.Controllers
 
 
         [HttpDelete("DeletePlastic/{id}")]
-        public ActionResult<VoidOutput> DeleteAccount(string id)
+        public ActionResult<VoidOutput> DeletePlastic(string id)
         {
             var result = false;
             var entryInDb = databasePlasticsProvider.GetById(id);
