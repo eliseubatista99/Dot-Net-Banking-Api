@@ -23,5 +23,7 @@ namespace BankingAppDataTier.Contracts.Providers
         public bool Edit(TransactionTableEntry entry);
 
         public bool Delete(string id);
+
+        public bool DeleteAll();
     }
 }

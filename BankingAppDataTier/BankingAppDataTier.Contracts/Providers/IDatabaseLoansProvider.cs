@@ -20,5 +20,7 @@ namespace BankingAppDataTier.Contracts.Providers
         public bool Edit(LoanTableEntry entry);
 
         public bool Delete(string id);
+
+        public bool DeleteAll();
     }
 }

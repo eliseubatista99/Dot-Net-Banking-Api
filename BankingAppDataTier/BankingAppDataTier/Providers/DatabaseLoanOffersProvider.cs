@@ -248,5 +248,32 @@ namespace BankingAppDataTier.Providers
                 }
             }
         }
+
+        public bool DeleteAll()
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
+
+                try
+                {
+                    command.CommandText = $"DROP TABLE [ IF EXISTS ] {LoanOffersTable.TABLE_NAME}";
+
+                    command.ExecuteNonQuery();
+
+                    // Attempt to commit the transaction.
+                    transaction.Commit();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
     }
 }

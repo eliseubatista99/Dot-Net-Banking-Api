@@ -30,7 +30,7 @@ namespace BankingAppDataTier.Controllers
         [HttpGet("GetClients")]
         public ActionResult<GetClientsOutput> GetClients()
         {
-            Request.Headers.TryGetValue("", out StringValues headerValue);
+            //Request.Headers.TryGetValue("", out StringValues headerValue);
             List<ClientDto> result = new List<ClientDto>();
 
             var itemsInDb = databaseClientsProvider.GetAll();

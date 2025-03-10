@@ -17,5 +17,7 @@ namespace BankingAppDataTier.Contracts.Providers
         public bool ChangePassword(string id, string password);
 
         public bool Delete(string id);
+
+        public bool DeleteAll();
     }
 }

@@ -1,6 +1,7 @@
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.Providers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BankingAppDataTier
 {
@@ -20,6 +21,17 @@ namespace BankingAppDataTier
             var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
 
             return (authProvider, builder.Services);
+        }
+
+        static void InitializeDatabase(IServiceCollection serviceCollection)
+        {
+            ClientsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseClientsProvider>()!);
+            AccountsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseAccountsProvider>()!);
+            PlasticsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabasePlasticsProvider>()!);
+            CardsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseCardsProvider>()!);
+            TransactionsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseTransactionsProvider>()!);
+            LoanOffersDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseLoanOfferProvider>()!);
+            LoansDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseLoansProvider>()!);
         }
 
         static void Main(string[] args)
@@ -42,7 +54,7 @@ namespace BankingAppDataTier
             // Add the process of verifying what access they have
             builder.Services.AddAuthorization();
 
-            var databaseInitializer = new DatabaseInitializer(serviceCollection);
+            InitializeDatabase(builder.Services);
 
             // Add services to the container.
 
