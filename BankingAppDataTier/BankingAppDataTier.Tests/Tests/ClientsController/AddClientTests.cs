@@ -15,16 +15,9 @@ public class AddClientTests
 {
     private Controllers.ClientsController _clientsController;
 
-    private IDatabaseClientsProvider databaseClientsProvider;
-    private IDatabaseAccountsProvider databaseAccountsProvider;
-
     private void Setup()
     {
-        var logger = LoggerMock<Controllers.ClientsController>.Mock();
-        databaseClientsProvider = DatabaseClientsProviderMock.Mock();
-        databaseAccountsProvider = DatabaseAccountsProviderMock.Mock();
-
-        _clientsController = new Controllers.ClientsController(logger, databaseClientsProvider, databaseAccountsProvider);
+        _clientsController = ClientsControllerMock.Mock();
     }
 
     [Fact]

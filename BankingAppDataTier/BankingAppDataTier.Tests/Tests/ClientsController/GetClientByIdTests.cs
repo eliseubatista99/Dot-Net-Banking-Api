@@ -11,17 +11,11 @@ namespace BankingAppDataTier.Tests.ClientsController;
 
 public class GetClientByIdTests
 {
-    private Controllers.ClientsController _clientsController { get; set; }
-    private IDatabaseClientsProvider databaseClientsProvider;
-    private IDatabaseAccountsProvider databaseAccountsProvider;
+    private Controllers.ClientsController _clientsController;
 
     private void Setup()
     {
-        var logger = LoggerMock<Controllers.ClientsController>.Mock();
-        databaseClientsProvider = DatabaseClientsProviderMock.Mock();
-        databaseAccountsProvider = DatabaseAccountsProviderMock.Mock();
-
-        _clientsController = new Controllers.ClientsController(logger, databaseClientsProvider, databaseAccountsProvider);
+        _clientsController = ClientsControllerMock.Mock();
     }
 
     [Theory]
