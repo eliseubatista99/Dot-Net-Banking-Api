@@ -192,7 +192,7 @@ namespace BankingAppDataTier.Controllers
 
             var accountsOfClient = databaseAccountsProvider.GetAccountsOfClient(entryInDb.Id);
 
-            if (accountsOfClient != null)
+            if (accountsOfClient != null && accountsOfClient.Count > 0)
             {
                 return NotFound(new VoidOutput
                 {

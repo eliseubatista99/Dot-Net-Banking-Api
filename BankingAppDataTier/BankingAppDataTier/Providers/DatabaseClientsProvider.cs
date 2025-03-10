@@ -255,7 +255,7 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    command.CommandText = $"DROP TABLE [ IF EXISTS ] {ClientsTable.TABLE_NAME}";
+                    command.CommandText = $"DELETE FROM {ClientsTable.TABLE_NAME} WHERE 1=1";
 
                     command.ExecuteNonQuery();
 

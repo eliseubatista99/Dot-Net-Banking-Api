@@ -289,7 +289,7 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    command.CommandText = $"DROP TABLE [ IF EXISTS ] {CardsTable.TABLE_NAME}";
+                    command.CommandText = $"DELETE FROM {CardsTable.TABLE_NAME} WHERE 1=1";
 
                     command.ExecuteNonQuery();
 
