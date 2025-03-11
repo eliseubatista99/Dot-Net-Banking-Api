@@ -5,14 +5,9 @@ namespace BankingAppDataTier.Database
 {
     public static class LoanOffersDatabaseMock
     {
-        public static void DefaultMock(IDatabaseLoanOfferProvider dbProvider, bool clearDatabase = false)
+        public static void DefaultMock(IDatabaseLoanOfferProvider dbProvider, bool includeTestEntries = false)
         {
             dbProvider.CreateTableIfNotExists();
-
-            if (clearDatabase == true)
-            {
-                dbProvider.DeleteAll();
-            }
 
             var elementsInDb = dbProvider.GetAll();
 

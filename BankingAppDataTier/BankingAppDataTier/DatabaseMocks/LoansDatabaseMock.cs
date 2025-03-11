@@ -5,14 +5,9 @@ namespace BankingAppDataTier.Database
 {
     public static class LoansDatabaseMock
     {
-        public static void DefaultMock(IDatabaseLoansProvider dbProvider, bool clearDatabase = false)
+        public static void DefaultMock(IDatabaseLoansProvider dbProvider, bool includeTestEntries = false)
         {
             dbProvider.CreateTableIfNotExists();
-
-            if (clearDatabase == true)
-            {
-                dbProvider.DeleteAll();
-            }
 
             var elementsInDb = dbProvider.GetAll();
 
@@ -34,6 +29,21 @@ namespace BankingAppDataTier.Database
                     Amount = 10000.0M,
                 }
             );
+
+                if (includeTestEntries)
+                {
+                    dbProvider.Add(
+                    new LoanTableEntry
+                    {
+                        Id = "L02",
+                        RelatedAccount = "ACJW000003",
+                        StartDate = new DateTime(2025, 02, 03),
+                        RelatedOffer = "LO01",
+                        Duration = 24,
+                        Amount = 10000.0M,
+                    }
+                );
+            }      
         }
 
         public static void CustomMock(IDatabaseLoansProvider dbProvider, List<LoanTableEntry> mock)

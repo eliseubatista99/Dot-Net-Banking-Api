@@ -1,4 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+﻿using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
@@ -148,26 +149,29 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            if(input.SourceAccountId != null)
+            if(entryInDb.AccountType == BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS)
             {
-                var sourceAccountInDb = databaseAccountsProvider.GetById(input.SourceAccountId);
-
-                if (sourceAccountInDb == null)
+                if (input.SourceAccountId != null)
                 {
-                    return BadRequest(new VoidOutput
+                    var sourceAccountInDb = databaseAccountsProvider.GetById(input.SourceAccountId);
+
+                    if (sourceAccountInDb == null)
                     {
-                        Error = AccountsErrors.InvalidSourceAccount,
-                    });
+                        return BadRequest(new VoidOutput
+                        {
+                            Error = AccountsErrors.InvalidSourceAccount,
+                        });
+                    }
                 }
+
+                entryInDb.SourceAccountId = input.SourceAccountId != null ? input.SourceAccountId : entryInDb.SourceAccountId;
+                entryInDb.Duration = input.Duration != null ? input.Duration : entryInDb.Duration;
+                entryInDb.Interest = input.Interest != null ? input.Interest : entryInDb.Interest;
             }
-          
+
             entryInDb.Balance = input.Balance != null ? input.Balance.GetValueOrDefault() : entryInDb.Balance;
             entryInDb.Image = input.Image != null ? input.Image : entryInDb.Image;
             entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
-            entryInDb.SourceAccountId = input.SourceAccountId != null ? input.SourceAccountId : entryInDb.SourceAccountId;
-            entryInDb.Duration = input.Duration != null ? input.Duration : entryInDb.Duration;
-            entryInDb.Interest = input.Interest != null ? input.Interest : entryInDb.Interest;
-
 
             var result = databaseAccountsProvider.Edit(entryInDb);
 
@@ -198,7 +202,7 @@ namespace BankingAppDataTier.Controllers
 
             var cardsOfAccount = databaseCardsProvider.GetCardsOfAccount(entryInDb.AccountId);
 
-            if (cardsOfAccount != null)
+            if (cardsOfAccount != null && cardsOfAccount.Count > 0)
             {
                 return BadRequest(new VoidOutput
                 {
@@ -208,7 +212,7 @@ namespace BankingAppDataTier.Controllers
 
             var loansOfAccount = databaseLoansProvider.GetByAccount(entryInDb.AccountId);
 
-            if (loansOfAccount != null)
+            if (loansOfAccount != null && loansOfAccount.Count > 0)
             {
                 return BadRequest(new VoidOutput
                 {

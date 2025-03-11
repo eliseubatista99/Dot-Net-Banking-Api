@@ -5,14 +5,9 @@ namespace BankingAppDataTier.Database
 {
     public static class TransactionsDatabaseMock
     {
-        public static void DefaultMock(IDatabaseTransactionsProvider dbProvider, bool clearDatabase = false)
+        public static void DefaultMock(IDatabaseTransactionsProvider dbProvider, bool includeTestEntries = false)
         {
             dbProvider.CreateTableIfNotExists();
-
-            if (clearDatabase == true)
-            {
-                dbProvider.DeleteAll();
-            }
 
             var elementsInDb = dbProvider.GetAll();
 

@@ -5,17 +5,11 @@ namespace BankingAppDataTier.Database
 {
     public static class ClientsDatabaseMock
     {
-        public static void DefaultMock(IDatabaseClientsProvider dbProvider, bool clearDatabase = false)
+        public static void DefaultMock(IDatabaseClientsProvider dbProvider, bool includeTestEntries = false)
         {
             dbProvider.CreateTableIfNotExists();
 
-            if (clearDatabase == true)
-            {
-                dbProvider.DeleteAll();
-            }
-
             var elementsInDb = dbProvider.GetAll();
-
 
             //If the database already has entries, don't add anything
             if (elementsInDb.Count > 0)
@@ -51,19 +45,22 @@ namespace BankingAppDataTier.Database
                 }
             );
 
-            dbProvider.Add(
-                new ClientsTableEntry
-                {
-                    Id = "DE0000000",
-                    Password = "password",
-                    Name = "Derp",
-                    Surname = "Derpington",
-                    BirthDate = new DateTime(1995, 06, 21),
-                    VATNumber = "111222333",
-                    PhoneNumber = "911111112",
-                    Email = "derp@dotnetbanking.com"
-                }
-            );
+            if (includeTestEntries)
+            {
+                dbProvider.Add(
+                    new ClientsTableEntry
+                    {
+                        Id = "DE0000000",
+                        Password = "password",
+                        Name = "Derp",
+                        Surname = "Derpington",
+                        BirthDate = new DateTime(1995, 06, 21),
+                        VATNumber = "111222333",
+                        PhoneNumber = "911111112",
+                        Email = "derp@dotnetbanking.com"
+                    }
+                );
+            }
         }
 
         public static void CustomMock(IDatabaseClientsProvider dbProvider, List<ClientsTableEntry> mock)
