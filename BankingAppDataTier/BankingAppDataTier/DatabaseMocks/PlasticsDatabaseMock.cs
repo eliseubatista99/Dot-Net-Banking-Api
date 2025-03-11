@@ -8,12 +8,12 @@ namespace BankingAppDataTier.Database
     {
         public static void DefaultMock(IDatabasePlasticsProvider dbProvider, bool clearDatabase = false)
         {
+            dbProvider.CreateTableIfNotExists();
+
             if (clearDatabase == true)
             {
                 dbProvider.DeleteAll();
             }
-
-            dbProvider!.CreateTableIfNotExists();
 
             var elementsInDb = dbProvider.GetAll();
 

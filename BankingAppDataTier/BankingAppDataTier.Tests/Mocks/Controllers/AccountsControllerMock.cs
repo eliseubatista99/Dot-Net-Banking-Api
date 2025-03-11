@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Tests.Mocks
 {
-    public static class AccountsControllerMock
+    public class AccountsControllerMock
     {
         private static BankingAppDataTier.Controllers.AccountsController _controller;
 

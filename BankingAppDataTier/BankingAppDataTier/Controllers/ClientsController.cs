@@ -6,7 +6,6 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 
 
 namespace BankingAppDataTier.Controllers

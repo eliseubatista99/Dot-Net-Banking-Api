@@ -1,5 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Database;
+﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 
 namespace BankingAppDataTier.Database
@@ -8,15 +7,14 @@ namespace BankingAppDataTier.Database
     {
         public static void DefaultMock(IDatabaseTransactionsProvider dbProvider, bool clearDatabase = false)
         {
+            dbProvider.CreateTableIfNotExists();
+
             if (clearDatabase == true)
             {
                 dbProvider.DeleteAll();
             }
 
-            dbProvider!.CreateTableIfNotExists();
-
             var elementsInDb = dbProvider.GetAll();
-
 
             //If the database already has entries, don't add anything
             if (elementsInDb.Count > 0)

@@ -1,21 +1,19 @@
 ﻿
 using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
-using Controllers = BankingAppDataTier.Controllers;
+using BankingAppDataTier.Controllers;
 
-namespace BankingAppDataTier.Tests.ClientsController;
-
+namespace BankingAppDataTier.Tests;
 public class GetClientByIdTests
 {
-    private Controllers.ClientsController _clientsController;
+    private ClientsController _clientsController;
 
     private void Setup()
     {
-        _clientsController = ClientsControllerMock.Mock();
+        TestMocksBuilder.Mock();
+        _clientsController = TestMocksBuilder._ClientsControllerMock;
     }
 
     [Theory]

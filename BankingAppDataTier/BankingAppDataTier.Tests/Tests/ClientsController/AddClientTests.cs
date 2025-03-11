@@ -1,23 +1,21 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
+using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
-using Controllers = BankingAppDataTier.Controllers;
 
-namespace BankingAppDataTier.Tests.ClientsController;
+namespace BankingAppDataTier.Tests;
 
 public class AddClientTests
 {
-    private Controllers.ClientsController _clientsController;
+    private ClientsController _clientsController;
 
     private void Setup()
     {
-        _clientsController = ClientsControllerMock.Mock();
+        TestMocksBuilder.Mock();
+        _clientsController = TestMocksBuilder._ClientsControllerMock;
     }
 
     [Fact]

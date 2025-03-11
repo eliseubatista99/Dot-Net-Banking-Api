@@ -1,7 +1,6 @@
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.Providers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BankingAppDataTier
 {

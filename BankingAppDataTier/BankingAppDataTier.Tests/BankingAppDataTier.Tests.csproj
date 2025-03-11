@@ -23,14 +23,4 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tests\AccountsController\" />
-    <Folder Include="Tests\AuthenticationController\" />
-    <Folder Include="Tests\CardsController\" />
-    <Folder Include="Tests\LoanOffersController\" />
-    <Folder Include="Tests\LoansController\" />
-    <Folder Include="Tests\TransactionsController\" />
-    <Folder Include="Tests\PlasticsController\" />
-  </ItemGroup>
-
 </Project>
