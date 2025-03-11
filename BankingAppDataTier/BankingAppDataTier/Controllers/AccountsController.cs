@@ -112,7 +112,7 @@ namespace BankingAppDataTier.Controllers
 
             var accountInDb = databaseAccountsProvider.GetById(input.Account.Id);
 
-            if (accountInDb == null)
+            if (accountInDb != null)
             {
                 return BadRequest(new VoidOutput()
                 {

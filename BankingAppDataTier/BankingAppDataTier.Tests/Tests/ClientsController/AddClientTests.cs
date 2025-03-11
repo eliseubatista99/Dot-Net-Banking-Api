@@ -6,7 +6,7 @@ using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BankingAppDataTier.Tests;
+namespace BankingAppDataTier.Tests.Clients;
 
 public class AddClientTests
 {

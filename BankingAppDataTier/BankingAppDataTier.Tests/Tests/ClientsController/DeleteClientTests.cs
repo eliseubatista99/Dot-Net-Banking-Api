@@ -5,7 +5,7 @@ using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 using BankingAppDataTier.Controllers;
 
-namespace BankingAppDataTier.Tests;
+namespace BankingAppDataTier.Tests.Clients;
 
 public class DeleteClientTests
 {
@@ -23,17 +23,17 @@ public class DeleteClientTests
         const string newName = "New Name";
         Setup();
 
-        var result = (ObjectResult)_clientsController.GetClientById("JS0000000").Result!;
+        var result = (ObjectResult)_clientsController.GetClientById("DE0000000").Result!;
         var response = (GetClientByIdOutput)result.Value!;
 
         Assert.True(response.Client != null);
 
-        result = (ObjectResult)_clientsController.DeleteClient("JS0000000").Result!;
+        result = (ObjectResult)_clientsController.DeleteClient("DE0000000").Result!;
         var response2 = (VoidOutput)result.Value!;
 
         Assert.True(response2.Error == null);
 
-        result = (ObjectResult)_clientsController.GetClientById("JS0000000").Result!;
+        result = (ObjectResult)_clientsController.GetClientById("DE0000000").Result!;
         response = (GetClientByIdOutput)result.Value!;
 
         Assert.True(response.Client == null);

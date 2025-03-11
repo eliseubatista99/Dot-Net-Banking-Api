@@ -10,6 +10,6 @@ namespace BankingAppDataTier.Contracts.Errors
 
         public static BankingAppDataTierError InvalidId = new BankingAppDataTierError { Code = "InvalidId", Message = "No Item Found For The Specified Id" };
 
-        public static BankingAppDataTierError IdAlreadyInUse = new BankingAppDataTierError { Code = "IdAlreadyInUse", Message = "No item found for the specified id" };
+        public static BankingAppDataTierError IdAlreadyInUse = new BankingAppDataTierError { Code = "IdAlreadyInUse", Message = "Id is already being used" };
     }
 }

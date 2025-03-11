@@ -50,6 +50,20 @@ namespace BankingAppDataTier.Database
                     Email = "jacl.sparrow@dotnetbanking.com"
                 }
             );
+
+            dbProvider.Add(
+                new ClientsTableEntry
+                {
+                    Id = "DE0000000",
+                    Password = "password",
+                    Name = "Derp",
+                    Surname = "Derpington",
+                    BirthDate = new DateTime(1995, 06, 21),
+                    VATNumber = "111222333",
+                    PhoneNumber = "911111112",
+                    Email = "derp@dotnetbanking.com"
+                }
+            );
         }
 
         public static void CustomMock(IDatabaseClientsProvider dbProvider, List<ClientsTableEntry> mock)

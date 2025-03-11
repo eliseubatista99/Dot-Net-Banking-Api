@@ -5,7 +5,7 @@ using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 using BankingAppDataTier.Controllers;
 
-namespace BankingAppDataTier.Tests;
+namespace BankingAppDataTier.Tests.Clients;
 
 public class HasValidPasswordTests
 {

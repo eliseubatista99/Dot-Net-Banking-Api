@@ -6,7 +6,7 @@ using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 using BankingAppDataTier.Controllers;
 
-namespace BankingAppDataTier.Tests;
+namespace BankingAppDataTier.Tests.Clients;
 
 public class ChangePasswordTests
 {
@@ -26,7 +26,7 @@ public class ChangePasswordTests
 
         var result = (ObjectResult)_clientsController.ChangePassword(new ChangeClientPasswordInput
         {
-            Id = "JW0000000",
+            Id = "JS0000000",
             PassWord = newPassword,
         }).Result!;
 
@@ -34,7 +34,7 @@ public class ChangePasswordTests
 
         result = (ObjectResult)_clientsController.HasValidPassword(new HasValidPasswordInput
         {
-            Id = "JW0000000",
+            Id = "JS0000000",
             PassWord = newPassword,
         }).Result!;
         var response2 = (HasValidPasswordOutput)result.Value!;

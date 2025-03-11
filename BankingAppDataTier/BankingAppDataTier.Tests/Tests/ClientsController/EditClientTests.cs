@@ -6,7 +6,7 @@ using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 using BankingAppDataTier.Controllers;
 
-namespace BankingAppDataTier.Tests;
+namespace BankingAppDataTier.Tests.Clients;
 
 public class EditClientTests
 {
@@ -26,13 +26,13 @@ public class EditClientTests
 
         var result = (ObjectResult)_clientsController.EditClient(new EditClientInput
         {
-            Id = "JW0000000",
+            Id = "JS0000000",
             Name = newName,
         }).Result!;
 
         var response = (VoidOutput)result.Value!;
 
-        result = (ObjectResult)_clientsController.GetClientById("JW0000000").Result!;
+        result = (ObjectResult)_clientsController.GetClientById("JS0000000").Result!;
         var response2 = (GetClientByIdOutput)result.Value!;
 
 
