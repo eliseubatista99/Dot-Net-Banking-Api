@@ -1,8 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
@@ -33,7 +31,7 @@ public class AddCardTests
                 Id = "TestCard01",
                 Name = "DB_Basic",
                 RelatedAccountID = "Permanent_Current_01",
-                PlasticId = "DB_Basic",
+                PlasticId = "Permanent_Debit_01",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
                 ExpirationDate = new DateTime(2028, 01, 15),
@@ -65,7 +63,7 @@ public class AddCardTests
                 Id = "TestCard02",
                 Name = "CR_Prestige",
                 RelatedAccountID = "Permanent_Current_01",
-                PlasticId = "CR_Prestige",
+                PlasticId = "Permanent_Credit_01",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
                 ExpirationDate = new DateTime(2028, 01, 15),
@@ -99,7 +97,7 @@ public class AddCardTests
                 Id = "TestCard03",
                 Name = "PP_Agile",
                 RelatedAccountID = "Permanent_Current_01",
-                PlasticId = "PP_Agile",
+                PlasticId = "Permanent_PrePaid_01",
                 Balance = 100,
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),

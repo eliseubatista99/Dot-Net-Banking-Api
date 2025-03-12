@@ -1,8 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+﻿using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;

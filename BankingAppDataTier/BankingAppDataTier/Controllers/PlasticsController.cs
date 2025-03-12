@@ -181,7 +181,7 @@ namespace BankingAppDataTier.Controllers
 
             var cardsWithThisPlastic = databaseCardsProvider.GetCardsWithPlastic(id);
 
-            if (cardsWithThisPlastic != null)
+            if (cardsWithThisPlastic != null && cardsWithThisPlastic.Count > 0)
             {
                 return BadRequest(new VoidOutput
                 {

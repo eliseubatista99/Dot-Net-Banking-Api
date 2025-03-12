@@ -1,6 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Controllers;
-using BankingAppDataTier.DatabaseInitializers;
 using BankingAppDataTier.Tests.Mocks.Database;
 
 namespace BankingAppDataTier.Tests.Mocks

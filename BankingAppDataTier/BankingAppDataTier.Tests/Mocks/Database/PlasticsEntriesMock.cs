@@ -10,7 +10,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
         [
             new PlasticTableEntry
             {
-                Id = "DB_Basic",
+                Id = "Permanent_Debit_01",
                 CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
                 Name = "DotNet Basic",
                 IsActive = true,
@@ -18,7 +18,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             }, 
             new PlasticTableEntry
             {
-                Id = "DB_Founder",
+                Id = "Permanent_Debit_02",
                 CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
                 Name = "DotNet Founder",
                 Cashback = 10,
@@ -28,7 +28,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new PlasticTableEntry
             {
-                Id = "DB_Gold",
+                Id = "Permanent_Debit_03",
                 CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
                 Name = "DotNet Gold",
                 Cashback = 3,
@@ -38,7 +38,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new PlasticTableEntry
             {
-                Id = "CR_Classic",
+                Id = "Permanent_Credit_01",
                 CardType = BankingAppDataTierConstants.CARD_TYPE_CREDIT,
                 Name = "DotNet Classic",
                 Commission = 4,
@@ -47,7 +47,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new PlasticTableEntry
             {
-                Id = "CR_Prestige",
+                Id = "Permanent_Credit_02",
                 CardType = BankingAppDataTierConstants.CARD_TYPE_CREDIT,
                 Name = "DotNet Prestige",
                 Cashback = 3,
@@ -57,7 +57,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new PlasticTableEntry
             {
-                Id = "PP_Agile",
+                Id = "Permanent_PrePaid_01",
                 CardType = BankingAppDataTierConstants.CARD_TYPE_PRE_PAID,
                 Name = "DotNet Agile",
                 Commission = 1,
@@ -66,9 +66,25 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new PlasticTableEntry
             {
-                Id = "ME_TableSlide",
+                Id = "Permanent_Meal_01",
                 CardType = BankingAppDataTierConstants.CARD_TYPE_MEAL,
                 Name = "DotNet TableSlide",
+                IsActive = true,
+                Image = string.Empty,
+            },
+            new PlasticTableEntry
+            {
+                Id = "To_Edit_Debit_01",
+                CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
+                Name = "DotNet Basic",
+                IsActive = true,
+                Image = string.Empty,
+            },
+            new PlasticTableEntry
+            {
+                Id = "To_Delete_Debit_01",
+                CardType = BankingAppDataTierConstants.CARD_TYPE_DEBIT,
+                Name = "DotNet Basic",
                 IsActive = true,
                 Image = string.Empty,
             }
