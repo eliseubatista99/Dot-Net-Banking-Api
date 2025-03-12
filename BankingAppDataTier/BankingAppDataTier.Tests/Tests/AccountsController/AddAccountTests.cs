@@ -29,7 +29,7 @@ public class AddAccountTests
             Account = new AccountDto
             {
                 Id = "TEST0001",
-                OwnerCliendId = "JW0000000",
+                OwnerCliendId = "Permanent_Client_01",
                 AccountType = Contracts.Enums.AccountType.Current,
                 Balance = 1000,
                 Name = "Test Current Account",
@@ -58,7 +58,7 @@ public class AddAccountTests
             Account = new AccountDto
             {
                 Id = "TEST0002",
-                OwnerCliendId = "JW0000000",
+                OwnerCliendId = "Permanent_Client_01",
                 AccountType = Contracts.Enums.AccountType.Savings,
                 Balance = 1000,
                 Name = "Test Savings Account",
@@ -87,7 +87,7 @@ public class AddAccountTests
             Account = new AccountDto
             {
                 Id = "TEST0003",
-                OwnerCliendId = "JW0000000",
+                OwnerCliendId = "Permanent_Client_01",
                 AccountType = Contracts.Enums.AccountType.Investments,
                 Balance = 1000,
                 Name = "Test Investments Account",
@@ -123,7 +123,7 @@ public class AddAccountTests
             Account = new AccountDto
             {
                 Id = $"TEST{sourceAccountId}_{duration}_{interest}",
-                OwnerCliendId = "JW0000000",
+                OwnerCliendId = "Permanent_Client_01",
                 AccountType = Contracts.Enums.AccountType.Investments,
                 Balance = 1000,
                 Name = "Test Investments Account",
@@ -137,5 +137,28 @@ public class AddAccountTests
         var response = (VoidOutput)result.Value!;
 
         Assert.True(response.Error?.Code == AccountsErrors.MissingInvestementsAccountDetails.Code);
+    }
+
+    [Fact]
+    public void ShouldReturnError_IdAlreadyInUse()
+    {
+        Setup();
+
+        var result = (ObjectResult)_accountsController.AddAccount(new AddAccountInput
+        {
+            Account = new AccountDto
+            {
+                Id = "Permanent_Current_01",
+                OwnerCliendId = "Permanent_Client_01",
+                AccountType = Contracts.Enums.AccountType.Current,
+                Balance = 1000,
+                Name = "Test Current Account",
+                Image = "image",
+            },
+        }).Result!;
+
+        var response = (VoidOutput)result.Value!;
+
+        Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
     }
 }

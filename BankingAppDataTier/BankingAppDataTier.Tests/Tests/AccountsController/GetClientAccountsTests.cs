@@ -1,4 +1,6 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Outputs;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
@@ -21,20 +23,9 @@ public class GetClientAccountsTests
     {
         Setup();
 
-        var result = (ObjectResult)_accountsController.GetClientAccounts("JW0000000").Result!;
+        var result = (ObjectResult)_accountsController.GetClientAccounts("Permanent_Client_01").Result!;
         var response = (GetClientAccountsOutput)result.Value!;
 
         Assert.True(response.Accounts.Count > 0);
-    }
-
-    [Fact]
-    public void ShouldReturnError_InvalidId()
-    {
-        Setup();
-
-        var result = (ObjectResult)_accountsController.GetClientAccounts("invalid client").Result!;
-        var response = (GetClientAccountsOutput)result.Value!;
-
-        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }
 }

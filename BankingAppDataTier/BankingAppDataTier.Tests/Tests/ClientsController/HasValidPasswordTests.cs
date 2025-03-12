@@ -24,7 +24,7 @@ public class HasValidPasswordTests
 
         var result = (ObjectResult)_clientsController.HasValidPassword(new HasValidPasswordInput
         {
-            Id = "JW0000000",
+            Id = "Permanent_Client_01",
             PassWord = "password",
         }).Result!;
 
@@ -40,7 +40,7 @@ public class HasValidPasswordTests
 
         var result = (ObjectResult)_clientsController.HasValidPassword(new HasValidPasswordInput
         {
-            Id = "JW0000000",
+            Id = "Permanent_Client_01",
             PassWord = "wrong password",
         }).Result!;
 

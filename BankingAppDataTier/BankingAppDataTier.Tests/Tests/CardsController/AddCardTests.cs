@@ -32,7 +32,7 @@ public class AddCardTests
             {
                 Id = "TestCard01",
                 Name = "DB_Basic",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "DB_Basic",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
@@ -64,7 +64,7 @@ public class AddCardTests
             {
                 Id = "TestCard02",
                 Name = "CR_Prestige",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "CR_Prestige",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
@@ -98,7 +98,7 @@ public class AddCardTests
             {
                 Id = "TestCard03",
                 Name = "PP_Agile",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "PP_Agile",
                 Balance = 100,
                 RequestDate = new DateTime(2025, 01, 01),
@@ -129,9 +129,9 @@ public class AddCardTests
         {
             Card = new CardDto
             {
-                Id = "ACJW000000_DB01",
+                Id = "Permanent_Debit_01",
                 Name = "DB_Basic",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "DB_Basic",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
@@ -159,7 +159,7 @@ public class AddCardTests
             {
                 Id = "TestCard05",
                 Name = "CR_Prestige",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "CR_Prestige",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
@@ -187,7 +187,7 @@ public class AddCardTests
             {
                 Id = "TestCard06",
                 Name = "PP_Agile",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "PP_Agile",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
@@ -213,7 +213,7 @@ public class AddCardTests
             {
                 Id = "TestCard07",
                 Name = "DB_Basic",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "invalid plastic",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),

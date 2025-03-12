@@ -53,7 +53,7 @@ public class AddClientTests
         {
             Client = new ClientDto
             {
-                Id = "JW0000000",
+                Id = "Permanent_Client_01",
                 Name = "John",
                 Surname = "Wick",
                 BirthDate = new DateTime(1990, 02, 13),

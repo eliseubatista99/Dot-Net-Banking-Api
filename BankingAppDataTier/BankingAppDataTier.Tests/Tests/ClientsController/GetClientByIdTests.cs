@@ -17,8 +17,8 @@ public class GetClientByIdTests
     }
 
     [Theory]
-    [InlineData("JW0000000")]
-    [InlineData("JS0000000")]
+    [InlineData("Permanent_Client_01")]
+    [InlineData("Permanent_Client_02")]
     public void ShouldBe_Success(string id)
     {
         Setup();

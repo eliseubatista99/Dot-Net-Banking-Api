@@ -10,7 +10,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             new LoanTableEntry
             {
                 Id = "L01",
-                RelatedAccount = "ACJW000000",
+                RelatedAccount = "Permanent_Current_01",
                 StartDate = new DateTime(2025, 02, 03),
                 RelatedOffer = "LO01",
                 Duration = 24,
@@ -19,7 +19,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             new LoanTableEntry
             {
                 Id = "L02",
-                RelatedAccount = "ACJW000003",
+                RelatedAccount = "Permanent_Current_02",
                 StartDate = new DateTime(2025, 02, 03),
                 RelatedOffer = "LO01",
                 Duration = 24,

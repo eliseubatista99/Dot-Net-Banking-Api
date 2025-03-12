@@ -9,7 +9,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
         [
                 new ClientsTableEntry
                 {
-                    Id = "JW0000000",
+                    Id = "Permanent_Client_01",
                     Password = "password",
                     Name = "John",
                     Surname = "Wick",
@@ -20,7 +20,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
                 },
                 new ClientsTableEntry
                 {
-                    Id = "JS0000000",
+                    Id = "Permanent_Client_02",
                     Password = "password",
                     Name = "Jack",
                     Surname = "Sparrow",
@@ -31,7 +31,18 @@ namespace BankingAppDataTier.Tests.Mocks.Database
                 },
                 new ClientsTableEntry
                 {
-                    Id = "DE0000000",
+                    Id = "To_Edit_Client_01",
+                    Password = "password",
+                    Name = "Derp",
+                    Surname = "Derpington",
+                    BirthDate = new DateTime(1995, 06, 21),
+                    VATNumber = "111222333",
+                    PhoneNumber = "911111112",
+                    Email = "derp@dotnetbanking.com"
+                },
+                new ClientsTableEntry
+                {
+                    Id = "To_Delete_Client_01",
                     Password = "password",
                     Name = "Derp",
                     Surname = "Derpington",

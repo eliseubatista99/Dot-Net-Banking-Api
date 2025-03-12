@@ -26,13 +26,13 @@ public class EditClientTests
 
         var result = (ObjectResult)_clientsController.EditClient(new EditClientInput
         {
-            Id = "JS0000000",
+            Id = "To_Edit_Client_01",
             Name = newName,
         }).Result!;
 
         var response = (VoidOutput)result.Value!;
 
-        result = (ObjectResult)_clientsController.GetClientById("JS0000000").Result!;
+        result = (ObjectResult)_clientsController.GetClientById("To_Edit_Client_01").Result!;
         var response2 = (GetClientByIdOutput)result.Value!;
 
 

@@ -4,7 +4,9 @@ namespace BankingAppDataTier.Contracts.Errors
 {
     public static class CardsErrors
     {
-        public static BankingAppDataTierError InvalidPlastic = new BankingAppDataTierError { Code = "InvalidPlastic", Message = "No plastic was foudn for the specified plastic id" };
+        public static BankingAppDataTierError InvalidAccount = new BankingAppDataTierError { Code = "InvalidAccount", Message = "No accoount was found for the specified plastic id" };
+
+        public static BankingAppDataTierError InvalidPlastic = new BankingAppDataTierError { Code = "InvalidPlastic", Message = "No plastic was found for the specified plastic id" };
 
         public static BankingAppDataTierError MissingCreditCardDetails = new BankingAppDataTierError { Code = "MissingCreditCardDetails", Message = "PaymentDay and Balance are Required To Create A Credit Card" };
 

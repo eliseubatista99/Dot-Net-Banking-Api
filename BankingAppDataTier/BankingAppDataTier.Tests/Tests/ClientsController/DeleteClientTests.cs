@@ -23,17 +23,17 @@ public class DeleteClientTests
         const string newName = "New Name";
         Setup();
 
-        var result = (ObjectResult)_clientsController.GetClientById("DE0000000").Result!;
+        var result = (ObjectResult)_clientsController.GetClientById("To_Delete_Client_01").Result!;
         var response = (GetClientByIdOutput)result.Value!;
 
         Assert.True(response.Client != null);
 
-        result = (ObjectResult)_clientsController.DeleteClient("DE0000000").Result!;
+        result = (ObjectResult)_clientsController.DeleteClient("To_Delete_Client_01").Result!;
         var response2 = (VoidOutput)result.Value!;
 
         Assert.True(response2.Error == null);
 
-        result = (ObjectResult)_clientsController.GetClientById("DE0000000").Result!;
+        result = (ObjectResult)_clientsController.GetClientById("To_Delete_Client_01").Result!;
         response = (GetClientByIdOutput)result.Value!;
 
         Assert.True(response.Client == null);
@@ -57,7 +57,7 @@ public class DeleteClientTests
     {
         Setup();
 
-        var result = (ObjectResult)_clientsController.DeleteClient("JW0000000").Result!;
+        var result = (ObjectResult)_clientsController.DeleteClient("Permanent_Client_01").Result!;
         var response = (VoidOutput)result.Value!;
 
         Assert.True(response.Error?.Code == ClientsErrors.CantCloseWithActiveAccounts.Code);

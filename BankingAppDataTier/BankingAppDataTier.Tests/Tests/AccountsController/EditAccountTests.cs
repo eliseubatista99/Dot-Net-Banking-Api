@@ -26,7 +26,7 @@ public class EditAccountTests
 
         var result = (ObjectResult)_accountsController.EditAccount(new EditAccountInput 
         {
-            AccountId = "ACJW000003",
+            AccountId = "To_Edit_Current_01",
             Name = newName,
         }).Result!;
 
@@ -34,7 +34,7 @@ public class EditAccountTests
 
         Assert.True(response.Error == null);
 
-        result = (ObjectResult)_accountsController.GetAccountById("ACJW000003").Result!;
+        result = (ObjectResult)_accountsController.GetAccountById("To_Edit_Current_01").Result!;
 
         var response2 = (GetAccountByIdOutput)result.Value!;
 
@@ -42,16 +42,16 @@ public class EditAccountTests
     }
 
     [Fact]
-    public void ShouldBe_Success_SavingsAccount()
+    public void ShouldBe_Success_InvestementsAccount()
     {
-        const string newSourceAccount = "ACJW000003";
+        const string newSourceAccount = "Permanent_Current_01";
         const decimal newInterest = 20;
         const int newDuration = 15;
         Setup();
 
         var result = (ObjectResult)_accountsController.EditAccount(new EditAccountInput
         {
-            AccountId = "ACJW000005",
+            AccountId = "To_Edit_Investements_01",
             SourceAccountId = newSourceAccount,
             Interest = newInterest,
             Duration = newDuration,
@@ -61,7 +61,7 @@ public class EditAccountTests
 
         Assert.True(response.Error == null);
 
-        result = (ObjectResult)_accountsController.GetAccountById("ACJW000005").Result!;
+        result = (ObjectResult)_accountsController.GetAccountById("To_Edit_Investements_01").Result!;
 
         var response2 = (GetAccountByIdOutput)result.Value!;
 
@@ -93,7 +93,7 @@ public class EditAccountTests
 
         var result = (ObjectResult)_accountsController.EditAccount(new EditAccountInput
         {
-            AccountId = "ACJW000005",
+            AccountId = "To_Edit_Investements_01",
             SourceAccountId = "invalid_source",
         }).Result!;
 

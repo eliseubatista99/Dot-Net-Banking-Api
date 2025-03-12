@@ -21,7 +21,7 @@ public class DeleteAccountTests
     {
         Setup();
 
-        var result = (ObjectResult)_accountsController.DeleteAccount("ACJW000004").Result!;
+        var result = (ObjectResult)_accountsController.DeleteAccount("To_Delete_Current_01").Result!;
 
         var response = (VoidOutput)result.Value!;
 
@@ -45,7 +45,7 @@ public class DeleteAccountTests
     {
         Setup();
 
-        var result = (ObjectResult)_accountsController.DeleteAccount("ACJW000000").Result!;
+        var result = (ObjectResult)_accountsController.DeleteAccount("Permanent_Current_01").Result!;
 
         var response = (VoidOutput)result.Value!;
 
@@ -58,7 +58,7 @@ public class DeleteAccountTests
     {
         Setup();
 
-        var result = (ObjectResult)_accountsController.DeleteAccount("ACJW000003").Result!;
+        var result = (ObjectResult)_accountsController.DeleteAccount("Permanent_Current_02").Result!;
 
         var response = (VoidOutput)result.Value!;
 

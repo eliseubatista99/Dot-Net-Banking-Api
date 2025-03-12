@@ -26,7 +26,7 @@ public class ChangePasswordTests
 
         var result = (ObjectResult)_clientsController.ChangePassword(new ChangeClientPasswordInput
         {
-            Id = "JS0000000",
+            Id = "To_Edit_Client_01",
             PassWord = newPassword,
         }).Result!;
 
@@ -34,7 +34,7 @@ public class ChangePasswordTests
 
         result = (ObjectResult)_clientsController.HasValidPassword(new HasValidPasswordInput
         {
-            Id = "JS0000000",
+            Id = "To_Edit_Client_01",
             PassWord = newPassword,
         }).Result!;
         var response2 = (HasValidPasswordOutput)result.Value!;

@@ -20,12 +20,18 @@ namespace BankingAppDataTier.Controllers
         private readonly ILogger<ClientsController> logger;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
         private readonly IDatabasePlasticsProvider databasePlasticsProvider;
+        private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public CardsController(ILogger<ClientsController> _logger, IDatabaseCardsProvider _dbCardsProvider, IDatabasePlasticsProvider _dbPlasticsProvider)
+        public CardsController(
+            ILogger<ClientsController> _logger,
+            IDatabaseCardsProvider _dbCardsProvider,
+            IDatabasePlasticsProvider _dbPlasticsProvider,
+            IDatabaseAccountsProvider _dbAccountsProvider)
         {
             logger = _logger;
             databaseCardsProvider = _dbCardsProvider;
             databasePlasticsProvider = _dbPlasticsProvider;
+            databaseAccountsProvider = _dbAccountsProvider;
         }
 
         [HttpGet("GetCardsOfAccount/{account}")]
@@ -33,6 +39,16 @@ namespace BankingAppDataTier.Controllers
         {
             var result = new List<CardDto>();
 
+            var accountInDb = databaseAccountsProvider.GetById(account);
+
+            if (accountInDb == null)
+            {
+                return Ok(new GetCardsOfAccountOutput()
+                {
+                    Cards = null,
+                    Error = CardsErrors.InvalidAccount,
+                });
+            }
             var cardsInDb = databaseCardsProvider.GetCardsOfAccount(account);
 
             if (cardsInDb == null || cardsInDb.Count == 0)
@@ -137,9 +153,21 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
+            var card = this.BuildCardDto(entryInDb);
+
+            if (card.CardType == CardType.Credit)
+            {
+                entryInDb.PaymentDay = input.PaymentDay != null ? input.PaymentDay : entryInDb.PaymentDay;
+                entryInDb.Balance = input.Balance != null ? input.Balance : entryInDb.Balance;
+            } 
+            else if(card.CardType == CardType.PrePaid)
+            {
+                entryInDb.Balance = input.Balance != null ? input.Balance : entryInDb.Balance;
+            }
+
+
+
             entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
-            entryInDb.Balance = input.Balance != null ? input.Balance : entryInDb.Balance;
-            entryInDb.PaymentDay = input.PaymentDay != null ? input.PaymentDay : entryInDb.PaymentDay;
             entryInDb.RequestDate = input.RequestDate != null ? input.RequestDate.GetValueOrDefault() : entryInDb.RequestDate;
             entryInDb.ActivationDate = input.ActivationDate != null ? input.ActivationDate : entryInDb.ActivationDate;
             entryInDb.ExpirationDate = input.ExpirationDate != null ? input.ExpirationDate.GetValueOrDefault() : entryInDb.ExpirationDate;

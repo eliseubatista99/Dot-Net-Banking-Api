@@ -9,9 +9,9 @@ namespace BankingAppDataTier.Tests.Mocks.Database
         [
             new CardsTableEntry
             {
-                Id = "ACJW000000_DB01",
+                Id = "Permanent_Debit_01",
                 Name = "DB_Basic",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "DB_Basic",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
@@ -19,9 +19,9 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new CardsTableEntry
             {
-                Id = "ACJW000000_PP01",
+                Id = "Permanent_PrePaid_01",
                 Name = "PP_Agile",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "PP_Agile",
                 Balance = 100,
                 RequestDate = new DateTime(2025, 01, 01),
@@ -30,22 +30,66 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new CardsTableEntry
             {
-                Id = "ACJW000000_CR01",
+                Id = "Permanent_Credit_01",
                 Name = "CR_Prestige",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "CR_Prestige",
                 Balance = 100,
                 PaymentDay = 11,
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
                 ExpirationDate = new DateTime(2028, 01, 15),
-            },new CardsTableEntry
+            },
+            new CardsTableEntry
             {
-                Id = "ACJW000000_ME01",
+                Id = "Permanent_Meal_01",
                 Name = "ME_TableSlide",
-                RelatedAccountID = "ACJW000000",
+                RelatedAccountID = "Permanent_Current_01",
                 PlasticId = "ME_TableSlide",
                 Balance = 100,
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+            },
+            new CardsTableEntry
+            {
+                Id = "To_Edit_Debit_01",
+                Name = "DB_Basic",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "DB_Basic",
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+            },
+            new CardsTableEntry
+            {
+                Id = "To_Edit_PrePaid_01",
+                Name = "PP_Agile",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "PP_Agile",
+                Balance = 100,
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+            },
+            new CardsTableEntry
+            {
+                Id = "To_Edit_Credit_01",
+                Name = "CR_Prestige",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "CR_Prestige",
+                Balance = 100,
+                PaymentDay = 11,
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+            },
+            new CardsTableEntry
+            {
+                Id = "To_Delete_Debit_01",
+                Name = "DB_Basic",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "DB_Basic",
                 RequestDate = new DateTime(2025, 01, 01),
                 ActivationDate = new DateTime(2025, 01, 15),
                 ExpirationDate = new DateTime(2028, 01, 15),

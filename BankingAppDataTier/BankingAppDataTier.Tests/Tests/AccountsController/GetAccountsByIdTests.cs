@@ -17,9 +17,9 @@ public class GetAccountsByIdTests
     }
 
     [Theory]
-    [InlineData("ACJW000000")]
-    [InlineData("ACJW000001")]
-    [InlineData("ACJW000002")]
+    [InlineData("Permanent_Current_01")]
+    [InlineData("Permanent_Savings_01")]
+    [InlineData("Permanent_Investements_01")]
     public void ShouldBe_Success(string id)
     {
         Setup();
