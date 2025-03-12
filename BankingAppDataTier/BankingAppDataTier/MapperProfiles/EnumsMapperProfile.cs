@@ -72,6 +72,5 @@ namespace BankingAppDataTier.MapperProfiles
                 _ => ""
             };
         }
-
     }
 }

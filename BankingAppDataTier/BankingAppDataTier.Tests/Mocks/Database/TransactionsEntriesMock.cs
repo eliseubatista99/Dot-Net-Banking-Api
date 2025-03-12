@@ -9,24 +9,57 @@ namespace BankingAppDataTier.Tests.Mocks.Database
         [
             new TransactionTableEntry
             {
-                Id = "T001",
+                Id = "Permanent_Transaction_01",
                 TransactionDate = new DateTime(2025, 02, 10),
                 Description = "Test transfer",
                 Amount = 100.35M,
                 Fees = 1.25M,
                 Urgent = true,
-                SourceAccount = "ACJW000000",
+                SourceAccount = "Permanent_Current_01",
                 DestinationName = "Eletricity Company",
             },
             new TransactionTableEntry
             {
-                Id = "T002",
-                TransactionDate = new DateTime(2025, 02, 10),
+                Id = "Permanent_Transaction_02",
+                TransactionDate = new DateTime(2025, 03, 10),
                 Description = "Test transfer from card",
                 Amount = 100.35M,
                 Fees = 1.25M,
-                Urgent = true,
-                SourceCard = "ACJW000000_DB01",
+                Urgent = false,
+                SourceCard = "Permanent_Current_01",
+                DestinationName = "Water Company",
+            },
+            new TransactionTableEntry
+            {
+                Id = "Permanent_Transaction_03",
+                TransactionDate = new DateTime(2025, 03, 10),
+                Description = "Test transfer from card",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = false,
+                SourceAccount = "Permanent_Current_01",
+                DestinationName = "Water Company",
+            },
+            new TransactionTableEntry
+            {
+                Id = "To_Edit_Transaction_01",
+                TransactionDate = new DateTime(2025, 03, 10),
+                Description = "Test transfer from card",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = false,
+                SourceAccount = "ACJW000000",
+                DestinationName = "Water Company",
+            },
+            new TransactionTableEntry
+            {
+                Id = "To_Delete_Transaction_01",
+                TransactionDate = new DateTime(2025, 03, 10),
+                Description = "Test transfer from card",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = false,
+                SourceAccount = "ACJW000000",
                 DestinationName = "Water Company",
             }
         ];

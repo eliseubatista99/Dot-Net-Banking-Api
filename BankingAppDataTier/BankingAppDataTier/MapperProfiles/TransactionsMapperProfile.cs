@@ -2,6 +2,7 @@
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using Npgsql;
+using System.Data;
 
 namespace BankingAppDataTier.MapperProfiles
 {
@@ -36,6 +37,7 @@ namespace BankingAppDataTier.MapperProfiles
             return new TransactionDto
             {
                 Id = tableEntry.Id,
+                Role = Contracts.Enums.TransactionRole.None,
                 TransactionDate = tableEntry.TransactionDate,
                 Amount = tableEntry.Amount,
                 Urgent = tableEntry.Urgent,

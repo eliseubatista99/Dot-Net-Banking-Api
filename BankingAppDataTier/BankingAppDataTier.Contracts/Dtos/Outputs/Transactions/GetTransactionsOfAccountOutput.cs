@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs.Transactions
 {
-    public class GetTransactionsForDestinationAccountOutput : BaseOutput
+    public class GetTransactionsOfAccountOutput : BaseOutput
     {
         public required List<TransactionDto> Transactions { get; set; }
     }

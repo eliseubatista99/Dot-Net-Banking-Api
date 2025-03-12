@@ -1,4 +1,6 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Entitites
+﻿using BankingAppDataTier.Contracts.Enums;
+
+namespace BankingAppDataTier.Contracts.Dtos.Entitites
 {
     public class TransactionDto
     {
@@ -11,6 +13,11 @@
         /// Gets or sets the Transaction Date.
         /// </summary>
         public required DateTime TransactionDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Transaction Role.
+        /// </summary>
+        public required TransactionRole Role { get; set; }
 
         /// <summary>
         /// Gets or sets the Description.

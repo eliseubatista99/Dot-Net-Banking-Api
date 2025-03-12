@@ -221,7 +221,7 @@ namespace BankingAppDataTier.Providers
 
                 try
                 {
-                    command.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
+                    command.CommandText = $"SELECT * FROM {TransactionsTable.TABLE_NAME} WHERE {TransactionsTable.COLUMN_ID} = '{id}'";
 
                     var sqlReader = command.ExecuteReader();
 
@@ -306,39 +306,6 @@ namespace BankingAppDataTier.Providers
             }
         }
 
-        public List<TransactionTableEntry> GetByDate(DateTime date)
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                List<TransactionTableEntry> result = new List<TransactionTableEntry>();
-
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {TransactionsTable.TABLE_NAME} WHERE {TransactionsTable.COLUMN_TRANSACTION_DATE} = '{date}'";
-
-                    using (var sqlReader = command.ExecuteReader())
-                    {
-                        while (sqlReader!.Read())
-                        {
-                            var dataEntry = TransactionsMapperProfile.MapSqlDataToTableEntry(sqlReader);
-
-                            result.Add(dataEntry);
-                        }
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
-
         public bool DeleteAll()
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
@@ -370,7 +337,8 @@ namespace BankingAppDataTier.Providers
         private string BuildAddCommand(TransactionTableEntry entry)
         {
             var result = $"INSERT INTO {TransactionsTable.TABLE_NAME} " +
-                $"({TransactionsTable.COLUMN_ID}, {TransactionsTable.COLUMN_TRANSACTION_DATE}, {TransactionsTable.COLUMN_DESCRIPTION}, {TransactionsTable.COLUMN_SOURCE_ACCOUNT}," +
+                $"({TransactionsTable.COLUMN_ID}, {TransactionsTable.COLUMN_TRANSACTION_DATE}, " +
+                $"{TransactionsTable.COLUMN_DESCRIPTION}, {TransactionsTable.COLUMN_SOURCE_ACCOUNT}," +
                 $" {TransactionsTable.COLUMN_DESTINATION_NAME}, {TransactionsTable.COLUMN_DESTINATION_ACCOUNT}, {TransactionsTable.COLUMN_SOURCE_CARD}," +
                 $" {TransactionsTable.COLUMN_AMOUNT}, {TransactionsTable.COLUMN_FEES}, {TransactionsTable.COLUMN_URGENT}";
 
@@ -385,22 +353,6 @@ namespace BankingAppDataTier.Providers
 
         private string BuildEditCommand(TransactionTableEntry entry)
         {
-
-            var commandText = $"CREATE TABLE IF NOT EXISTS {TransactionsTable.TABLE_NAME}" +
-                        $"(" +
-                        $"{TransactionsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
-                        $"{TransactionsTable.COLUMN_TRANSACTION_DATE} DATE NOT NULL," +
-                        $"{TransactionsTable.COLUMN_DESCRIPTION} VARCHAR(64)" +
-                        $"{TransactionsTable.COLUMN_SOURCE_ACCOUNT} VARCHAR(64)," +
-                        $"{TransactionsTable.COLUMN_DESTINATION_NAME} VARCHAR(64) NOT NULL," +
-                        $"{TransactionsTable.COLUMN_DESTINATION_ACCOUNT} VARCHAR(64)," +
-                        $"{TransactionsTable.COLUMN_SOURCE_CARD} VARCHAR(64)," +
-                        $"{TransactionsTable.COLUMN_AMOUNT} DECIMAL(20,2) NOT NULL," +
-                        $"{TransactionsTable.COLUMN_FEES} DECIMAL(5,2)," +
-                        $"{TransactionsTable.COLUMN_URGENT} BOOL NOT NULL," +
-                        $"PRIMARY KEY ({TransactionsTable.COLUMN_ID} )" +
-                        $") ";
-
             var result = $"UPDATE {TransactionsTable.TABLE_NAME} " +
                     $"SET {TransactionsTable.COLUMN_TRANSACTION_DATE} = '{entry.TransactionDate}', " +
                     $"{TransactionsTable.COLUMN_DESTINATION_NAME} = '{entry.DestinationName}', " +

@@ -16,8 +16,6 @@ namespace BankingAppDataTier.Contracts.Providers
 
         public List<TransactionTableEntry> GetBySourceCard(string card);
 
-        public List<TransactionTableEntry> GetByDate(DateTime date);
-
         public bool Add(TransactionTableEntry entry);
 
         public bool Edit(TransactionTableEntry entry);
