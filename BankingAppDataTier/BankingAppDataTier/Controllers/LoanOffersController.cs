@@ -113,6 +113,8 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
+            entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
+            entryInDb.Description = input.Description != null ? input.Description : entryInDb.Description;
             entryInDb.MaxEffort = input.MaxEffort != null ? input.MaxEffort.GetValueOrDefault() : entryInDb.MaxEffort;
             entryInDb.Interest = input.Interest != null ? input.Interest.GetValueOrDefault() : entryInDb.Interest;
 
@@ -179,7 +181,7 @@ namespace BankingAppDataTier.Controllers
 
             var loansWithThisOffer = databaseLoansProvider.GetByOffer(entryInDb.Id);
 
-            if (loansWithThisOffer != null)
+            if (loansWithThisOffer?.Count > 0)
             {
                 return BadRequest(new VoidOutput
                 {

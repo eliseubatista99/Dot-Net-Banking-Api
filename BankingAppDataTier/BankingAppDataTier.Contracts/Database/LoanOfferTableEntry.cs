@@ -8,6 +8,16 @@
         public required string Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the loan offer name.
+        /// </summary>
+        public required string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the loan offer description.
+        /// </summary>
+        public required string Description { get; set; }
+
+        /// <summary>
         /// Gets or sets the loan type.
         /// </summary>
         public required string LoanType { get; set; }

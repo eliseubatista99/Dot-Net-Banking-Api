@@ -44,13 +44,22 @@ namespace BankingAppDataTier.Tests.Mocks
 
                 // Mock the providers
                 _AuthenticationProviderMock = AuthenticationProviderMock.Mock();
-                _DatabaseAccountsProviderMock = DatabaseAccountsProviderMock.Mock();
-                _DatabaseCardsProviderMock = DatabaseCardsProviderMock.Mock();
                 _DatabaseClientsProviderMock = DatabaseClientsProviderMock.Mock();
+                _DatabaseAccountsProviderMock = DatabaseAccountsProviderMock.Mock();
+                _DatabasePlasticsProviderMock = DatabasePlasticsProviderMock.Mock();
+                _DatabaseCardsProviderMock = DatabaseCardsProviderMock.Mock();
                 _DatabaseLoanOffersProviderMock = DatabaseLoanOffersProviderMock.Mock();
                 _DatabaseLoanProviderMock = DatabaseLoanProviderMock.Mock();
-                _DatabasePlasticsProviderMock = DatabasePlasticsProviderMock.Mock();
                 _DatabaseTransactionsProviderMock = DatabaseTransactionsProviderMock.Mock();
+
+                // Create databases if not exists
+                _DatabaseClientsProviderMock.CreateTableIfNotExists();
+                _DatabaseAccountsProviderMock.CreateTableIfNotExists();
+                _DatabasePlasticsProviderMock.CreateTableIfNotExists();
+                _DatabaseCardsProviderMock.CreateTableIfNotExists();
+                _DatabaseLoanOffersProviderMock.CreateTableIfNotExists();
+                _DatabaseLoanProviderMock.CreateTableIfNotExists();
+                _DatabaseTransactionsProviderMock.CreateTableIfNotExists();
 
                 // Clean database values
                 _DatabaseTransactionsProviderMock.DeleteAll();

@@ -35,11 +35,13 @@ namespace BankingAppDataTier.Providers
                     command.CommandText = $"CREATE TABLE IF NOT EXISTS {LoansTable.TABLE_NAME}" +
                         $"(" +
                         $"{LoansTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
+                        $"{LoansTable.TABLE_NAME} VARCHAR(64) NOT NULL," +
                         $"{LoansTable.COLUMN_RELATED_ACCOUNT} VARCHAR(64) NOT NULL," +
                         $"{LoansTable.COLUMN_START_DATE} DATE NOT NULL," +
                         $"{LoansTable.COLUMN_RELATED_OFFER} VARCHAR(64) NOT NULL," +
                         $"{LoansTable.COLUMN_DURATION} INTEGER NOT NULL," +
-                        $"{LoansTable.COLUMN_AMOUNT} DECIMAL(20,2) NOT NULL," +
+                        $"{LoansTable.COLUMN_CONTRACTED_AMOUNT} DECIMAL(20,2) NOT NULL," +
+                        $"{LoansTable.COLUMN_PAID_AMOUNT} DECIMAL(20,2) NOT NULL," +
                         $"PRIMARY KEY ({LoansTable.COLUMN_ID} )," +
                         $"FOREIGN KEY ({LoansTable.COLUMN_RELATED_ACCOUNT}) REFERENCES {AccountsTable.TABLE_NAME}({AccountsTable.COLUMN_ID}), " +
                         $"FOREIGN KEY ({LoansTable.COLUMN_RELATED_OFFER}) REFERENCES {LoanOffersTable.TABLE_NAME}({LoanOffersTable.COLUMN_ID})" +
@@ -71,9 +73,11 @@ namespace BankingAppDataTier.Providers
                 try
                 {
                     command.CommandText = $"INSERT INTO {LoansTable.TABLE_NAME} " +
-                        $"({LoansTable.COLUMN_ID}, {LoansTable.COLUMN_RELATED_ACCOUNT}, {LoansTable.COLUMN_START_DATE}, {LoansTable.COLUMN_RELATED_OFFER}, {LoansTable.COLUMN_DURATION}, {LoansTable.COLUMN_AMOUNT}) " +
+                        $"({LoansTable.COLUMN_ID}, {LoansTable.TABLE_NAME}, {LoansTable.COLUMN_RELATED_ACCOUNT}, {LoansTable.COLUMN_START_DATE}," +
+                        $" {LoansTable.COLUMN_RELATED_OFFER}, {LoansTable.COLUMN_DURATION}, {LoansTable.COLUMN_CONTRACTED_AMOUNT}, {LoansTable.COLUMN_PAID_AMOUNT}) " +
                         $"VALUES " +
-                        $"('{entry.Id}', '{entry.RelatedAccount}', '{entry.StartDate.ToString("yyyy-MM-dd")}', '{entry.RelatedOffer}', '{entry.Duration}', '{entry.Amount}');";
+                        $"('{entry.Id}', '{entry.Name}', '{entry.RelatedAccount}', '{entry.StartDate.ToString("yyyy-MM-dd")}', '{entry.RelatedOffer}', " +
+                        $"'{entry.Duration}', '{entry.ContractedAmount}', '{entry.PaidAmount}');";
 
                     command.ExecuteNonQuery();
 
@@ -129,10 +133,12 @@ namespace BankingAppDataTier.Providers
                 {
                     command.CommandText = $"UPDATE {LoansTable.TABLE_NAME} " +
                     $"SET {LoansTable.COLUMN_START_DATE} = '{entry.StartDate}', " +
+                    $"{LoansTable.TABLE_NAME} = '{entry.Name}', " +
                     $"{LoansTable.COLUMN_RELATED_ACCOUNT} = '{entry.RelatedAccount}', " +
                     $"{LoansTable.COLUMN_RELATED_OFFER} = '{entry.RelatedOffer}', " +
                     $"{LoansTable.COLUMN_DURATION} = '{entry.Duration}', " +
-                    $"{LoansTable.COLUMN_AMOUNT} = '{entry.Amount}' " +
+                    $"{LoansTable.COLUMN_CONTRACTED_AMOUNT} = '{entry.ContractedAmount}', " +
+                    $"{LoansTable.COLUMN_PAID_AMOUNT} = '{entry.PaidAmount}' " +
                     $"WHERE {LoansTable.COLUMN_ID} = '{entry.Id}';";
 
                     command.ExecuteNonQuery();

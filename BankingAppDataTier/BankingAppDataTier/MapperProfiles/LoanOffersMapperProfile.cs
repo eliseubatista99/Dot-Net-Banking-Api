@@ -12,6 +12,8 @@ namespace BankingAppDataTier.MapperProfiles
             return new LoanOfferTableEntry
             {
                 Id = sqlReader[LoanOffersTable.COLUMN_ID].ToString()!,
+                Name = sqlReader[LoanOffersTable.COLUMN_NAME].ToString()!,
+                Description = sqlReader[LoanOffersTable.COLUMN_DESCRIPTION].ToString()!,
                 LoanType = sqlReader[LoanOffersTable.COLUMN_TYPE].ToString()!,
                 MaxEffort = Convert.ToInt16(sqlReader[LoanOffersTable.COLUMN_MAX_EFFORT].ToString())!,
                 Interest = Convert.ToDecimal(sqlReader[LoanOffersTable.COLUMN_INTEREST].ToString())!,
@@ -24,6 +26,8 @@ namespace BankingAppDataTier.MapperProfiles
             return new LoanOfferDto
             {
                 Id = tableEntry.Id,
+                Name = tableEntry.Name,
+                Description = tableEntry.Description,
                 LoanType = EnumsMapperProfile.MapLoanTypeFromString(tableEntry.LoanType),
                 MaxEffort = tableEntry.MaxEffort,
                 Interest = tableEntry.Interest,
@@ -36,6 +40,8 @@ namespace BankingAppDataTier.MapperProfiles
             return new LoanOfferTableEntry
             {
                 Id = dto.Id,
+                Name = dto.Name,
+                Description = dto.Description,
                 LoanType = EnumsMapperProfile.MapLoanTypeToString(dto.LoanType),
                 MaxEffort = dto.MaxEffort,
                 Interest = dto.Interest,

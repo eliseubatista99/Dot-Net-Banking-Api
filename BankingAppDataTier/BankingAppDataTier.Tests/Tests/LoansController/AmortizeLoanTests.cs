@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankingAppDataTier.Tests.Loans;
 
-public class GetLoanByIdTests
+public class AmortizeLoanTests
 {
     private LoansController _loansController;
 
@@ -27,19 +27,26 @@ public class GetLoanByIdTests
         _loansController = TestMocksBuilder._LoansControllerMock;
     }
 
-    [Theory]
-    [InlineData("Permanent_AU_01")]
-    [InlineData("Permanent_MO_01")]
-    [InlineData("Permanent_PE_01")]
-    public void ShouldBe_Success(string id)
+    [Fact]
+    public void ShouldBe_Success()
     {
         Setup();
 
-        var result = (ObjectResult)_loansController.GetLoanById(id).Result!;
+        var result = (ObjectResult)_loansController.AmortizeLoan(new AmortizeLoanInput
+        {
+            Id = "Permanent_AU_01",
+            Amount = 100,
+        }).Result!;
 
-        var response = (GetLoanByIdOutput)result.Value!;
+        var response = (VoidOutput)result.Value!;
 
-        Assert.True(response.Loan != null);
+        Assert.True(response.Error == null);
+
+        result = (ObjectResult)_loansController.GetLoanById("Permanent_AU_01").Result!;
+
+        var response2 = (GetLoanByIdOutput)result.Value!;
+
+        Assert.True(response2.Loan?.PaidAmount == 100);
     }
 
     [Fact]
@@ -47,11 +54,32 @@ public class GetLoanByIdTests
     {
         Setup();
 
-        var result = (ObjectResult)_loansController.GetLoanById("invalid").Result!;
+        var result = (ObjectResult)_loansController.AmortizeLoan(new AmortizeLoanInput
+        {
+            Id = "invalid_id",
+            Amount = 100,
+        }).Result!;
 
-        var response = (GetLoanByIdOutput)result.Value!;
+        var response = (VoidOutput)result.Value!;
+
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }
 
+    [Fact]
+    public void ShouldReturnError_InsufficientFunds()
+    {
+        Setup();
+
+        var result = (ObjectResult)_loansController.AmortizeLoan(new AmortizeLoanInput
+        {
+            Id = "Permanent_AU_01",
+            Amount = 999999,
+        }).Result!;
+
+        var response = (VoidOutput)result.Value!;
+
+
+        Assert.True(response.Error?.Code == LoansErrors.InsufficientFunds.Code);
+    }
 }

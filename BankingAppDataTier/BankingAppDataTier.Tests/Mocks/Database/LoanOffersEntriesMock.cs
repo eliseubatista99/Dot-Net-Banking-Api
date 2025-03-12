@@ -9,7 +9,9 @@ namespace BankingAppDataTier.Tests.Mocks.Database
         [
             new LoanOfferTableEntry
             {
-                Id = "LO01",
+                Id = "Permanent_AU_01",
+                Name = "Auto Loan",
+                Description = "Take the wheel",
                 LoanType = "AU",
                 MaxEffort = 30,
                 Interest = 7.0M,
@@ -17,7 +19,9 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new LoanOfferTableEntry
             {
-                Id = "LO02",
+                Id = "Permanent_MO_01",
+                Name = "Mortgage Loan",
+                Description = "The house of your dreams",
                 LoanType = "MO",
                 MaxEffort = 40,
                 Interest = 3.0M,
@@ -25,7 +29,9 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new LoanOfferTableEntry
             {
-                Id = "LO03",
+                Id = "Permanent_PE_01",
+                Name = "Personal Loan",
+                Description = "Embrace your dreams",
                 LoanType = "PE",
                 MaxEffort = 25,
                 Interest = 10.0M,
@@ -33,12 +39,34 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new LoanOfferTableEntry
             {
-                Id = "LO04",
+                Id = "To_Edit_AU_01",
+                Name = "Auto Loan",
+                Description = "Take the wheel",
                 LoanType = "AU",
-                MaxEffort = 20,
-                Interest = 3.0M,
-                IsActive = false,
-            }
+                MaxEffort = 25,
+                Interest = 10.0M,
+                IsActive = true,
+            },
+            new LoanOfferTableEntry
+            {
+                Id = "To_Edit_AU_02",
+                Name = "Auto Loan",
+                Description = "Take the wheel",
+                LoanType = "AU",
+                MaxEffort = 25,
+                Interest = 10.0M,
+                IsActive = true,
+            },
+            new LoanOfferTableEntry
+            {
+                Id = "To_Delete_AU_01",
+                Name = "Auto Loan",
+                Description = "Take the wheel",
+                LoanType = "AU",
+                MaxEffort = 25,
+                Interest = 10.0M,
+                IsActive = true,
+            },
         ];
 
         public static void Mock(IDatabaseLoanOfferProvider dbProvider)

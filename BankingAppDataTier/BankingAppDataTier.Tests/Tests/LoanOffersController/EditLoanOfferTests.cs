@@ -1,6 +1,70 @@
-﻿namespace BankingAppDataTier.Tests.Tests.LoanOffersController
+﻿using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
+using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
+using BankingAppDataTier.Contracts.Dtos.Outputs;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
+using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Controllers;
+using BankingAppDataTier.Tests.Mocks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BankingAppDataTier.Tests.LoanOffers;
+
+public class EditLoanOfferTests
 {
-    internal class EditLoanOfferTests
+    private LoanOffersController _loanOffersController;
+
+    private void Setup()
     {
+        TestMocksBuilder.Mock();
+        _loanOffersController = TestMocksBuilder._LoanOffersControllerMock;
+    }
+
+    [Fact]
+    public void ShouldBe_Success()
+    {
+        const string newName = "NewName";
+        Setup();
+
+        var result = (ObjectResult)_loanOffersController.EditLoanOffer(new EditLoanOfferInput
+        {
+            Id = "To_Edit_AU_01",
+            Name = newName,
+            Description = "new Desc",
+            MaxEffort = 50,
+            Interest = 12.0M,
+        }).Result!;
+
+        var response = (VoidOutput)result.Value!;
+
+        Assert.True(response.Error == null);
+
+        result = (ObjectResult)_loanOffersController.GetLoanOfferById("To_Edit_AU_01").Result!;
+
+        var response2 = (GetLoanOfferByIdOutput)result.Value!;
+
+        Assert.True(response2.LoanOffer?.Name == newName);
+    }
+
+    [Fact]
+    public void ShouldReturnError_InvalidId()
+    {
+        Setup();
+
+        var result = (ObjectResult)_loanOffersController.EditLoanOffer(new EditLoanOfferInput
+        {
+            Id = "invalid_id",
+            Description = "new Desc",
+        }).Result!;
+
+        var response = (VoidOutput)result.Value!;
+
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }
 }

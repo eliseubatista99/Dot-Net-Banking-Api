@@ -8,6 +8,11 @@
         public required string Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the loan name.
+        /// </summary>
+        public required string Name { get; set; }
+
+        /// <summary>
         /// Gets or sets the start date.
         /// </summary>
         public required DateTime StartDate { get; set; }
@@ -28,8 +33,13 @@
         public required int Duration { get; set; }
 
         /// <summary>
-        /// Gets or sets the amount.
+        /// Gets or sets the contracted amount.
         /// </summary>
-        public required decimal Amount { get; set; }
+        public required decimal ContractedAmount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the paid amount.
+        /// </summary>
+        public required decimal PaidAmount { get; set; }
     }
 }

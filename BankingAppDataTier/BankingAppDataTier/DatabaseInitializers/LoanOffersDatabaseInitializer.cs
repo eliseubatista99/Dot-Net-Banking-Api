@@ -22,6 +22,8 @@ namespace BankingAppDataTier.DatabaseInitializers
                 new LoanOfferTableEntry
                 {
                     Id = "LO01",
+                    Name = "Auto Loan",
+                    Description = "Take the wheel",
                     LoanType = "AU",
                     MaxEffort = 30,
                     Interest = 7.0M,
@@ -33,6 +35,8 @@ namespace BankingAppDataTier.DatabaseInitializers
                new LoanOfferTableEntry
                {
                    Id = "LO02",
+                   Name = "Mortgage Loan",
+                   Description = "The house of your dreams",
                    LoanType = "MO",
                    MaxEffort = 40,
                    Interest = 3.0M,
@@ -44,6 +48,8 @@ namespace BankingAppDataTier.DatabaseInitializers
                new LoanOfferTableEntry
                {
                    Id = "LO03",
+                   Name = "Personal Loan",
+                   Description = "Embrace your dreams",
                    LoanType = "PE",
                    MaxEffort = 25,
                    Interest = 10.0M,
@@ -55,6 +61,8 @@ namespace BankingAppDataTier.DatabaseInitializers
                 new LoanOfferTableEntry
                 {
                     Id = "LO04",
+                    Name = "Auto Loan",
+                    Description = "Take the wheel",
                     LoanType = "AU",
                     MaxEffort = 20,
                     Interest = 3.0M,

@@ -6,6 +6,10 @@
 
         public static string COLUMN_ID = "ID";
 
+        public static string COLUMN_NAME = "NAME";
+
+        public static string COLUMN_DESCRIPTION = "DESCRIPTION";
+
         public static string COLUMN_TYPE = "LOAN_TYPE";
 
         public static string COLUMN_MAX_EFFORT = "MAX_EFFORT";

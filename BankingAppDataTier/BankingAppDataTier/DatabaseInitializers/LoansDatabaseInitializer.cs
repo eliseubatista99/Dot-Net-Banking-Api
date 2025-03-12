@@ -22,11 +22,13 @@ namespace BankingAppDataTier.DatabaseInitializers
                 new LoanTableEntry
                 {
                     Id = "L01",
+                    Name = "Auto Loan",
                     RelatedAccount = "ACJW000000",
                     StartDate = new DateTime(2025, 02, 03),
                     RelatedOffer = "LO01",
                     Duration = 24,
-                    Amount = 10000.0M,
+                    ContractedAmount = 10000.0M,
+                    PaidAmount = 0,
                 }
             );     
         }

@@ -31,11 +31,11 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpGet("GetLoansOfAccount/{account}")]
-        public ActionResult<GetLoansOfAccountOutput> GetLoansOfAccount(string account)
+        public ActionResult<GetLoansOfAccountOutput> GetLoansOfAccount([FromBody] GetLoansOfAccountInput input)
         {
             var result = new List<LoanDto>();
 
-            var itemsInDb = databaseLoansProvider.GetByAccount(account);
+            var itemsInDb = databaseLoansProvider.GetByAccount(input.AccountId);
 
             if (itemsInDb == null || itemsInDb.Count == 0)
             {
@@ -47,6 +47,11 @@ namespace BankingAppDataTier.Controllers
 
             result = itemsInDb.Select(i => this.BuildLoanDto(i)).ToList();
 
+            if(input.LoanType != null)
+            {
+                result = result.Where(l => l.LoanType == input.LoanType).ToList();
+            }
+
             return Ok(new GetLoansOfAccountOutput()
             {
                 Loans = result,
@@ -54,9 +59,9 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpGet("GetLoansOfClient/{client}")]
-        public ActionResult<GetLoansOfClientOutput> GetLoansOfClient(string client)
+        public ActionResult<GetLoansOfClientOutput> GetLoansOfClient([FromBody] GetLoansOfClientInput input)
         {
-            var clientAccounts = databaseAccountsProvider.GetAccountsOfClient(client);
+            var clientAccounts = databaseAccountsProvider.GetAccountsOfClient(input.ClientId);
 
             if (clientAccounts == null || clientAccounts.Count == 0)
             {
@@ -68,6 +73,7 @@ namespace BankingAppDataTier.Controllers
 
             var result = new List<LoanDto>();
 
+
             foreach(var account in clientAccounts)
             {
                 var itemsInDb = databaseLoansProvider.GetByAccount(account.AccountId);
@@ -75,6 +81,11 @@ namespace BankingAppDataTier.Controllers
                 var loansOfAccount = itemsInDb.Select(i => this.BuildLoanDto(i)).ToList();
 
                 result.AddRange(loansOfAccount);
+            }
+
+            if (input.LoanType != null)
+            {
+                result = result.Where(l => l.LoanType == input.LoanType).ToList();
             }
 
             return Ok(new GetLoansOfClientOutput()
@@ -141,6 +152,52 @@ namespace BankingAppDataTier.Controllers
             return Ok(new VoidOutput());
         }
 
+        [HttpPatch("AmortizeLoan")]
+        public ActionResult<VoidOutput> AmortizeLoan([FromBody] AmortizeLoanInput input)
+        {
+            var entryInDb = databaseLoansProvider.GetById(input.Id);
+
+            if (entryInDb == null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = GenericErrors.InvalidId
+                });
+            }
+
+            var relatedAccountInDb = databaseAccountsProvider.GetById(entryInDb.RelatedAccount);
+
+            if (relatedAccountInDb == null)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = LoansErrors.InvalidRelatedAccount
+                });
+            }
+
+            if (relatedAccountInDb.Balance < input.Amount)
+            {
+                return BadRequest(new VoidOutput
+                {
+                    Error = LoansErrors.InsufficientFunds
+                });
+            }
+
+            entryInDb.PaidAmount = entryInDb.PaidAmount + input.Amount;
+
+            var result = databaseLoansProvider.Edit(entryInDb);
+
+            if (!result)
+            {
+                return new InternalServerError(new VoidOutput
+                {
+                    Error = GenericErrors.FailedToPerformDatabaseOperation,
+                });
+            }
+
+            return Ok(new VoidOutput());
+        }
+
         [HttpPatch("EditLoan")]
         public ActionResult<VoidOutput> EditLoan([FromBody] EditLoanInput input)
         {
@@ -154,6 +211,8 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
+            var loan = this.BuildLoanDto(entryInDb);
+
             if(input.RelatedOffer != null)
             {
                 var relatedOffer = databaseLoanOffersProvider.GetById(input.RelatedOffer);
@@ -166,7 +225,9 @@ namespace BankingAppDataTier.Controllers
                     });
                 }
 
-                if (relatedOffer.LoanType != entryInDb.RelatedOffer)
+                var relatedOfferLoanType = EnumsMapperProfile.MapLoanTypeFromString(relatedOffer.LoanType);
+
+                if (relatedOfferLoanType != loan.LoanType)
                 {
                     return BadRequest(new VoidOutput()
                     {
@@ -189,11 +250,11 @@ namespace BankingAppDataTier.Controllers
             }
 
 
-            entryInDb.StartDate = input.StartDate != null ? input.StartDate.GetValueOrDefault() : entryInDb.StartDate;
+            entryInDb.Name = input.Name != null ? input.Name : entryInDb.Name;
             entryInDb.RelatedAccount = input.RelatedAccount != null ? input.RelatedAccount : entryInDb.RelatedAccount;
             entryInDb.RelatedOffer = input.RelatedOffer != null ? input.RelatedOffer : entryInDb.RelatedOffer;
             entryInDb.Duration = input.Duration != null ? input.Duration.GetValueOrDefault() : entryInDb.Duration;
-            entryInDb.Amount = input.Amount != null ? input.Amount.GetValueOrDefault() : entryInDb.Amount;
+            entryInDb.PaidAmount = input.PaidAmount != null ? input.PaidAmount.GetValueOrDefault() : entryInDb.PaidAmount;
 
             var result = databaseLoansProvider.Edit(entryInDb);
 

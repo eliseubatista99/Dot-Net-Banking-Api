@@ -8,9 +8,9 @@
         public required string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the start date.
+        /// Gets or sets the loan name.
         /// </summary>
-        public DateTime? StartDate { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Gets or sets the related account.
@@ -28,8 +28,8 @@
         public int? Duration { get; set; }
 
         /// <summary>
-        /// Gets or sets the amount.
+        /// Gets or sets the paid amount.
         /// </summary>
-        public decimal? Amount { get; set; }
+        public decimal? PaidAmount { get; set; }
     }
 }

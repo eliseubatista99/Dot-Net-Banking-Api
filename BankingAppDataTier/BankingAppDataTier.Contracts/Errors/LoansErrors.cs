@@ -10,5 +10,7 @@ namespace BankingAppDataTier.Contracts.Errors
 
         public static BankingAppDataTierError CantChangeLoanType = new BankingAppDataTierError { Code = "CantChangeLoanType", Message = "Cannot change an active loan type. Cancel this loan and contract a new one." };
 
+        public static BankingAppDataTierError InsufficientFunds = new BankingAppDataTierError { Code = "InsufficientFunds", Message = "The account balance is not enough." };
+
     }
 }

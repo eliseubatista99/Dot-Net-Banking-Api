@@ -14,6 +14,9 @@
 
         public static string COLUMN_DURATION = "DURATION";
 
-        public static string COLUMN_AMOUNT = "AMOUNT";
+        public static string COLUMN_CONTRACTED_AMOUNT = "CONTRACTED_AMOUNT";
+
+        public static string COLUMN_PAID_AMOUNT = "PAID_AMOUNT";
+
     }
 }
