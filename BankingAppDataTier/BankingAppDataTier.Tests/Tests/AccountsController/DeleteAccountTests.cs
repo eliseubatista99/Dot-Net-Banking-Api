@@ -1,8 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
+﻿using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;

@@ -2,11 +2,11 @@
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 
-namespace BankingAppDataTier.Database
+namespace BankingAppDataTier.DatabaseInitializers
 {
-    public static class PlasticsDatabaseMock
+    public static class PlasticsDatabaseInitializer
     {
-        public static void DefaultMock(IDatabasePlasticsProvider dbProvider, bool includeTestEntries = false)
+        public static void DefaultMock(IDatabasePlasticsProvider dbProvider)
         {
             dbProvider.CreateTableIfNotExists();
 
@@ -107,9 +107,15 @@ namespace BankingAppDataTier.Database
 
         public static void CustomMock(IDatabasePlasticsProvider dbProvider, List<PlasticTableEntry> mock)
         {
-            dbProvider.DeleteAll();
+            dbProvider.CreateTableIfNotExists();
 
-            dbProvider!.CreateTableIfNotExists();
+            var elementsInDb = dbProvider.GetAll();
+
+            //If the database already has entries, don't add anything
+            if (elementsInDb.Count > 0)
+            {
+                return;
+            }
 
             foreach (var entry in mock)
             {

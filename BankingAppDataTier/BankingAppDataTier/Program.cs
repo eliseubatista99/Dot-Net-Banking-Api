@@ -1,5 +1,5 @@
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
+using BankingAppDataTier.DatabaseInitializers;
 using BankingAppDataTier.Providers;
 
 namespace BankingAppDataTier
@@ -24,13 +24,13 @@ namespace BankingAppDataTier
 
         static void InitializeDatabase(IServiceCollection serviceCollection)
         {
-            ClientsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseClientsProvider>()!);
-            AccountsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseAccountsProvider>()!);
-            PlasticsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabasePlasticsProvider>()!);
-            CardsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseCardsProvider>()!);
-            TransactionsDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseTransactionsProvider>()!);
-            LoanOffersDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseLoanOfferProvider>()!);
-            LoansDatabaseMock.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseLoansProvider>()!);
+            ClientsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseClientsProvider>()!);
+            AccountsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseAccountsProvider>()!);
+            PlasticsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabasePlasticsProvider>()!);
+            CardsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseCardsProvider>()!);
+            TransactionsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseTransactionsProvider>()!);
+            LoanOffersDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseLoanOfferProvider>()!);
+            LoansDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseLoansProvider>()!);
         }
 
         static void Main(string[] args)

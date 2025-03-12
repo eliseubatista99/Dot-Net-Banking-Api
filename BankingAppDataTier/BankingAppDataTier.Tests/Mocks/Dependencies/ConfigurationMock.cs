@@ -12,6 +12,9 @@ namespace BankingAppDataTier.Tests.Mocks
         {
             var inMemorySettings = new Dictionary<string, string?> {
                 {$"{DatabaseConfigs.DatabaseSection}:{DatabaseConfigs.DatabaseConnection}", TestsConstants.ConnectionString},
+                {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Issuer}", TestsConstants.AuthenticationIssuer},
+                {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Audience}", TestsConstants.AuthenticationAudience},
+                {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Key}", TestsConstants.AuthenticationKey},
                 {"SectionName:SomeKey", "SectionValue"},
                 //...populate as needed for the test
             };

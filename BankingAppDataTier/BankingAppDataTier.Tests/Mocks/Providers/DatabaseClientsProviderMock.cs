@@ -1,5 +1,4 @@
 ﻿using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
 using BankingAppDataTier.Providers;
 
 namespace BankingAppDataTier.Tests.Mocks

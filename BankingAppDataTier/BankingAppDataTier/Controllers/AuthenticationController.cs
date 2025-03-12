@@ -1,4 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
 using BankingAppDataTier.Contracts.Providers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,11 +25,14 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost("token")]
-        public IActionResult GenerateToken([FromBody] AuthenticationInputDto input)
+        public ActionResult<GenerateTokenOutput> GenerateToken([FromBody] AuthenticationInputDto input)
         {
             var token = authenticationProvider.GenerateToken(input.AppId);
             
-            return Ok(token);
+            return Ok(new GenerateTokenOutput()
+            {
+                Token = token,
+            });
         }        
     }
 }

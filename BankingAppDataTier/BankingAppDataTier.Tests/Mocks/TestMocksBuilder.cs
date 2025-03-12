@@ -1,6 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Controllers;
-using BankingAppDataTier.Database;
+using BankingAppDataTier.DatabaseInitializers;
+using BankingAppDataTier.Tests.Mocks.Database;
 
 namespace BankingAppDataTier.Tests.Mocks
 {
@@ -61,13 +62,13 @@ namespace BankingAppDataTier.Tests.Mocks
                 _DatabaseClientsProviderMock.DeleteAll();
 
                 // Mock database values
-                ClientsDatabaseMock.DefaultMock(_DatabaseClientsProviderMock, true);
-                AccountsDatabaseMock.DefaultMock(_DatabaseAccountsProviderMock, true);
-                PlasticsDatabaseMock.DefaultMock(_DatabasePlasticsProviderMock, true);
-                CardsDatabaseMock.DefaultMock(_DatabaseCardsProviderMock, true);
-                LoanOffersDatabaseMock.DefaultMock(_DatabaseLoanOffersProviderMock, true);
-                LoansDatabaseMock.DefaultMock(_DatabaseLoanProviderMock, true);
-                TransactionsDatabaseMock.DefaultMock(_DatabaseTransactionsProviderMock, true);
+                ClientsEntriesMock.Mock(_DatabaseClientsProviderMock);
+                AccountsEntriesMock.Mock(_DatabaseAccountsProviderMock);
+                PlasticsEntriesMock.Mock(_DatabasePlasticsProviderMock);
+                CardsEntriesMock.Mock(_DatabaseCardsProviderMock);
+                LoanOffersEntriesMock.Mock(_DatabaseLoanOffersProviderMock);
+                LoansEntriesMock.Mock(_DatabaseLoanProviderMock);
+                TransactionsEntriesMock.Mock(_DatabaseTransactionsProviderMock);
 
                 // Mock controllers
                 _AccountsControllerMock = AccountsControllerMock.Mock();
