@@ -57,7 +57,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetTransactionByIdOutput()
             {
-                Transaction = TransactionsMapperProfile.MapTableEntryToDto(itemInDb),
+                Transaction = mapperProvider.Map<TransactionTableEntry, TransactionDto>(itemInDb),
             });
         }
 
@@ -174,7 +174,7 @@ namespace BankingAppDataTier.Controllers
                 }
             }
 
-            var entry = TransactionsMapperProfile.MapDtoToTableEntry(input.Transaction);
+            var entry = mapperProvider.Map<TransactionDto, TransactionTableEntry>(input.Transaction);
 
             var result = databaseTransactionsProvider.Add(entry);
 
@@ -253,7 +253,7 @@ namespace BankingAppDataTier.Controllers
             var receivedTransactionsInDb = databaseTransactionsProvider.GetByDestinationAccount(account);
             var receivedTransactions = receivedTransactionsInDb.Select(t =>
             {
-                var trans = TransactionsMapperProfile.MapTableEntryToDto(t);
+                var trans = mapperProvider.Map<TransactionTableEntry, TransactionDto>(t);
                 trans.Role = TransactionRole.Receiver;
 
                 return trans;
@@ -262,7 +262,7 @@ namespace BankingAppDataTier.Controllers
             var sentTransactionsInDb = databaseTransactionsProvider.GetBySourceAccount(account);
             var sentTransactions = sentTransactionsInDb.Select(t =>
             {
-                var trans = TransactionsMapperProfile.MapTableEntryToDto(t);
+                var trans = mapperProvider.Map<TransactionTableEntry, TransactionDto>(t);
                 trans.Role = TransactionRole.Sender;
 
                 return trans;
@@ -298,7 +298,7 @@ namespace BankingAppDataTier.Controllers
             var sentTransactionsInDb = databaseTransactionsProvider.GetBySourceCard(card);
             return sentTransactionsInDb.Select(t =>
             {
-                var trans = TransactionsMapperProfile.MapTableEntryToDto(t);
+                var trans = mapperProvider.Map<TransactionTableEntry, TransactionDto>(t);
                 trans.Role = TransactionRole.Sender;
 
                 return trans;

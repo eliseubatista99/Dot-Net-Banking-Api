@@ -1,5 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Constants.Database;
-using Npgsql;
+﻿using Npgsql;
 
 namespace BankingAppDataTier.Database
 {

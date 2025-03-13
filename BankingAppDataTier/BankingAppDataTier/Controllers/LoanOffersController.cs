@@ -6,10 +6,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Mvc;
-using Npgsql;
-using System.Xml;
 
 
 namespace BankingAppDataTier.Controllers

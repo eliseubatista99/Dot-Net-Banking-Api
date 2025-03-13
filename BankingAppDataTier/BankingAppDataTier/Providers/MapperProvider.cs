@@ -20,6 +20,7 @@ namespace BankingAppDataTier.Providers
                 cfg.AddProfile<CardsMapperProfile>();
                 cfg.AddProfile<LoanOffersMapperProfile>();
                 cfg.AddProfile<LoansMapperProfile>();
+                cfg.AddProfile<TransactionsMapperProfile>();
             });
 
             // only during development, validate your mappings; remove it before release

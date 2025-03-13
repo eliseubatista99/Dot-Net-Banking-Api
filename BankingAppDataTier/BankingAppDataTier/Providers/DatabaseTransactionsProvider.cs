@@ -1,6 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
@@ -164,7 +165,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = TransactionsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, TransactionTableEntry>(sqlReader);
 
                         result.Add(dataEntry);
                     }
@@ -196,7 +197,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = TransactionsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, TransactionTableEntry>(sqlReader);
 
                             result.Add(dataEntry);
                         }
@@ -230,7 +231,7 @@ namespace BankingAppDataTier.Providers
                     if (sqlReader.HasRows)
                     {
                         sqlReader.Read();
-                        result = TransactionsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        result = mapperProvider.Map<NpgsqlDataReader, TransactionTableEntry>(sqlReader);
                     }
 
                     return result;
@@ -260,7 +261,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = TransactionsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, TransactionTableEntry>(sqlReader);
 
                             result.Add(dataEntry);
                         }
@@ -293,7 +294,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = TransactionsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, TransactionTableEntry>(sqlReader);
 
                             result.Add(dataEntry);
                         }

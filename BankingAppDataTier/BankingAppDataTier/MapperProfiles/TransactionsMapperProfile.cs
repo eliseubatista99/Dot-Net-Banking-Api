@@ -1,69 +1,45 @@
-﻿using BankingAppDataTier.Contracts.Constants.Database;
+﻿using AutoMapper;
+using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Database;
 using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    public static class TransactionsMapperProfile
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class TransactionsMapperProfile : Profile
     {
-        public static TransactionTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
+
+        public TransactionsMapperProfile()
         {
-            var description = sqlReader[TransactionsTable.COLUMN_DESCRIPTION];
-            var fees = sqlReader[TransactionsTable.COLUMN_FEES];
-            var sourceAccount = sqlReader[TransactionsTable.COLUMN_SOURCE_ACCOUNT];
-            var destinationAccount = sqlReader[TransactionsTable.COLUMN_DESTINATION_ACCOUNT];
-            var sourceCard = sqlReader[TransactionsTable.COLUMN_SOURCE_CARD];
-
-
-            return new TransactionTableEntry
-            {
-                Id = sqlReader[TransactionsTable.COLUMN_ID].ToString()!,
-                TransactionDate = Convert.ToDateTime(sqlReader[TransactionsTable.COLUMN_TRANSACTION_DATE].ToString())!,
-                Amount = Convert.ToDecimal(sqlReader[TransactionsTable.COLUMN_AMOUNT].ToString())!,
-                Urgent = Convert.ToBoolean(sqlReader[TransactionsTable.COLUMN_URGENT].ToString())!,
-                DestinationName = sqlReader[TransactionsTable.COLUMN_DESTINATION_NAME].ToString()!,
-                Description = description is System.DBNull ? null : description.ToString(),
-                Fees = fees is System.DBNull ? null : Convert.ToDecimal(fees),
-                SourceAccount = sourceAccount is System.DBNull ? null : sourceAccount.ToString(),
-                DestinationAccount = fees is System.DBNull ? null : destinationAccount.ToString(),
-                SourceCard = fees is System.DBNull ? null : sourceCard.ToString(),
-            };
+            this.CreateMapOfEntities();
         }
 
-        public static TransactionDto MapTableEntryToDto(TransactionTableEntry tableEntry)
-        {
-            return new TransactionDto
-            {
-                Id = tableEntry.Id,
-                Role = Contracts.Enums.TransactionRole.None,
-                TransactionDate = tableEntry.TransactionDate,
-                Amount = tableEntry.Amount,
-                Urgent = tableEntry.Urgent,
-                DestinationName = tableEntry.DestinationName,
-                Description = tableEntry.Description,
-                Fees = tableEntry.Fees,
-                SourceAccount = tableEntry.SourceAccount,
-                DestinationAccount = tableEntry.DestinationAccount,
-                SourceCard = tableEntry.SourceCard,
-            };
-        }
 
-        public static TransactionTableEntry MapDtoToTableEntry(TransactionDto dto)
+        /// <summary>
+        /// Create map of account entities.
+        /// </summary>
+        private void CreateMapOfEntities()
         {
-            return new TransactionTableEntry
-            {
-                Id = dto.Id,
-                TransactionDate = dto.TransactionDate,
-                Amount = dto.Amount,
-                Urgent = dto.Urgent,
-                DestinationName = dto.DestinationName,
-                Description = dto.Description,
-                Fees = dto.Fees,
-                SourceAccount = dto.SourceAccount,
-                DestinationAccount = dto.DestinationAccount,
-                SourceCard = dto.SourceCard,
-            };
-        }   
+            this.CreateMap<TransactionTableEntry, TransactionDto>()
+             .ForMember(d => d.Role, opt => opt.MapFrom(s => TransactionRole.None));
+
+            this.CreateMap<TransactionDto, TransactionTableEntry>();
+
+            this.CreateMap<NpgsqlDataReader, TransactionTableEntry>()
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_ID)))
+             .ForMember(d => d.TransactionDate, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_TRANSACTION_DATE)))
+             .ForMember(d => d.Amount, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_AMOUNT)))
+             .ForMember(d => d.Urgent, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_URGENT)))
+             .ForMember(d => d.DestinationName, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_DESTINATION_NAME)))
+             .ForMember(d => d.Description, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_DESCRIPTION)))
+             .ForMember(d => d.Fees, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_FEES)))
+             .ForMember(d => d.SourceAccount, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_SOURCE_ACCOUNT)))
+             .ForMember(d => d.DestinationAccount, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_DESTINATION_ACCOUNT)))
+             .ForMember(d => d.SourceCard, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TransactionsTable.COLUMN_SOURCE_CARD)));
+        }
     }
 }

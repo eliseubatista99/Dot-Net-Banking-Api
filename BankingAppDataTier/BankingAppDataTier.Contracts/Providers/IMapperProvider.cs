@@ -1,6 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Database;
-
-namespace BankingAppDataTier.Contracts.Providers
+﻿namespace BankingAppDataTier.Contracts.Providers
 {
     public interface IMapperProvider
     {

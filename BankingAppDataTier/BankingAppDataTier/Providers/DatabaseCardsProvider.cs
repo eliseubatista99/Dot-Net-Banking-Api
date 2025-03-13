@@ -3,7 +3,6 @@ using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
-using BankingAppDataTier.MapperProfiles;
 using Npgsql;
 
 namespace BankingAppDataTier.Providers
