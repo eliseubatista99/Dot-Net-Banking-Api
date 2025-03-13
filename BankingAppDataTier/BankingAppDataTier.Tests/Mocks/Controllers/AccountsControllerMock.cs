@@ -13,9 +13,11 @@
                 var databaseAccountsProvider = DatabaseAccountsProviderMock.Mock();
                 var databaseCardsProvider = DatabaseCardsProviderMock.Mock();
                 var databaseLoansProvider = DatabaseLoanProviderMock.Mock();
+                var _mapper = MapperProviderMock.Mock();
 
                 _controller = new BankingAppDataTier.Controllers.AccountsController(
                     logger,
+                    _mapper,
                     databaseClientsProvider,
                     databaseAccountsProvider,
                     databaseCardsProvider,

@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using BankingAppDataTier.Contracts.Constants.Database;
+using Npgsql;
 
 namespace BankingAppDataTier.Database
 {
@@ -19,6 +20,30 @@ namespace BankingAppDataTier.Database
             command.Transaction = transaction;
 
             return (transaction, command);
+        }
+
+        public static string? ReadColumnValue(NpgsqlDataReader sqlReader, string columnName)
+        {
+            var value = (sqlReader[columnName]);
+
+            if(value is System.DBNull)
+            {
+                return null;
+            }
+
+            return value.ToString();
+        }
+
+        public static Nullable<T> ReadColumnValue<T>(NpgsqlDataReader sqlReader, string columnName) where T : struct
+        {
+            var value = (sqlReader[columnName]);
+
+            if (value is System.DBNull)
+            {
+                return null;
+            }
+
+            return (T)value;
         }
     }
 }

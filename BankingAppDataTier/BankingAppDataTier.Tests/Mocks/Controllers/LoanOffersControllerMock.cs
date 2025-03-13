@@ -11,8 +11,13 @@
                 var logger = LoggerMock<BankingAppDataTier.Controllers.ClientsController>.Mock();
                 var databaseLoanOffersProvider = DatabaseLoanOffersProviderMock.Mock();
                 var databasLoansProvider = DatabaseLoanProviderMock.Mock();
+                var _mapper = MapperProviderMock.Mock();
 
-                _controller = new BankingAppDataTier.Controllers.LoanOffersController(logger, databaseLoanOffersProvider, databasLoansProvider);
+                _controller = new BankingAppDataTier.Controllers.LoanOffersController(
+                    logger,
+                    _mapper,
+                    databaseLoanOffersProvider,
+                    databasLoansProvider);
             }
 
             return _controller;

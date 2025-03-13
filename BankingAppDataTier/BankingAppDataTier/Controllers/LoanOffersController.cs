@@ -17,12 +17,18 @@ namespace BankingAppDataTier.Controllers
     public class LoanOffersController : Controller
     {
         private readonly ILogger<ClientsController> logger;
+        private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseLoansProvider databaseLoansProvider;
         private readonly IDatabaseLoanOfferProvider databaseLoanOffersProvider;
 
-        public LoanOffersController(ILogger<ClientsController> _logger, IDatabaseLoanOfferProvider _dbLoanOffersProvider, IDatabaseLoansProvider _dbLoansProvider)
+        public LoanOffersController(
+            ILogger<ClientsController> _logger,
+            IMapperProvider _mapper,
+            IDatabaseLoanOfferProvider _dbLoanOffersProvider,
+            IDatabaseLoansProvider _dbLoansProvider)
         {
             logger = _logger;
+            mapperProvider = _mapper;
             databaseLoanOffersProvider = _dbLoanOffersProvider;
             databaseLoansProvider = _dbLoansProvider;
         }

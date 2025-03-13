@@ -11,12 +11,14 @@ namespace BankingAppDataTier.Providers
     public class DatabaseTransactionsProvider : IDatabaseTransactionsProvider
     {
         private IConfiguration Configuration;
+        private IMapperProvider mapperProvider;
 
         private string connectionString;
 
-        public DatabaseTransactionsProvider(IConfiguration configuration)
+        public DatabaseTransactionsProvider(IConfiguration configuration, IMapperProvider _mapperProvider)
         {
             this.Configuration = configuration;
+            this.mapperProvider = _mapperProvider;
 
             connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection);
         }

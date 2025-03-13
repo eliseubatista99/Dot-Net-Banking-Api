@@ -1,64 +1,77 @@
-﻿using BankingAppDataTier.Contracts.Constants.Database;
+﻿using AutoMapper;
+using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Database;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Npgsql;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    public static class AccountsMapperProfile
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class AccountsMapperProfile : Profile
     {
-        public static AccountsTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountsMapperProfile"/> class.
+        /// </summary>
+        public AccountsMapperProfile()
         {
-            var accountImage = (sqlReader[AccountsTable.COLUMN_IMAGE]).ToString();
-
-            var sourceAccountId = sqlReader[AccountsTable.COLUMN_SOURCE_ACCOUNT_ID];
-            var duration = sqlReader[AccountsTable.COLUMN_DURATION];
-            var interest = sqlReader[AccountsTable.COLUMN_INTEREST];
-
-            return new AccountsTableEntry
-            {
-                AccountId = sqlReader[AccountsTable.COLUMN_ID].ToString()!,
-                OwnerCliendId = sqlReader[AccountsTable.COLUMN_OWNER_CLIENT_ID].ToString()!,
-                AccountType = sqlReader[AccountsTable.COLUMN_TYPE].ToString()!,
-                Balance = Convert.ToDecimal(sqlReader[AccountsTable.COLUMN_BALANCE].ToString())!,
-                Name = sqlReader[AccountsTable.COLUMN_NAME].ToString()!,
-                Image = accountImage,
-                SourceAccountId = sourceAccountId is System.DBNull? null : sourceAccountId.ToString(),
-                Duration = duration is System.DBNull ? null : Convert.ToInt16(duration),
-                Interest = interest is System.DBNull ? null :Convert.ToDecimal(interest),
-            };
+            this.CreateMapOfEnums();
+            this.CreateMapOfEntities();
         }
 
-        public static AccountDto MapTableEntryToDto(AccountsTableEntry tableEntry)
+        /// <summary>
+        /// Create map of enums.
+        /// </summary>
+        private void CreateMapOfEnums()
         {
-            return new AccountDto
+            this.CreateMap<string, AccountType>().ConvertUsing((src, _) =>
             {
-                Id = tableEntry.AccountId,
-                OwnerCliendId = tableEntry.OwnerCliendId,
-                AccountType = EnumsMapperProfile.MapAccountTypeFromString(tableEntry.AccountType),
-                Balance = tableEntry.Balance,
-                Name = tableEntry.Name,
-                Image = tableEntry.Image,
-                SourceAccountId = tableEntry.SourceAccountId,
-                Duration = tableEntry.Duration,
-                Interest = tableEntry.Interest
-            };
+                return src switch
+                {
+                    BankingAppDataTierConstants.ACCOUNT_TYPE_CURRENT => AccountType.Current,
+                    BankingAppDataTierConstants.ACCOUNT_TYPE_SAVINGS => AccountType.Savings,
+                    BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS => AccountType.Investments,
+                    _ => AccountType.None
+                };
+            });
+
+            this.CreateMap<AccountType, string>().ConvertUsing((src, _) =>
+            {
+                return src switch
+                {
+                    AccountType.Current => BankingAppDataTierConstants.ACCOUNT_TYPE_CURRENT,
+                    AccountType.Savings => BankingAppDataTierConstants.ACCOUNT_TYPE_SAVINGS,
+                    AccountType.Investments => BankingAppDataTierConstants.ACCOUNT_TYPE_INVESTMENTS,
+                    _ => ""
+                };
+            });
         }
 
-        public static AccountsTableEntry MapDtoToTableEntry(AccountDto dto)
+        /// <summary>
+        /// Create map of entities.
+        /// </summary>
+        private void CreateMapOfEntities()
         {
-            return new AccountsTableEntry
-            {
-                AccountId = dto.Id,
-                OwnerCliendId= dto.OwnerCliendId,
-                AccountType = EnumsMapperProfile.MapAccountTypeToString(dto.AccountType),
-                Balance = dto.Balance,
-                Name = dto.Name,
-                Image = dto.Image,
-                SourceAccountId = dto.SourceAccountId,
-                Duration = dto.Duration,
-                Interest = dto.Interest
-            };
+            this.CreateMap<AccountsTableEntry, AccountDto>()
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.AccountId));
+
+            this.CreateMap<AccountDto, AccountsTableEntry>()
+             .ForMember(d => d.AccountId, opt => opt.MapFrom(s => s.Id));
+
+            this.CreateMap<NpgsqlDataReader, AccountsTableEntry>()
+             .ForMember(d => d.AccountId, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_ID)))
+             .ForMember(d => d.OwnerCliendId, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_OWNER_CLIENT_ID)))
+             .ForMember(d => d.AccountType, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_TYPE)))
+             .ForMember(d => d.Balance, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_BALANCE)))
+             .ForMember(d => d.Name, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_NAME)))
+             .ForMember(d => d.Image, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_IMAGE)))
+             .ForMember(d => d.SourceAccountId, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_SOURCE_ACCOUNT_ID)))
+             .ForMember(d => d.Duration, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_DURATION)))
+             .ForMember(d => d.Interest, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, AccountsTable.COLUMN_INTEREST)));
         }
     }
 }

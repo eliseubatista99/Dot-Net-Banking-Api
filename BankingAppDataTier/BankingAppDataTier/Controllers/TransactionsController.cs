@@ -19,19 +19,22 @@ namespace BankingAppDataTier.Controllers
     public class TransactionsController : Controller
     {
         private readonly ILogger<ClientsController> logger;
+        private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseTransactionsProvider databaseTransactionsProvider;
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
 
         public TransactionsController(
-            ILogger<ClientsController> _logger,
+            ILogger<ClientsController> _logger, 
+            IMapperProvider _mapper,
             IDatabaseTransactionsProvider _dbTransactionsProvider,
             IDatabaseClientsProvider _dbClientsProvider,
             IDatabaseAccountsProvider _dbAccountsProvider,
             IDatabaseCardsProvider _dbCardsProvider)
         {
             logger = _logger;
+            mapperProvider = _mapper;
             databaseTransactionsProvider = _dbTransactionsProvider;
             databaseClientsProvider = _dbClientsProvider;
             databaseAccountsProvider = _dbAccountsProvider;

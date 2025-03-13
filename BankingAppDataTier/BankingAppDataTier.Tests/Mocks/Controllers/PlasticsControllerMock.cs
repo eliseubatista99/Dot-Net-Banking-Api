@@ -11,8 +11,13 @@
                 var logger = LoggerMock<BankingAppDataTier.Controllers.ClientsController>.Mock();
                 var databaseCardsProvider = DatabaseCardsProviderMock.Mock();
                 var databasePlasticsProvider = DatabasePlasticsProviderMock.Mock();
+                var _mapper = MapperProviderMock.Mock();
 
-                _controller = new BankingAppDataTier.Controllers.PlasticsController(logger, databasePlasticsProvider, databaseCardsProvider);
+                _controller = new BankingAppDataTier.Controllers.PlasticsController(
+                    logger,
+                    _mapper,
+                    databasePlasticsProvider,
+                    databaseCardsProvider);
             }
 
             return _controller;

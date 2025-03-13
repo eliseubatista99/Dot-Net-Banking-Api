@@ -8,6 +8,7 @@ namespace BankingAppDataTier
     {
         static (IAuthenticationProvider authProvider, IServiceCollection serviceCollection) InjectDependencies(ref WebApplicationBuilder builder)
         {
+            builder.Services.AddSingleton<IMapperProvider, MapperProvider>();
             builder.Services.AddSingleton<IAuthenticationProvider, AuthenticationProvider>();
             builder.Services.AddSingleton<IDatabaseClientsProvider, DatabaseClientsProvider>();
             builder.Services.AddSingleton<IDatabaseAccountsProvider, DatabaseAccountsProvider>();

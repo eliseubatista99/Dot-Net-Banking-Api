@@ -17,11 +17,17 @@ namespace BankingAppDataTier.Controllers
     public class PlasticsController : Controller
     {
         private readonly ILogger<ClientsController> logger;
+        private readonly IMapperProvider mapperProvider;
         private readonly IDatabasePlasticsProvider databasePlasticsProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
-        public PlasticsController(ILogger<ClientsController> _logger, IDatabasePlasticsProvider _dbPlasticsProvider, IDatabaseCardsProvider _dbCardsProvider)
+        public PlasticsController(
+            ILogger<ClientsController> _logger,
+            IMapperProvider _mapper,
+            IDatabasePlasticsProvider _dbPlasticsProvider,
+            IDatabaseCardsProvider _dbCardsProvider)
         {
             logger = _logger;
+            mapperProvider = _mapper;
             databasePlasticsProvider = _dbPlasticsProvider;
             databaseCardsProvider = _dbCardsProvider;
         }

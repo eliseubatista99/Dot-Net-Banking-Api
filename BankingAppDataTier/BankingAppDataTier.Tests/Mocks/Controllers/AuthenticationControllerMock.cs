@@ -13,7 +13,9 @@
                 var authProvider = AuthenticationProviderMock.Mock();
 
                 _controller = new BankingAppDataTier.Controllers.AuthenticationController(
-                    logger, configuration, authProvider);
+                    logger,
+                    configuration, 
+                    authProvider);
             }
 
             return _controller;

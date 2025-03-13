@@ -18,7 +18,8 @@ namespace BankingAppDataTier.Tests.Mocks
 
 
                     var _configuration = ConfigurationMock.Mock();
-                    _dbProvider = new DatabaseClientsProvider(_configuration);
+                    var _mapper = MapperProviderMock.Mock();
+                    _dbProvider = new DatabaseClientsProvider(_configuration, _mapper);
                 }
 
 

@@ -1,4 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
@@ -7,6 +8,7 @@ using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -18,15 +20,17 @@ namespace BankingAppDataTier.Controllers
     public class AccountsController : Controller
     {
         private readonly ILogger<ClientsController> logger;
+        private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
         private readonly IDatabaseLoansProvider databaseLoansProvider;
 
-        public AccountsController(ILogger<ClientsController> _logger, IDatabaseClientsProvider _dbClientsProvider,
+        public AccountsController(ILogger<ClientsController> _logger, IMapperProvider _mapper, IDatabaseClientsProvider _dbClientsProvider,
             IDatabaseAccountsProvider _dbAccountsProvider, IDatabaseCardsProvider _dbCardsProvider, IDatabaseLoansProvider _dbLoansProvider)
         {
             logger = _logger;
+            mapperProvider = _mapper;
             databaseClientsProvider = _dbClientsProvider;
             databaseAccountsProvider = _dbAccountsProvider;
             databaseCardsProvider = _dbCardsProvider;
@@ -59,7 +63,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            result = clientAccountsInDb.Select(acc => AccountsMapperProfile.MapTableEntryToDto(acc)).ToList();
+            result = clientAccountsInDb.Select(acc => mapperProvider.Map<AccountsTableEntry, AccountDto>(acc)).ToList();
 
             return Ok(new GetClientAccountsOutput()
             {
@@ -83,7 +87,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetAccountByIdOutput()
             {
-                Account = AccountsMapperProfile.MapTableEntryToDto(itemInDb),
+                Account = mapperProvider.Map<AccountsTableEntry, AccountDto>(itemInDb),
             });
         }
 
@@ -121,7 +125,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = AccountsMapperProfile.MapDtoToTableEntry(input.Account);
+            var entry = mapperProvider.Map<AccountDto, AccountsTableEntry>(input.Account);
 
             var result = databaseAccountsProvider.Add(entry);
 

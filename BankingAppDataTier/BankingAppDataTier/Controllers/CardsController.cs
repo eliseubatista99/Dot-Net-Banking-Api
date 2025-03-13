@@ -18,17 +18,20 @@ namespace BankingAppDataTier.Controllers
     public class CardsController : Controller
     {
         private readonly ILogger<ClientsController> logger;
+        private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
         private readonly IDatabasePlasticsProvider databasePlasticsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
         public CardsController(
             ILogger<ClientsController> _logger,
+            IMapperProvider _mapper,
             IDatabaseCardsProvider _dbCardsProvider,
             IDatabasePlasticsProvider _dbPlasticsProvider,
             IDatabaseAccountsProvider _dbAccountsProvider)
         {
             logger = _logger;
+            mapperProvider = _mapper;
             databaseCardsProvider = _dbCardsProvider;
             databasePlasticsProvider = _dbPlasticsProvider;
             databaseAccountsProvider = _dbAccountsProvider;

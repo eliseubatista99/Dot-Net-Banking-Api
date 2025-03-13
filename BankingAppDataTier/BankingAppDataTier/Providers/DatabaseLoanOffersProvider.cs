@@ -12,12 +12,14 @@ namespace BankingAppDataTier.Providers
     {
 
         private IConfiguration Configuration;
+        private IMapperProvider mapperProvider;
 
         private string connectionString;
 
-        public DatabaseLoanOffersProvider(IConfiguration configuration)
+        public DatabaseLoanOffersProvider(IConfiguration configuration, IMapperProvider _mapperProvider)
         {
             this.Configuration = configuration;
+            this.mapperProvider = _mapperProvider;
 
             connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection);
         }

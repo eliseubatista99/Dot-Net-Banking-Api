@@ -13,12 +13,14 @@ namespace BankingAppDataTier.Providers
     {
 
         private IConfiguration Configuration;
+        private IMapperProvider mapperProvider;
 
         private string connectionString;
 
-        public DatabaseAccountsProvider(IConfiguration configuration)
+        public DatabaseAccountsProvider(IConfiguration configuration, IMapperProvider _mapperProvider)
         {
             this.Configuration = configuration;
+            this.mapperProvider = _mapperProvider;
 
             connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection);
         }
@@ -83,7 +85,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = AccountsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, AccountsTableEntry>(sqlReader);
 
                             result.Add(dataEntry);
                         }
@@ -116,7 +118,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = AccountsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, AccountsTableEntry>(sqlReader);
 
                         result.Add(dataEntry);
                     }
@@ -149,7 +151,7 @@ namespace BankingAppDataTier.Providers
                     if (sqlReader.HasRows)
                     {
                         sqlReader.Read();
-                        result = AccountsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        result = mapperProvider.Map<NpgsqlDataReader, AccountsTableEntry>(sqlReader);
                     }
 
                     return result;
