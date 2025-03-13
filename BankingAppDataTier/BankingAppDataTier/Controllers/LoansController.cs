@@ -144,7 +144,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = ALoansMapperProfile.MapDtoToTableEntry(input.Loan);
+            var entry = mapperProvider.Map<LoanDto, LoanTableEntry>(input.Loan);
 
             var result = databaseLoansProvider.Add(entry);
 
@@ -305,7 +305,7 @@ namespace BankingAppDataTier.Controllers
 
         private LoanDto BuildLoanDto(LoanTableEntry entry)
         {
-            var loan = ALoansMapperProfile.MapTableEntryToDto(entry);
+            var loan = mapperProvider.Map<LoanTableEntry, LoanDto>(entry);
             var offerData = databaseLoanOffersProvider.GetById(loan.RelatedOffer);
 
             if (offerData == null)

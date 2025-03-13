@@ -1,56 +1,72 @@
-﻿using BankingAppDataTier.Contracts.Constants.Database;
+﻿using AutoMapper;
+using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Providers;
+using BankingAppDataTier.Database;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Npgsql;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    public static class LoanOffersMapperProfile
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class LoanOffersMapperProfile : Profile
     {
-        public static LoanOfferTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
+
+        public LoanOffersMapperProfile()
         {
-            return new LoanOfferTableEntry
-            {
-                Id = sqlReader[LoanOffersTable.COLUMN_ID].ToString()!,
-                Name = sqlReader[LoanOffersTable.COLUMN_NAME].ToString()!,
-                Description = sqlReader[LoanOffersTable.COLUMN_DESCRIPTION].ToString()!,
-                LoanType = sqlReader[LoanOffersTable.COLUMN_TYPE].ToString()!,
-                MaxEffort = Convert.ToInt16(sqlReader[LoanOffersTable.COLUMN_MAX_EFFORT].ToString())!,
-                Interest = Convert.ToDecimal(sqlReader[LoanOffersTable.COLUMN_INTEREST].ToString())!,
-                IsActive = Convert.ToBoolean(sqlReader[LoanOffersTable.COLUMN_IS_ACTIVE].ToString())!,
-            };
+            this.CreateMapOfEnums();
+            this.CreateMapOfEntities();
         }
 
-        public static LoanOfferDto MapTableEntryToDto(LoanOfferTableEntry tableEntry)
+        /// <summary>
+        /// Create map of enums.
+        /// </summary>
+        private void CreateMapOfEnums()
         {
-            return new LoanOfferDto
+            this.CreateMap<string, LoanType>().ConvertUsing((src, _) =>
             {
-                Id = tableEntry.Id,
-                Name = tableEntry.Name,
-                Description = tableEntry.Description,
-                //LoanType = AEnumsMapperProfile.MapLoanTypeFromString(tableEntry.LoanType),
-                LoanType = LoanType.None,
-                MaxEffort = tableEntry.MaxEffort,
-                Interest = tableEntry.Interest,
-                IsActive = tableEntry.IsActive,
-            };
+                return src switch
+                {
+                    BankingAppDataTierConstants.LOAN_TYPE_AUTO => LoanType.Auto,
+                    BankingAppDataTierConstants.LOAN_TYPE_MORTAGAGE => LoanType.Mortgage,
+                    BankingAppDataTierConstants.LOAN_TYPE_PERSONAL => LoanType.Personal,
+                    _ => LoanType.None,
+                };
+            });
+
+            this.CreateMap<LoanType, string>().ConvertUsing((src, _) =>
+            {
+                return src switch
+                {
+                    LoanType.Auto => BankingAppDataTierConstants.LOAN_TYPE_AUTO,
+                    LoanType.Mortgage => BankingAppDataTierConstants.LOAN_TYPE_MORTAGAGE,
+                    LoanType.Personal => BankingAppDataTierConstants.LOAN_TYPE_PERSONAL,
+                    _ => ""
+                };
+            });
         }
 
-        public static LoanOfferTableEntry MapDtoToTableEntry(LoanOfferDto dto)
+        /// <summary>
+        /// Create map of account entities.
+        /// </summary>
+        private void CreateMapOfEntities()
         {
-            return new LoanOfferTableEntry
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Description = dto.Description,
-                //LoanType = AEnumsMapperProfile.MapLoanTypeToString(dto.LoanType),
-                LoanType = "",
-                MaxEffort = dto.MaxEffort,
-                Interest = dto.Interest,
-                IsActive = dto.IsActive.GetValueOrDefault(),
-            };
+            this.CreateMap<LoanOfferTableEntry, LoanOfferDto>();
+
+            this.CreateMap<LoanOfferDto, LoanOfferTableEntry>()
+             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.IsActive.GetValueOrDefault()));
+
+            this.CreateMap<NpgsqlDataReader, LoanOfferTableEntry>()
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_ID)))
+             .ForMember(d => d.Name, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_NAME)))
+             .ForMember(d => d.Description, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_DESCRIPTION)))
+             .ForMember(d => d.LoanType, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_TYPE)))
+             .ForMember(d => d.MaxEffort, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_MAX_EFFORT)))
+             .ForMember(d => d.Interest, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_INTEREST)))
+             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_IS_ACTIVE)));
         }
     }
 }

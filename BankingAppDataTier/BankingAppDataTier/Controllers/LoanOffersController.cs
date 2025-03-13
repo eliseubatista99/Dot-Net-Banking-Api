@@ -1,4 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+﻿using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
@@ -7,6 +8,8 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
+using System.Xml;
 
 
 namespace BankingAppDataTier.Controllers
@@ -50,7 +53,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            result = loanOffersInDb.Select(i => LoanOffersMapperProfile.MapTableEntryToDto(i)).ToList();
+            result = loanOffersInDb.Select(i => mapperProvider.Map<LoanOfferTableEntry, LoanOfferDto>(i)).ToList();
 
             return Ok(new GetLoanOffersByTypeOutput()
             {
@@ -74,7 +77,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetLoanOfferByIdOutput()
             {
-                LoanOffer = LoanOffersMapperProfile.MapTableEntryToDto(itemInDb),
+                LoanOffer = mapperProvider.Map<LoanOfferTableEntry, LoanOfferDto>(itemInDb)
             });
         }
 
@@ -91,7 +94,8 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = LoanOffersMapperProfile.MapDtoToTableEntry(input.LoanOffer);
+            var entry = mapperProvider.Map<LoanOfferDto, LoanOfferTableEntry>(input.LoanOffer);
+
 
             var result = databaseLoanOffersProvider.Add(entry);
 

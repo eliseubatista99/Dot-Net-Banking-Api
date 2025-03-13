@@ -6,6 +6,8 @@
 
         public static string COLUMN_ID = "ID";
 
+        public static string COLUMN_NAME = "LOAN_NAME";
+
         public static string COLUMN_RELATED_OFFER = "RELATED_OFFER";
 
         public static string COLUMN_RELATED_ACCOUNT = "RELATED_ACCOUNT";

@@ -1,6 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
@@ -37,7 +38,7 @@ namespace BankingAppDataTier.Providers
                     command.CommandText = $"CREATE TABLE IF NOT EXISTS {LoansTable.TABLE_NAME}" +
                         $"(" +
                         $"{LoansTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
-                        $"{LoansTable.TABLE_NAME} VARCHAR(64) NOT NULL," +
+                        $"{LoansTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
                         $"{LoansTable.COLUMN_RELATED_ACCOUNT} VARCHAR(64) NOT NULL," +
                         $"{LoansTable.COLUMN_START_DATE} DATE NOT NULL," +
                         $"{LoansTable.COLUMN_RELATED_OFFER} VARCHAR(64) NOT NULL," +
@@ -75,7 +76,7 @@ namespace BankingAppDataTier.Providers
                 try
                 {
                     command.CommandText = $"INSERT INTO {LoansTable.TABLE_NAME} " +
-                        $"({LoansTable.COLUMN_ID}, {LoansTable.TABLE_NAME}, {LoansTable.COLUMN_RELATED_ACCOUNT}, {LoansTable.COLUMN_START_DATE}," +
+                        $"({LoansTable.COLUMN_ID}, {LoansTable.COLUMN_NAME}, {LoansTable.COLUMN_RELATED_ACCOUNT}, {LoansTable.COLUMN_START_DATE}," +
                         $" {LoansTable.COLUMN_RELATED_OFFER}, {LoansTable.COLUMN_DURATION}, {LoansTable.COLUMN_CONTRACTED_AMOUNT}, {LoansTable.COLUMN_PAID_AMOUNT}) " +
                         $"VALUES " +
                         $"('{entry.Id}', '{entry.Name}', '{entry.RelatedAccount}', '{entry.StartDate.ToString("yyyy-MM-dd")}', '{entry.RelatedOffer}', " +
@@ -135,7 +136,7 @@ namespace BankingAppDataTier.Providers
                 {
                     command.CommandText = $"UPDATE {LoansTable.TABLE_NAME} " +
                     $"SET {LoansTable.COLUMN_START_DATE} = '{entry.StartDate}', " +
-                    $"{LoansTable.TABLE_NAME} = '{entry.Name}', " +
+                    $"{LoansTable.COLUMN_NAME} = '{entry.Name}', " +
                     $"{LoansTable.COLUMN_RELATED_ACCOUNT} = '{entry.RelatedAccount}', " +
                     $"{LoansTable.COLUMN_RELATED_OFFER} = '{entry.RelatedOffer}', " +
                     $"{LoansTable.COLUMN_DURATION} = '{entry.Duration}', " +
@@ -176,7 +177,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = ALoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, LoanTableEntry>(sqlReader);
 
                         result.Add(dataEntry);
                     }
@@ -209,7 +210,7 @@ namespace BankingAppDataTier.Providers
                     if (sqlReader.HasRows)
                     {
                         sqlReader.Read();
-                        result = ALoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        result = mapperProvider.Map<NpgsqlDataReader, LoanTableEntry>(sqlReader);
                     }
 
                     return result;
@@ -241,7 +242,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = ALoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, LoanTableEntry>(sqlReader);
 
                             result.Add(dataEntry);
                         }
@@ -276,7 +277,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = ALoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, LoanTableEntry>(sqlReader);
 
                             result.Add(dataEntry);
                         }

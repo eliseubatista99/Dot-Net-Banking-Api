@@ -14,11 +14,12 @@ namespace BankingAppDataTier.Providers
             {
                 cfg.AllowNullCollections = true;
                 //cfg.Advanced.AllowAdditiveTypeMapCreation = true;
-                cfg.AddProfile<CommonMapperProfile>();
-
                 cfg.AddProfile<ClientsMapperProfile>();
                 cfg.AddProfile<AccountsMapperProfile>();
                 cfg.AddProfile<PlasticsMapperProfile>();
+                cfg.AddProfile<CardsMapperProfile>();
+                cfg.AddProfile<LoanOffersMapperProfile>();
+                cfg.AddProfile<LoansMapperProfile>();
             });
 
             // only during development, validate your mappings; remove it before release
