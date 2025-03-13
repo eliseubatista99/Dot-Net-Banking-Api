@@ -26,7 +26,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
                 Amount = 100.35M,
                 Fees = 1.25M,
                 Urgent = false,
-                SourceCard = "Permanent_Current_01",
+                SourceCard = "Permanent_Debit_01",
                 DestinationName = "Water Company",
             },
             new TransactionTableEntry
@@ -37,7 +37,31 @@ namespace BankingAppDataTier.Tests.Mocks.Database
                 Amount = 100.35M,
                 Fees = 1.25M,
                 Urgent = false,
-                SourceAccount = "Permanent_Current_01",
+                DestinationAccount = "Permanent_Current_01",
+                SourceAccount = "Permanent_Current_02",
+                DestinationName = "Water Company",
+            },
+            new TransactionTableEntry
+            {
+                Id = "Permanent_Transaction_04",
+                TransactionDate = new DateTime(2025, 03, 10),
+                Description = "Test transfer from card",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = false,
+                DestinationAccount = "Permanent_Current_03",
+                SourceAccount = "Random_Account",
+                DestinationName = "Water Company",
+            },
+            new TransactionTableEntry
+            {
+                Id = "Permanent_Transaction_05",
+                TransactionDate = new DateTime(2025, 03, 10),
+                Description = "Test transfer from card",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = false,
+                SourceCard = "Permanent_Debit_02",
                 DestinationName = "Water Company",
             },
             new TransactionTableEntry
@@ -48,7 +72,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
                 Amount = 100.35M,
                 Fees = 1.25M,
                 Urgent = false,
-                SourceAccount = "ACJW000000",
+                SourceAccount = "Permanent_Current_01",
                 DestinationName = "Water Company",
             },
             new TransactionTableEntry
@@ -59,7 +83,7 @@ namespace BankingAppDataTier.Tests.Mocks.Database
                 Amount = 100.35M,
                 Fees = 1.25M,
                 Urgent = false,
-                SourceAccount = "ACJW000000",
+                SourceAccount = "Permanent_Current_01",
                 DestinationName = "Water Company",
             }
         ];

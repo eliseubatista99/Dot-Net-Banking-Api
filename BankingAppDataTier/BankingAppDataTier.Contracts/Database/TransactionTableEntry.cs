@@ -1,6 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Enums;
-
-namespace BankingAppDataTier.Contracts.Database
+﻿namespace BankingAppDataTier.Contracts.Database
 {
     public class TransactionTableEntry
     {

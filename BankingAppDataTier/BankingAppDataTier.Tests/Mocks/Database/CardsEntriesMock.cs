@@ -19,6 +19,16 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new CardsTableEntry
             {
+                Id = "Permanent_Debit_02",
+                Name = "DB_Basic",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "Permanent_Debit_01",
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+            },
+            new CardsTableEntry
+            {
                 Id = "Permanent_PrePaid_01",
                 Name = "PP_Agile",
                 RelatedAccountID = "Permanent_Current_01",

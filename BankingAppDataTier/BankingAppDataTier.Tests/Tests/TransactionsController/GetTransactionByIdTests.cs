@@ -1,5 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
+﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;

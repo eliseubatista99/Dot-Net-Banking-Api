@@ -1,5 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Enums;
+﻿using BankingAppDataTier.Contracts.Enums;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
 {
@@ -8,6 +7,8 @@ namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
         public required string Client { get; set; }
 
         public List<string>? Accounts { get; set; }
+
+        public List<string>? Cards { get; set; }
 
         public TransactionRole? Role { get; set; }
     }

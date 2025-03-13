@@ -10,5 +10,10 @@ namespace BankingAppDataTier.Contracts.Errors
 
         public static BankingAppDataTierError NoCardsFound = new BankingAppDataTierError { Code = "NoCardsFound", Message = "No cards found for the specified request" };
 
+        public static BankingAppDataTierError InvalidSourceAccount = new BankingAppDataTierError { Code = "InvalidSourceAccount", Message = "Source Account Is Invalid" };
+
+        public static BankingAppDataTierError InvalidSourceCard = new BankingAppDataTierError { Code = "InvalidSourceCard", Message = "Source Card Is Invalid" };
+
+
     }
 }

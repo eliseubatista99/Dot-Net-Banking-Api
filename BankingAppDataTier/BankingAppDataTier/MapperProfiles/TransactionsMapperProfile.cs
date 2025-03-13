@@ -2,7 +2,6 @@
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using Npgsql;
-using System.Data;
 
 namespace BankingAppDataTier.MapperProfiles
 {

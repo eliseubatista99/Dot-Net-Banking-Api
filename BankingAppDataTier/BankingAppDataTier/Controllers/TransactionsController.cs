@@ -8,6 +8,7 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 
 namespace BankingAppDataTier.Controllers
@@ -63,6 +64,12 @@ namespace BankingAppDataTier.Controllers
         {
             var clientInDb = databaseClientsProvider.GetById(input.Client);
 
+            // Filter by cards if cards were specified in input, or if nothing was specified on input
+            var filterByCards = input.Cards != null || (input.Cards == null && input.Accounts == null);
+
+            // Filter by accounts if accounts were specified in input, or if nothing was specified on input
+            var filterByAccounts = input.Accounts != null || (input.Cards == null && input.Accounts == null);
+
             if (clientInDb == null)
             {
                 return NotFound(new GetTransactionsOfClientOutput()
@@ -72,105 +79,58 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
+            var result = new List<TransactionDto>();
+
             var accountsInDb = this.BuildAccountListFromInput(input.Client, input.Accounts);
 
-            // If the client has no accounts, return 
-            if(accountsInDb == null || accountsInDb?.Count == 0)
+            if (filterByAccounts)
             {
-                return NotFound(new GetTransactionsOfClientOutput()
+                // If the client has no accounts, return 
+                if (accountsInDb == null || accountsInDb?.Count == 0)
                 {
-                    Transactions = new List<TransactionDto>(),
-                    Error = TransactionsErrors.NoAccountsFound,
-                });
+                    return NotFound(new GetTransactionsOfClientOutput()
+                    {
+                        Transactions = new List<TransactionDto>(),
+                        Error = TransactionsErrors.NoAccountsFound,
+                    });
+                }
+
+                foreach (var account in accountsInDb)
+                {
+                    var transactions = this.GetTransactionsForAccount(account.AccountId);
+
+                    if (input.Role != null && input.Role != TransactionRole.None)
+                    {
+                        transactions = transactions.Where(t => t.Role == input.Role).ToList();
+                    }
+
+                    result.AddRange(transactions);
+                }
             }
 
-            var result = this.GetTransactionsForAccounts(accountsInDb, input.Role);
+            if (filterByCards)
+            {
+                var cardsInDb = this.BuildCardsListFromInput(accountsInDb, input.Cards);
+
+                foreach (var card in cardsInDb)
+                {
+                    var transactions = this.GetTransactionsForCard(card.Id);
+
+                    if (input.Role != null && input.Role != TransactionRole.None)
+                    {
+                        transactions = transactions.Where(t => t.Role == input.Role).ToList();
+                    }
+
+                    result.AddRange(transactions);
+                }
+
+            }
 
             return Ok(new GetTransactionsOfClientOutput()
             {
                 Transactions = result,
             });
         }
-
-        [HttpGet("GetTransactionsByDate/{date}")]
-        public ActionResult<GetTransactionsByDateOutput> GetTransactionsByDate([FromBody] GetTransactionsByDateInput input)
-        {
-            var startDate = new DateTime(input.StartDate.Year, input.StartDate.Month, input.StartDate.Day, 0,0,0);
-            var endDate = new DateTime(input.EndDate.Year, input.EndDate.Month, input.EndDate.Day, 0,0,0);
-
-            var accountsInDb = this.BuildAccountListFromInput(input.Client, input.Accounts);
-
-            // If the client has no accounts, return 
-            if (accountsInDb == null || accountsInDb?.Count == 0)
-            {
-                return NotFound(new GetTransactionsOfClientOutput()
-                {
-                    Transactions = new List<TransactionDto>(),
-                    Error = TransactionsErrors.NoAccountsFound,
-                });
-            }
-
-            var result = this.GetTransactionsForAccounts(accountsInDb, input.Role);
-
-            return Ok(new GetTransactionsByDateOutput()
-            {
-                Transactions = result.Where(t => t.TransactionDate.Ticks >= startDate.Ticks && t.TransactionDate.Ticks <= endDate.Ticks).ToList(),
-            });
-        }
-
-        [HttpGet("GetTransactionsOfSourceCard/{card}")]
-        public ActionResult<GetTransactionsOfSourceCardOutput> GetTransactionsOfSourceCard(string card)
-        {
-            var cardInDb = databaseCardsProvider.GetById(card);
-
-            if (cardInDb == null)
-            {
-                return NotFound(new GetTransactionsOfSourceCardOutput()
-                {
-                    Transactions = new List<TransactionDto>(),
-                    Error = TransactionsErrors.NoCardsFound,
-                });
-            }
-
-            List<TransactionTableEntry> transactionsInDb = databaseTransactionsProvider.GetBySourceCard(cardInDb.Id);
-
-            var transactions = transactionsInDb.Select(t =>
-            {
-                var trans = TransactionsMapperProfile.MapTableEntryToDto(t);
-                trans.Role = TransactionRole.Sender;
-
-                return trans;
-            }).ToList();
-
-            return Ok(new GetTransactionsOfSourceCardOutput()
-            {
-                Transactions = transactions,
-            });
-        }
-
-        [HttpGet("GetUrgentTransactions")]
-        public ActionResult<GetUrgentTransactionsOutput> GetUrgentTransactions([FromBody] GetUrgentTransactionsInput input)
-        {
-            var accountsInDb = this.BuildAccountListFromInput(input.Client, input.Accounts);
-
-            // If the client has no accounts, return 
-            if (accountsInDb == null || accountsInDb?.Count == 0)
-            {
-                return NotFound(new GetTransactionsOfClientOutput()
-                {
-                    Transactions = new List<TransactionDto>(),
-                    Error = TransactionsErrors.NoAccountsFound,
-                });
-            }
-
-            var result = this.GetTransactionsForAccounts(accountsInDb, input.Role);
-
-            return Ok(new GetUrgentTransactionsOutput()
-            {
-                Transactions = result.Where(t => t.Urgent == input.Urgent).ToList(),
-            });
-        }
-
 
         [HttpPost("AddTransaction")]
         public ActionResult<VoidOutput> AddTransaction([FromBody] AddTransactionInput input)
@@ -183,6 +143,32 @@ namespace BankingAppDataTier.Controllers
                 {
                     Error = GenericErrors.IdAlreadyInUse,
                 });
+            }
+
+            if(input.Transaction.SourceAccount != null)
+            {
+                var accountInDb = databaseAccountsProvider.GetById(input.Transaction.SourceAccount);
+
+                if (accountInDb == null)
+                {
+                    return BadRequest(new VoidOutput()
+                    {
+                        Error = TransactionsErrors.InvalidSourceAccount,
+                    });
+                }
+            }
+
+            if (input.Transaction.SourceCard != null)
+            {
+                var cardInDb = databaseCardsProvider.GetById(input.Transaction.SourceCard);
+
+                if (cardInDb == null)
+                {
+                    return BadRequest(new VoidOutput()
+                    {
+                        Error = TransactionsErrors.InvalidSourceCard,
+                    });
+                }
             }
 
             var entry = TransactionsMapperProfile.MapDtoToTableEntry(input.Transaction);
@@ -257,30 +243,6 @@ namespace BankingAppDataTier.Controllers
             return Ok(new VoidOutput());
         }
 
-        private List<TransactionDto> GetTransactionsForAccounts(List<AccountsTableEntry>? accounts, TransactionRole? role = TransactionRole.None)
-        {
-            if(accounts == null || accounts.Count == 0)
-            {
-                return new List<TransactionDto>();
-            }
-
-            var result = new List<TransactionDto>();
-
-            foreach (var account in accounts)
-            {
-                var transactions = this.GetTransactionsForAccount(account.AccountId);
-
-                if (role != TransactionRole.None)
-                {
-                    transactions = transactions.Where(t => t.Role == role).ToList();
-                }
-
-                result.AddRange(transactions);
-            }
-
-            return result;
-        }
-
         private List<TransactionDto> GetTransactionsForAccount(string account)
         {
             var result = new List<TransactionDto>();
@@ -326,6 +288,44 @@ namespace BankingAppDataTier.Controllers
             }
 
             return accountsInDb.Where(a => inputAccounts.Contains(a.AccountId)).ToList();
+        }
+
+        private List<TransactionDto> GetTransactionsForCard(string card)
+        {
+            var sentTransactionsInDb = databaseTransactionsProvider.GetBySourceCard(card);
+            return sentTransactionsInDb.Select(t =>
+            {
+                var trans = TransactionsMapperProfile.MapTableEntryToDto(t);
+                trans.Role = TransactionRole.Sender;
+
+                return trans;
+            }).ToList();
+        }
+
+        private List<CardsTableEntry> BuildCardsListFromInput(List<AccountsTableEntry> accounts, List<string>? inputCards)
+        {
+            var result = new List<CardsTableEntry>();
+
+            foreach(var account in accounts)
+            {
+                var cardsInDb = databaseCardsProvider.GetCardsOfAccount(account.AccountId);
+
+                if (cardsInDb == null || cardsInDb?.Count == 0)
+                {
+                    continue;
+                }
+
+                result.AddRange(cardsInDb);
+            }
+
+            // If no cards were specified in the input, return cards with no filter
+            if (inputCards == null || inputCards?.Count == 0)
+            {
+                return result;
+            }
+
+
+            return result.Where(c => inputCards.Contains(c.Id)).ToList();
         }
     }
 }

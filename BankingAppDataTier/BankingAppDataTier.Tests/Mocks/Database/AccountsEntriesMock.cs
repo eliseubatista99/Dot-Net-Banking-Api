@@ -28,6 +28,15 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             },
             new AccountsTableEntry
             {
+                AccountId = "Permanent_Current_03",
+                OwnerCliendId = "Permanent_Client_02",
+                AccountType = BankingAppDataTierConstants.ACCOUNT_TYPE_CURRENT,
+                Balance = 1000,
+                Name = "Test Current Account",
+                //Image = DefaultBase64Img.Content,
+            },
+            new AccountsTableEntry
+            {
                 AccountId = "Permanent_Savings_01",
                 OwnerCliendId = "Permanent_Client_01",
                 AccountType = BankingAppDataTierConstants.ACCOUNT_TYPE_SAVINGS,
