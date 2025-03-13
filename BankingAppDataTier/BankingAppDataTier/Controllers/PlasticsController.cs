@@ -1,4 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+﻿using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
@@ -37,7 +38,7 @@ namespace BankingAppDataTier.Controllers
         {
             var result = new List<PlasticDto>();
 
-            var typeAsString = EnumsMapperProfile.MapCardTypeToString(cardType);
+            var typeAsString = mapperProvider.Map<CardType, string>(cardType);
 
             var plasticsInDb = databasePlasticsProvider.GetPlasticsOfCardType(typeAsString, includeInactive != true);
 
@@ -49,7 +50,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            result = plasticsInDb.Select(acc => PlasticsMapperProfile.MapTableEntryToDto(acc)).ToList();
+            result = plasticsInDb.Select(acc => mapperProvider.Map<PlasticTableEntry, PlasticDto>(acc)).ToList();
 
             return Ok(new GetPlasticsOfTypeOutput()
             {
@@ -73,7 +74,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetPlasticByIdOutput()
             {
-                Plastic = PlasticsMapperProfile.MapTableEntryToDto(itemInDb),
+                Plastic = mapperProvider.Map<PlasticTableEntry, PlasticDto>(itemInDb),
             });
         }
 
@@ -90,7 +91,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = PlasticsMapperProfile.MapDtoToTableEntry(input.Plastic);
+            var entry = mapperProvider.Map<PlasticDto, PlasticTableEntry>(input.Plastic);
 
             var result = databasePlasticsProvider.Add(entry);
 

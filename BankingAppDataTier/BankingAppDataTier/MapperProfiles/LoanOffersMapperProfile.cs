@@ -1,6 +1,8 @@
 ﻿using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Providers;
 using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles
@@ -28,7 +30,8 @@ namespace BankingAppDataTier.MapperProfiles
                 Id = tableEntry.Id,
                 Name = tableEntry.Name,
                 Description = tableEntry.Description,
-                LoanType = EnumsMapperProfile.MapLoanTypeFromString(tableEntry.LoanType),
+                //LoanType = AEnumsMapperProfile.MapLoanTypeFromString(tableEntry.LoanType),
+                LoanType = LoanType.None,
                 MaxEffort = tableEntry.MaxEffort,
                 Interest = tableEntry.Interest,
                 IsActive = tableEntry.IsActive,
@@ -42,7 +45,8 @@ namespace BankingAppDataTier.MapperProfiles
                 Id = dto.Id,
                 Name = dto.Name,
                 Description = dto.Description,
-                LoanType = EnumsMapperProfile.MapLoanTypeToString(dto.LoanType),
+                //LoanType = AEnumsMapperProfile.MapLoanTypeToString(dto.LoanType),
+                LoanType = "",
                 MaxEffort = dto.MaxEffort,
                 Interest = dto.Interest,
                 IsActive = dto.IsActive.GetValueOrDefault(),

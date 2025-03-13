@@ -176,7 +176,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = LoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        var dataEntry = ALoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
 
                         result.Add(dataEntry);
                     }
@@ -209,7 +209,7 @@ namespace BankingAppDataTier.Providers
                     if (sqlReader.HasRows)
                     {
                         sqlReader.Read();
-                        result = LoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        result = ALoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
                     }
 
                     return result;
@@ -241,7 +241,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = LoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = ALoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
 
                             result.Add(dataEntry);
                         }
@@ -276,7 +276,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = LoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = ALoansMapperProfile.MapSqlDataToTableEntry(sqlReader);
 
                             result.Add(dataEntry);
                         }

@@ -1,6 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
 using BankingAppDataTier.MapperProfiles;
@@ -174,7 +175,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = PlasticsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, PlasticTableEntry>(sqlReader);
 
                         result.Add(dataEntry);
                     }
@@ -207,7 +208,7 @@ namespace BankingAppDataTier.Providers
                     if (sqlReader.HasRows)
                     {
                         sqlReader.Read();
-                        result = PlasticsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        result = mapperProvider.Map<NpgsqlDataReader, PlasticTableEntry>(sqlReader);
                     }
 
                     return result;
@@ -243,7 +244,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = PlasticsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, PlasticTableEntry>(sqlReader);
 
                         result.Add(dataEntry);
                     }

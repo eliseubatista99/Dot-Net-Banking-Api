@@ -167,7 +167,7 @@ namespace BankingAppDataTier.Providers
 
                     while (sqlReader!.Read())
                     {
-                        var dataEntry = CardsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, CardsTableEntry>(sqlReader);
 
                         result.Add(dataEntry);
                     }
@@ -200,7 +200,8 @@ namespace BankingAppDataTier.Providers
                     if (sqlReader.HasRows)
                     {
                         sqlReader.Read();
-                        result = CardsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                        result = mapperProvider.Map<NpgsqlDataReader, CardsTableEntry>(sqlReader);
+
                     }
 
                     return result;
@@ -232,7 +233,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = CardsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, CardsTableEntry>(sqlReader);
 
                             result.Add(dataEntry);
                         }
@@ -267,7 +268,7 @@ namespace BankingAppDataTier.Providers
                     {
                         while (sqlReader!.Read())
                         {
-                            var dataEntry = CardsMapperProfile.MapSqlDataToTableEntry(sqlReader);
+                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, CardsTableEntry>(sqlReader);
 
                             result.Add(dataEntry);
                         }

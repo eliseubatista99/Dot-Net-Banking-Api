@@ -1,4 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+﻿using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
@@ -42,7 +43,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetClientsOutput
             {
-                Clients = itemsInDb.Select(client => ClientsMapperProfile.MapTableEntryToDto(client)).ToList()
+                Clients = itemsInDb.Select(client => mapperProvider.Map<ClientsTableEntry, ClientDto>(client)).ToList()
             });
         }
 
@@ -64,7 +65,7 @@ namespace BankingAppDataTier.Controllers
 
             return Ok(new GetClientByIdOutput
             {
-                Client = ClientsMapperProfile.MapTableEntryToDto(itemInDb),
+                Client = mapperProvider.Map<ClientsTableEntry, ClientDto>(itemInDb)
             });
         }
 
@@ -105,7 +106,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = ClientsMapperProfile.MapDtoToTableEntry(input.Client);
+            var entry = mapperProvider.Map<ClientDto, ClientsTableEntry>(input.Client);
             entry.Password = input.PassWord;
 
             var result = databaseClientsProvider.Add(entry);

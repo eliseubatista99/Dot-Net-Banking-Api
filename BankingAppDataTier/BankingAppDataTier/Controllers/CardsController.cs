@@ -8,6 +8,8 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
+using System.Xml;
 
 
 namespace BankingAppDataTier.Controllers
@@ -128,7 +130,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = CardsMapperProfile.MapDtoToTableEntry(input.Card);
+            var entry = mapperProvider.Map<CardDto, CardsTableEntry>(input.Card);
 
             var result = databaseCardsProvider.Add(entry);
 
@@ -217,7 +219,8 @@ namespace BankingAppDataTier.Controllers
 
         private CardDto BuildCardDto(CardsTableEntry entry)
         {
-            var card = CardsMapperProfile.MapTableEntryToDto(entry);
+            var card = mapperProvider.Map<CardsTableEntry, CardDto>(entry);
+
             var plasticData = databasePlasticsProvider.GetById(card.PlasticId);
 
             if (plasticData == null)
@@ -225,7 +228,7 @@ namespace BankingAppDataTier.Controllers
                 return card;
             }
 
-            card.CardType = EnumsMapperProfile.MapCardTypeFromString(plasticData.CardType);
+            card.CardType = mapperProvider.Map<string, CardType>(plasticData.CardType);
             card.Image = plasticData.Image;
 
             return card;

@@ -1,56 +1,74 @@
-﻿using BankingAppDataTier.Contracts.Constants.Database;
+﻿using AutoMapper;
+using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Database;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Npgsql;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    public static class PlasticsMapperProfile
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class PlasticsMapperProfile : Profile
     {
-        public static PlasticTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
-        {
-            var image = (sqlReader[PlasticsTable.COLUMN_IMAGE]).ToString();
-            var cashback = sqlReader[PlasticsTable.COLUMN_CASHBACK];
-            var commission = sqlReader[PlasticsTable.COLUMN_COMISSION];
 
-            return new PlasticTableEntry
-            {
-                Id = sqlReader[PlasticsTable.COLUMN_ID].ToString()!,
-                CardType = sqlReader[PlasticsTable.COLUMN_TYPE].ToString()!,
-                Name = sqlReader[PlasticsTable.COLUMN_NAME].ToString()!,
-                Image = image,
-                Cashback = cashback is System.DBNull ? null : Convert.ToDecimal(cashback),
-                Commission = commission is System.DBNull ? null : Convert.ToDecimal(commission),
-                IsActive = Convert.ToBoolean(sqlReader[PlasticsTable.COLUMN_IS_ACTIVE].ToString())!,
-            };
+        public PlasticsMapperProfile()
+        {
+            this.CreateMapOfEnums();
+            this.CreateMapOfEntities();
         }
 
-        public static PlasticDto MapTableEntryToDto(PlasticTableEntry tableEntry)
+        /// <summary>
+        /// Create map of enums.
+        /// </summary>
+        private void CreateMapOfEnums()
         {
-            return new PlasticDto
+            this.CreateMap<string, CardType>().ConvertUsing((src, _) =>
             {
-                Id = tableEntry.Id,
-                CardType = EnumsMapperProfile.MapCardTypeFromString(tableEntry.CardType),
-                Name = tableEntry.Name,
-                Cashback = tableEntry.Cashback,
-                Commission = tableEntry.Commission,
-                Image = tableEntry.Image,
-                IsActive = tableEntry.IsActive,
-            };
+                return src switch
+                {
+                    BankingAppDataTierConstants.CARD_TYPE_DEBIT => CardType.Debit,
+                    BankingAppDataTierConstants.CARD_TYPE_CREDIT => CardType.Credit,
+                    BankingAppDataTierConstants.CARD_TYPE_PRE_PAID => CardType.PrePaid,
+                    BankingAppDataTierConstants.CARD_TYPE_MEAL => CardType.Meal,
+                    _ => CardType.None,
+                };
+            });
+
+            this.CreateMap<CardType, string>().ConvertUsing((src, _) =>
+            {
+                return src switch
+                {
+                    CardType.Debit => BankingAppDataTierConstants.CARD_TYPE_DEBIT,
+                    CardType.Credit => BankingAppDataTierConstants.CARD_TYPE_CREDIT,
+                    CardType.PrePaid => BankingAppDataTierConstants.CARD_TYPE_PRE_PAID,
+                    CardType.Meal => BankingAppDataTierConstants.CARD_TYPE_MEAL,
+                    _ => ""
+                };
+            });
         }
 
-        public static PlasticTableEntry MapDtoToTableEntry(PlasticDto dto)
+        /// <summary>
+        /// Create map of account entities.
+        /// </summary>
+        private void CreateMapOfEntities()
         {
-            return new PlasticTableEntry
-            {
-                Id = dto.Id,
-                CardType = EnumsMapperProfile.MapCardTypeToString(dto.CardType),
-                Name = dto.Name,
-                Cashback = dto.Cashback,
-                Commission = dto.Commission,
-                Image = dto.Image,
-                IsActive = dto.IsActive.GetValueOrDefault(),
-            };
+            this.CreateMap<PlasticTableEntry, PlasticDto>();
+
+            this.CreateMap<PlasticDto, PlasticTableEntry>()
+             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.IsActive.GetValueOrDefault()));
+
+            this.CreateMap<NpgsqlDataReader, PlasticTableEntry>()
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_ID)))
+             .ForMember(d => d.CardType, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_TYPE)))
+             .ForMember(d => d.Name, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_NAME)))
+             .ForMember(d => d.Image, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_IMAGE)))
+             .ForMember(d => d.Cashback, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_CASHBACK)))
+             .ForMember(d => d.Commission, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_COMISSION)))
+             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_IS_ACTIVE)));
         }
     }
 }

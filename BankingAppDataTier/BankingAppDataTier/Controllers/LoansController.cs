@@ -3,6 +3,7 @@ using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
+using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.MapperProfiles;
@@ -143,7 +144,7 @@ namespace BankingAppDataTier.Controllers
                 });
             }
 
-            var entry = LoansMapperProfile.MapDtoToTableEntry(input.Loan);
+            var entry = ALoansMapperProfile.MapDtoToTableEntry(input.Loan);
 
             var result = databaseLoansProvider.Add(entry);
 
@@ -231,7 +232,7 @@ namespace BankingAppDataTier.Controllers
                     });
                 }
 
-                var relatedOfferLoanType = EnumsMapperProfile.MapLoanTypeFromString(relatedOffer.LoanType);
+                var relatedOfferLoanType = mapperProvider.Map<string, LoanType>(relatedOffer.LoanType);
 
                 if (relatedOfferLoanType != loan.LoanType)
                 {
@@ -304,7 +305,7 @@ namespace BankingAppDataTier.Controllers
 
         private LoanDto BuildLoanDto(LoanTableEntry entry)
         {
-            var loan = LoansMapperProfile.MapTableEntryToDto(entry);
+            var loan = ALoansMapperProfile.MapTableEntryToDto(entry);
             var offerData = databaseLoanOffersProvider.GetById(loan.RelatedOffer);
 
             if (offerData == null)
@@ -312,7 +313,7 @@ namespace BankingAppDataTier.Controllers
                 return loan;
             }
 
-            loan.LoanType = EnumsMapperProfile.MapLoanTypeFromString(offerData.LoanType);
+            loan.LoanType = mapperProvider.Map<string, LoanType>(offerData.LoanType);
             loan.Interest = offerData.Interest;
 
             return loan;

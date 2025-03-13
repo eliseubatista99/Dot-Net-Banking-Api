@@ -6,7 +6,7 @@ using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    public static class LoansMapperProfile
+    public static class ALoansMapperProfile
     {
         public static LoanTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
         {

@@ -14,9 +14,7 @@ namespace BankingAppDataTier.MapperProfiles
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class AccountsMapperProfile : Profile
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AccountsMapperProfile"/> class.
-        /// </summary>
+
         public AccountsMapperProfile()
         {
             this.CreateMapOfEnums();
@@ -52,7 +50,7 @@ namespace BankingAppDataTier.MapperProfiles
         }
 
         /// <summary>
-        /// Create map of entities.
+        /// Create map of account entities.
         /// </summary>
         private void CreateMapOfEntities()
         {

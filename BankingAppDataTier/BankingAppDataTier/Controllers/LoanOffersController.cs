@@ -38,7 +38,7 @@ namespace BankingAppDataTier.Controllers
         {
             var result = new List<LoanOfferDto>();
 
-            var typeAsString = EnumsMapperProfile.MapLoanTypeToString(loanType);
+            var typeAsString = mapperProvider.Map<LoanType, string>(loanType);
 
             var loanOffersInDb = databaseLoanOffersProvider.GetByType(typeAsString, includeInactive != true);
 

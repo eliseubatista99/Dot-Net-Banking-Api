@@ -1,54 +1,44 @@
-﻿using BankingAppDataTier.Contracts.Constants.Database;
+﻿using AutoMapper;
+using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Database;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Npgsql;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    public static class ClientsMapperProfile
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class ClientsMapperProfile : Profile
     {
-        public static ClientsTableEntry MapSqlDataToTableEntry(NpgsqlDataReader sqlReader)
+
+        public ClientsMapperProfile()
         {
-            return new ClientsTableEntry
-            {
-                Id = sqlReader[ClientsTable.COLUMN_ID].ToString()!,
-                Password = sqlReader[ClientsTable.COLUMN_PASSWORD].ToString()!,
-                Name = sqlReader[ClientsTable.COLUMN_NAME].ToString()!,
-                Surname = sqlReader[ClientsTable.COLUMN_SURNAME].ToString()!,
-                BirthDate = Convert.ToDateTime(sqlReader[ClientsTable.COLUMN_BIRTH_DATE]),
-                VATNumber = sqlReader[ClientsTable.COLUMN_VAT_NUMBER].ToString()!,
-                PhoneNumber = sqlReader[ClientsTable.COLUMN_PHONE_NUMBER].ToString()!,
-                Email = sqlReader[ClientsTable.COLUMN_EMAIL].ToString()!,
-            };
+            this.CreateMapOfEntities();
         }
 
-        public static ClientDto MapTableEntryToDto(ClientsTableEntry tableEntry)
+        /// <summary>
+        /// Create map of account entities.
+        /// </summary>
+        private void CreateMapOfEntities()
         {
-            return new ClientDto
-            {
-                Id = tableEntry.Id,
-                Name = tableEntry.Name,
-                Surname = tableEntry.Surname,
-                BirthDate = tableEntry.BirthDate,
-                VATNumber = tableEntry.VATNumber,
-                PhoneNumber = tableEntry.PhoneNumber,
-                Email = tableEntry.Email,
-            };
-        }
+            this.CreateMap<ClientsTableEntry, ClientDto>();
 
-        public static ClientsTableEntry MapDtoToTableEntry(ClientDto dto)
-        {
-            return new ClientsTableEntry
-            {
-                Id = dto.Id,
-                Password = string.Empty,
-                Name = dto.Name,
-                Surname = dto.Surname,
-                BirthDate = dto.BirthDate,
-                VATNumber = dto.VATNumber,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
-            };
+            this.CreateMap<ClientDto, ClientsTableEntry>()
+             .ForMember(d => d.Password, opt => opt.MapFrom(s => string.Empty));
+
+            this.CreateMap<NpgsqlDataReader, ClientsTableEntry>()
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, ClientsTable.COLUMN_ID)))
+             .ForMember(d => d.Password, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, ClientsTable.COLUMN_PASSWORD)))
+             .ForMember(d => d.Name, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, ClientsTable.COLUMN_NAME)))
+             .ForMember(d => d.Surname, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, ClientsTable.COLUMN_SURNAME)))
+             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, ClientsTable.COLUMN_BIRTH_DATE)))
+             .ForMember(d => d.VATNumber, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, ClientsTable.COLUMN_VAT_NUMBER)))
+             .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, ClientsTable.COLUMN_PHONE_NUMBER)))
+             .ForMember(d => d.Email, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, ClientsTable.COLUMN_EMAIL)));
         }
     }
 }
