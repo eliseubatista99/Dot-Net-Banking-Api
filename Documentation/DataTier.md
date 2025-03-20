@@ -1,8 +1,8 @@
-## Data Tier
+# Data Tier
 
 First, we need to structure our data according to the application's requirements. We begin with the fundamentals and gradually build upon them.
 
-### Choosing the database system
+## Choosing the database system
 
 There are multiple database systems to choose from, but since this project is meant to showcase my skills and enhance my portfolio, I’ve decided to go with one that is commonly required in job listings: SQL.
 
@@ -61,8 +61,8 @@ Banks often offer premium cards, which come with benefits like cashbacks or disc
 The structure for the Card table will be as follows:
 
     - CardId: PRIMARY KEY VARCHAR(64)  NOT NULL,
+    - Name: VARCHAR(64) NOT NULL,
     - RelatedAccountId: FOREIGN KEY VARCHAR (64)
-    - CardType: CHAR(2)  NOT NULL,
     - Plastic: FOREIGN KEY VARCHAR (64) NOT NULL,// Plastic is explained in the next section
     - Balance: DECIMAL (20,2)  NOT NULL,//Only applies to credit and prepaid cards
     - PaymentDay: INT //Only applies to credit
@@ -130,6 +130,8 @@ While loans have their own specific characteristics, we will focus only on the a
 These common elements will be stored in the Loan table.
 
     - LoanOfferId: PRIMARY KEY VARCHAR(64) NOT NULL,
+    - Name: VARCHAR(64) NOT NULL,
+    - Description: VARCHAR(64) NOT NULL,
     - LoanType: CHAR(2)  NOT NULL, //Auto, Housing, personal
     - MaxEffort: INTEGER NOT NULL, // From 0 to 100
     - Interest: DECIMAL (5,2)
@@ -140,7 +142,31 @@ These common elements will be stored in the Loan table.
 After the client selects a loan offer, a loan entry will be created in the Loan table. The structure for this table will include the following fields:
 
     - LoanId: PRIMARY KEY VARCHAR(64) NOT NULL,
+    - Name: VARCHAR(64) NOT NULL,
+    - RelatedAccount: FOREIGN KEY VARCHAR(64) NOT NULL,
     - StartDate: DATE NOT NULL,
     - RelatedOffer: FOREIGN KEY VARCHAR(64) NOT NULL,
     - LoanDuration: INTEGER NOT NULL, // Duration in months
-    - Amount: DECIMAL (20,2) NOT NULL,
+    - ContractedAmount: DECIMAL (20,2) NOT NULL,
+    - PaidAmount: DECIMAL (20,2) NOT NULL,
+
+## The controllers
+
+Controllers are classes responsible for handling specific web API requests. In the Data Tier, we will have a controller for each database table, and a controller for authentication:
+
+    - AuthenticationController: For operations related to token generation
+    - AccountsController: For operations related to accounts
+    - CardsController: For operations related to cards
+    - ClientsController: For operations related to clients
+    - LoanOffersController: For operations related to loans offers
+    - LoansController: For operations related to loans
+    - PlasticsController: For operations related to plastics
+    - TransactionsController: For operations related to transactions
+
+### AccountsController
+
+    - GetClientAccounts: Retrieves the accounts of a specific client
+    - GetAccountById: Retrieves the account of a specified id
+    - AddAccount: Creates a new account
+    - EditAccount: Edits as existing account
+    - DeleteAccount: Deletes an account

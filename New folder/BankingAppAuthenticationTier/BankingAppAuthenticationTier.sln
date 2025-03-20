@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingAppAuthenticationTier", "BankingAppAuthenticationTier\BankingAppAuthenticationTier.csproj", "{0F3FDF0B-1921-4BF1-9EDB-9A36EC1597A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingAppAuthenticationTier.Contracts", "BankingAppAuthenticationTier.Contracts\BankingAppAuthenticationTier.Contracts.csproj", "{43859D2A-0505-4B2D-8E3B-F227C5002C50}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F3FDF0B-1921-4BF1-9EDB-9A36EC1597A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3FDF0B-1921-4BF1-9EDB-9A36EC1597A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3FDF0B-1921-4BF1-9EDB-9A36EC1597A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3FDF0B-1921-4BF1-9EDB-9A36EC1597A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43859D2A-0505-4B2D-8E3B-F227C5002C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43859D2A-0505-4B2D-8E3B-F227C5002C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43859D2A-0505-4B2D-8E3B-F227C5002C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43859D2A-0505-4B2D-8E3B-F227C5002C50}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
