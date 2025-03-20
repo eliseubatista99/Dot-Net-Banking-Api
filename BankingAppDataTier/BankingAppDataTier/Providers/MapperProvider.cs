@@ -14,6 +14,7 @@ namespace BankingAppDataTier.Providers
             {
                 cfg.AllowNullCollections = true;
                 //cfg.Advanced.AllowAdditiveTypeMapCreation = true;
+                cfg.AddProfile<TokensMapperProfile>();
                 cfg.AddProfile<ClientsMapperProfile>();
                 cfg.AddProfile<AccountsMapperProfile>();
                 cfg.AddProfile<PlasticsMapperProfile>();

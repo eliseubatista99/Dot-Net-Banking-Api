@@ -44,5 +44,15 @@ namespace BankingAppDataTier.Database
 
             return (T)value;
         }
+
+        public static string FormatDate(DateTime date)
+        {
+            return date.ToUniversalTime().ToString("yyyy-MM-dd");
+        }
+
+        public static string FormatDateWithTime(DateTime date)
+        {
+            return date.ToUniversalTime().ToString("yyyy-MM-ddThh:mm:ss");
+        }
     }
 }

@@ -31,6 +31,8 @@ namespace BankingAppDataTier.Providers
                 x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(x =>
             {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidIssuer = authConfigs.GetSection(AuthenticationConfigs.Issuer).Value!,
@@ -75,37 +77,81 @@ namespace BankingAppDataTier.Providers
             });
         }
 
-        public string GenerateToken(string audience)
+        public (string token, DateTime expirationTime) GenerateToken(string clientId)
+        {
+            var configs = GetTokenConfigs();
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new List<Claim>
+                {
+                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new(JwtRegisteredClaimNames.Name, clientId),
+                }),
+                Expires = configs.expireDateTime,
+                Issuer = configs.issuer,
+                Audience = configs.audience,
+                SigningCredentials = new SigningCredentials(configs.key, SecurityAlgorithms.HmacSha256),
+
+            };
+
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            var securityToken = handler.CreateToken(tokenDescriptor);
+
+            return (handler.WriteToken(securityToken), configs.expireDateTime);
+        }
+
+        public (bool isValid, DateTime expirationTime) IsValidToken(string token)
+        {
+            var configs = GetTokenConfigs();
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = configs.key,
+                ValidateLifetime = false,
+                ValidIssuer = configs.issuer,
+                ValidAudience = configs.audience,
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+            if (jwtSecurityToken is null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return (false, DateTime.Now);
+            }
+
+            return (true, jwtSecurityToken.ValidTo);
+        }
+
+        public int GetTokenLifeTime()
+        {
+            var configs = GetTokenConfigs();
+
+            return configs.lifeTime;
+        }
+
+        private (SymmetricSecurityKey key, string issuer, string audience, DateTime expireDateTime, int lifeTime) GetTokenConfigs()
         {
             var authConfigs = this.Configuration.GetSection(AuthenticationConfigs.AuthenticationSection);
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
+            var issuer = authConfigs.GetSection(AuthenticationConfigs.Issuer).Value!;
+            var audience = authConfigs.GetSection(AuthenticationConfigs.Audience).Value!;
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfigs[AuthenticationConfigs.Key]!));
             var lifetime = AuthenticationConfigs.TokenLifetime;
-            var issuer = authConfigs.GetSection(AuthenticationConfigs.Issuer).Value!;
-            DateTime expireDateTime = DateTime.UtcNow.Add(lifetime);
+            DateTime expireDateTime = DateTime.UtcNow.AddMinutes(lifetime);
 
-            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-
-            var claims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new("audience", audience),
-            };
-
-            JwtSecurityToken token = new JwtSecurityToken(
-                           issuer: issuer,
-                           audience: audience,
-                           claims: claims,
-                           expires: expireDateTime,
-                           signingCredentials: creds
-                       );
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            string writtenToken = handler.WriteToken(token);
-
-            return writtenToken;
+            return (key, issuer, audience, expireDateTime, lifetime);
         }
     }
 }

@@ -7,7 +7,6 @@
         public static string Audience = "Audience";
         public static string Key = "Key";
 
-        public static readonly TimeSpan TokenLifetime = TimeSpan.FromMinutes(30);
-
+        public static readonly int TokenLifetime = 30;
     }
 }

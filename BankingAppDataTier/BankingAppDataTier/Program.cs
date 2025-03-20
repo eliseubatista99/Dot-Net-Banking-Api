@@ -11,6 +11,7 @@ namespace BankingAppDataTier
             builder.Services.AddSingleton<IMapperProvider, MapperProvider>();
             builder.Services.AddSingleton<IAuthenticationProvider, AuthenticationProvider>();
             builder.Services.AddSingleton<IDatabaseClientsProvider, DatabaseClientsProvider>();
+            builder.Services.AddSingleton<IDatabaseTokenProvider, DatabaseTokenProvider>();
             builder.Services.AddSingleton<IDatabaseAccountsProvider, DatabaseAccountsProvider>();
             builder.Services.AddSingleton<IDatabasePlasticsProvider, DatabasePlasticsProvider>();
             builder.Services.AddSingleton<IDatabaseCardsProvider, DatabaseCardsProvider>();
@@ -26,6 +27,7 @@ namespace BankingAppDataTier
         static void InitializeDatabase(IServiceCollection serviceCollection)
         {
             ClientsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseClientsProvider>()!);
+            TokenDatabaseInitializer.InitializeDatabase(serviceCollection.BuildServiceProvider().GetService<IDatabaseTokenProvider>()!);
             AccountsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseAccountsProvider>()!);
             PlasticsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabasePlasticsProvider>()!);
             CardsDatabaseInitializer.DefaultMock(serviceCollection.BuildServiceProvider().GetService<IDatabaseCardsProvider>()!);

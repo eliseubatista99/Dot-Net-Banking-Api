@@ -11,6 +11,7 @@ namespace BankingAppDataTier.Tests.Mocks
 
         //PROVIDERS
         public static IAuthenticationProvider _AuthenticationProviderMock { get; set; }
+        public static IDatabaseTokenProvider _DatabaseTokensProviderMock { get; set; }
         public static IDatabaseAccountsProvider _DatabaseAccountsProviderMock { get; set; }
         public static IDatabaseCardsProvider _DatabaseCardsProviderMock { get; set; }
         public static IDatabaseClientsProvider _DatabaseClientsProviderMock { get; set; }
@@ -44,6 +45,7 @@ namespace BankingAppDataTier.Tests.Mocks
                 // Mock the providers
                 _AuthenticationProviderMock = AuthenticationProviderMock.Mock();
                 _DatabaseClientsProviderMock = DatabaseClientsProviderMock.Mock();
+                _DatabaseTokensProviderMock = DatabaseTokensProviderMock.Mock();
                 _DatabaseAccountsProviderMock = DatabaseAccountsProviderMock.Mock();
                 _DatabasePlasticsProviderMock = DatabasePlasticsProviderMock.Mock();
                 _DatabaseCardsProviderMock = DatabaseCardsProviderMock.Mock();
@@ -53,6 +55,7 @@ namespace BankingAppDataTier.Tests.Mocks
 
                 // Create databases if not exists
                 _DatabaseClientsProviderMock.CreateTableIfNotExists();
+                _DatabaseTokensProviderMock.CreateTableIfNotExists();
                 _DatabaseAccountsProviderMock.CreateTableIfNotExists();
                 _DatabasePlasticsProviderMock.CreateTableIfNotExists();
                 _DatabaseCardsProviderMock.CreateTableIfNotExists();
@@ -67,10 +70,12 @@ namespace BankingAppDataTier.Tests.Mocks
                 _DatabaseCardsProviderMock.DeleteAll();
                 _DatabasePlasticsProviderMock.DeleteAll();
                 _DatabaseAccountsProviderMock.DeleteAll();
+                _DatabaseTokensProviderMock.DeleteAll();
                 _DatabaseClientsProviderMock.DeleteAll();
 
                 // Mock database values
                 ClientsEntriesMock.Mock(_DatabaseClientsProviderMock);
+                TokensEntriesMock.Mock(_DatabaseTokensProviderMock);
                 AccountsEntriesMock.Mock(_DatabaseAccountsProviderMock);
                 PlasticsEntriesMock.Mock(_DatabasePlasticsProviderMock);
                 CardsEntriesMock.Mock(_DatabaseCardsProviderMock);
@@ -79,8 +84,8 @@ namespace BankingAppDataTier.Tests.Mocks
                 TransactionsEntriesMock.Mock(_DatabaseTransactionsProviderMock);
 
                 // Mock controllers
-                _AccountsControllerMock = AccountsControllerMock.Mock();
                 _AuthenticationControllerMock = AuthenticationControllerMock.Mock();
+                _AccountsControllerMock = AccountsControllerMock.Mock();
                 _CardsControllerMock = CardsControllerMock.Mock();
                 _ClientsControllerMock = ClientsControllerMock.Mock();
                 _LoanOffersControllerMock = LoanOffersControllerMock.Mock();

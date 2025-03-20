@@ -8,6 +8,10 @@ namespace BankingAppDataTier.Contracts.Providers
 
         public void AddAuthorizationToSwaggerGen(ref WebApplicationBuilder builder);
 
-        public string GenerateToken(string audience);
+        public (string token, DateTime expirationTime) GenerateToken(string clientId);
+
+        public (bool isValid, DateTime expirationTime) IsValidToken(string token);
+
+        public int GetTokenLifeTime();
     }
 }

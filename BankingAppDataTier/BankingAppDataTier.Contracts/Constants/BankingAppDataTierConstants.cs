@@ -21,5 +21,7 @@
         public const string LOAN_TYPE_MORTAGAGE = "MO";
 
         public const string LOAN_TYPE_PERSONAL = "PE";
+
+        public static int DEDFAULT_NUMBER_OF_POSITIONS = 3;
     }
 }
