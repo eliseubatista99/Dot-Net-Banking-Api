@@ -13,7 +13,6 @@ namespace BankingAppDataTier.Tests.Mocks
         public static IExecutionContext _ExecutionContextMock { get; set; }
 
         // CONTROLLERS
-        public static AccountsController _AccountsControllerMock { get; set; }
         public static AuthenticationController _AuthenticationControllerMock { get; set; }
         public static CardsController _CardsControllerMock { get; set; }
         public static ClientsController _ClientsControllerMock { get; set; }
@@ -76,7 +75,6 @@ namespace BankingAppDataTier.Tests.Mocks
                 // Mock controllers
 
                 _AuthenticationControllerMock = new AuthenticationController(_ExecutionContextMock);
-                _AccountsControllerMock = new AccountsController(_ExecutionContextMock);
                 _CardsControllerMock = new CardsController(_ExecutionContextMock);
                 _ClientsControllerMock = new ClientsController(_ExecutionContextMock);
                 _LoanOffersControllerMock = new LoanOffersController(_ExecutionContextMock);

@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Outputs
 {
-    public class VoidOutput : BaseOutput
+    public class VoidOutput : _BaseOutput
     {
     }
 }

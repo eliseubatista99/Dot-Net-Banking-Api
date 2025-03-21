@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Outputs.Authentication
 {
-    public class IsValidTokenOutput : BaseOutput
+    public class IsValidTokenOutput : _BaseOutput
     {
         public required bool IsValid { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs.Accounts
 {
-    public class GetClientAccountsOutput: BaseOutput
+    public class GetClientAccountsOutput: _BaseOutput
     {
         public required List<AccountDto> Accounts {  get; set; }
     }

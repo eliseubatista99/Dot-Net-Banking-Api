@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs.Plastics
 {
-    public class GetPlasticsOfTypeOutput : BaseOutput
+    public class GetPlasticsOfTypeOutput : _BaseOutput
     {
         public required List<PlasticDto> Plastics { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs.Cards
 {
-    public class GetCardByIdOutput : BaseOutput
+    public class GetCardByIdOutput : _BaseOutput
     {
         public CardDto? Card { get; set; }
     }

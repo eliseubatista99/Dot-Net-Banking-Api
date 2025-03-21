@@ -62,13 +62,15 @@ namespace BankingAppDataTier
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            //builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             // Add authorization to swagger gen
             authProvider!.AddAuthorizationToSwaggerGen(ref builder);
 
             var app = builder.Build();
+
+            BankingAppDataTierOperations.MapOperations(ref app);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -87,7 +89,7 @@ namespace BankingAppDataTier
 
             //app.UseAuthorization();
 
-            app.MapControllers();
+            //app.MapControllers();
 
             app.Run();
         }

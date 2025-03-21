@@ -7,7 +7,7 @@ namespace BankingAppDataTier.Providers
         private List<object> dependencies = new List<object>();
 
         public ExecutionContext(
-            ILogger _logger,
+            ILogger<ExecutionContext> _logger,
             IMapperProvider _mapperProvider,
             IAuthenticationProvider _authProvider,
             IDatabaseClientsProvider _dbClientsProvider,

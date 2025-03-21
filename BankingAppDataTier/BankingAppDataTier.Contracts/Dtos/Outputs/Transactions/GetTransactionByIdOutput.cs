@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs.Transactions
 {
-    public class GetTransactionByIdOutput : BaseOutput
+    public class GetTransactionByIdOutput : _BaseOutput
     {
         public TransactionDto? Transaction { get; set; }
     }
