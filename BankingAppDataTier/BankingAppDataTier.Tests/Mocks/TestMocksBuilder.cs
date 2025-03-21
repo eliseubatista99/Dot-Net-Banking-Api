@@ -74,14 +74,15 @@ namespace BankingAppDataTier.Tests.Mocks
                 TransactionsEntriesMock.Mock(_DatabaseTransactionsProviderMock);
 
                 // Mock controllers
-                _AuthenticationControllerMock = AuthenticationControllerMock.Mock();
-                _AccountsControllerMock = AccountsControllerMock.Mock();
-                _CardsControllerMock = CardsControllerMock.Mock();
-                _ClientsControllerMock = ClientsControllerMock.Mock();
-                _LoanOffersControllerMock = LoanOffersControllerMock.Mock();
-                _LoansControllerMock = LoansControllerMock.Mock();
-                _PlasticsControllerMock = PlasticsControllerMock.Mock();
-                _TransactionsControllerMock = TransactionsControllerMock.Mock();
+
+                _AuthenticationControllerMock = new AuthenticationController(_ExecutionContextMock);
+                _AccountsControllerMock = new AccountsController(_ExecutionContextMock);
+                _CardsControllerMock = new CardsController(_ExecutionContextMock);
+                _ClientsControllerMock = new ClientsController(_ExecutionContextMock);
+                _LoanOffersControllerMock = new LoanOffersController(_ExecutionContextMock);
+                _LoansControllerMock = new LoansController(_ExecutionContextMock);
+                _PlasticsControllerMock = new PlasticsController(_ExecutionContextMock);
+                _TransactionsControllerMock = new TransactionsController(_ExecutionContextMock);
 
                 _initialized = true;
             }

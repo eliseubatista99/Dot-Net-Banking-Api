@@ -1,7 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Providers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace BankingAppDataTier.Tests.Mocks
 {

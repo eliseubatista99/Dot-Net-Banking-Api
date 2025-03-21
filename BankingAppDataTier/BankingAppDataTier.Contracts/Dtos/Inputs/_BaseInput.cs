@@ -1,6 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-
-namespace BankingAppDataTier.Contracts.Dtos.Inputs
+﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs
 {
     public class _BaseInput
     {
