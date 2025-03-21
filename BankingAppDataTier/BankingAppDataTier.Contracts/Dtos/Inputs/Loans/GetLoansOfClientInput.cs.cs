@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Loans
 {
-    public class GetLoansOfClientInput
+    public class GetLoansOfClientInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the client id.

@@ -6,6 +6,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,24 +18,19 @@ namespace BankingAppDataTier.Controllers
     [Route("[controller]")]
     public class CardsController : Controller
     {
-        private readonly ILogger<ClientsController> logger;
+        private readonly ILogger logger;
         private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
         private readonly IDatabasePlasticsProvider databasePlasticsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public CardsController(
-            ILogger<ClientsController> _logger,
-            IMapperProvider _mapper,
-            IDatabaseCardsProvider _dbCardsProvider,
-            IDatabasePlasticsProvider _dbPlasticsProvider,
-            IDatabaseAccountsProvider _dbAccountsProvider)
+        public CardsController(IExecutionContext _executionContext)
         {
-            logger = _logger;
-            mapperProvider = _mapper;
-            databaseCardsProvider = _dbCardsProvider;
-            databasePlasticsProvider = _dbPlasticsProvider;
-            databaseAccountsProvider = _dbAccountsProvider;
+            logger = _executionContext.GetDependency<ILogger>()!;
+            mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
+            databaseCardsProvider = _executionContext.GetDependency<IDatabaseCardsProvider>()!;
+            databasePlasticsProvider = _executionContext.GetDependency<IDatabasePlasticsProvider>()!;
+            databaseAccountsProvider = _executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }
 
         [HttpGet("GetCardsOfAccount/{account}")]

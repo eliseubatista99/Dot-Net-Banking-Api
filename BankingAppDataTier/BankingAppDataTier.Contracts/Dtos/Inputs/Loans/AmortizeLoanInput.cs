@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Loans
 {
-    public class AmortizeLoanInput
+    public class AmortizeLoanInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the loan id.

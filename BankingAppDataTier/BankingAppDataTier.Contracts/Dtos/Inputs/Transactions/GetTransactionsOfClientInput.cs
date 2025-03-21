@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
 {
-    public class GetTransactionsOfClientInput
+    public class GetTransactionsOfClientInput: _BaseInput
     {
         public required string Client { get; set; }
 

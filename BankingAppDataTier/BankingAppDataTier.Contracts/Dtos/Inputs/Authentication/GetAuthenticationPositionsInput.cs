@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Authentication
 {
-    public class GetAuthenticationPositionsInput
+    public class GetAuthenticationPositionsInput : _BaseInput
     {
         public required string ClientId { get; set; }
 

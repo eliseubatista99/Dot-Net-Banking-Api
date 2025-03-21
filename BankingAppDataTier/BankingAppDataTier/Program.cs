@@ -18,6 +18,8 @@ namespace BankingAppDataTier
             builder.Services.AddSingleton<IDatabaseTransactionsProvider, DatabaseTransactionsProvider>();
             builder.Services.AddSingleton<IDatabaseLoanOfferProvider, DatabaseLoanOffersProvider>();
             builder.Services.AddSingleton<IDatabaseLoansProvider, DatabaseLoanProvider>();
+            builder.Services.AddSingleton<IExecutionContext, Providers.ExecutionContext>();
+
 
             var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
 
@@ -81,9 +83,9 @@ namespace BankingAppDataTier
 
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.MapControllers();
 

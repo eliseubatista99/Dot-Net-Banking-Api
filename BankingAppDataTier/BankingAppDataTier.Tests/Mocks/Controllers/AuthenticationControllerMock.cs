@@ -8,16 +8,9 @@
         {
             if (_controller == null)
             {
-                var logger = LoggerMock<BankingAppDataTier.Controllers.AuthenticationController>.Mock();
-                var authProvider = AuthenticationProviderMock.Mock();
-                var databaseClientsProvider = DatabaseClientsProviderMock.Mock();
-                var databaseTokensProvider = DatabaseTokensProviderMock.Mock();
+                var executionContextMock = ExecutionContextMock.Mock();
 
-                _controller = new BankingAppDataTier.Controllers.AuthenticationController(
-                    logger,
-                    authProvider,
-                    databaseClientsProvider,
-                    databaseTokensProvider);
+                _controller = new Controllers.AuthenticationController(executionContextMock);
             }
 
             return _controller;

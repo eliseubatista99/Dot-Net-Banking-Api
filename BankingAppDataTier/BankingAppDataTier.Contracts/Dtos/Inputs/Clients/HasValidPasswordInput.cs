@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Clients
 {
-    public class HasValidPasswordInput
+    public class HasValidPasswordInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the client id.

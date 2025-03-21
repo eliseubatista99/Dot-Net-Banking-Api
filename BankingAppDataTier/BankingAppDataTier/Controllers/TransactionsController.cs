@@ -6,6 +6,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -18,27 +19,21 @@ namespace BankingAppDataTier.Controllers
     [Route("[controller]")]
     public class TransactionsController : Controller
     {
-        private readonly ILogger<ClientsController> logger;
+        private readonly ILogger logger;
         private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseTransactionsProvider databaseTransactionsProvider;
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
 
-        public TransactionsController(
-            ILogger<ClientsController> _logger, 
-            IMapperProvider _mapper,
-            IDatabaseTransactionsProvider _dbTransactionsProvider,
-            IDatabaseClientsProvider _dbClientsProvider,
-            IDatabaseAccountsProvider _dbAccountsProvider,
-            IDatabaseCardsProvider _dbCardsProvider)
+        public TransactionsController(IExecutionContext _executionContext)
         {
-            logger = _logger;
-            mapperProvider = _mapper;
-            databaseTransactionsProvider = _dbTransactionsProvider;
-            databaseClientsProvider = _dbClientsProvider;
-            databaseAccountsProvider = _dbAccountsProvider;
-            databaseCardsProvider = _dbCardsProvider;
+            logger = _executionContext.GetDependency<ILogger>()!;
+            mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
+            databaseTransactionsProvider = _executionContext.GetDependency<IDatabaseTransactionsProvider>()!;
+            databaseClientsProvider = _executionContext.GetDependency<IDatabaseClientsProvider>()!;
+            databaseAccountsProvider = _executionContext.GetDependency<IDatabaseAccountsProvider>()!;
+            databaseCardsProvider = _executionContext.GetDependency<IDatabaseCardsProvider>()!;
         }
 
         [HttpGet("GetTransactionById/{id}")]

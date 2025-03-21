@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer
 {
-    public class AddLoanOfferInput
+    public class AddLoanOfferInput : _BaseInput
     {
         public required LoanOfferDto LoanOffer { get; set; }
     }

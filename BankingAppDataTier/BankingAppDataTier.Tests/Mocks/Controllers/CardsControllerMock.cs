@@ -8,18 +8,9 @@
         {
             if (_controller == null)
             {
-                var logger = LoggerMock<BankingAppDataTier.Controllers.ClientsController>.Mock();
-                var databaseCardsProvider = DatabaseCardsProviderMock.Mock();
-                var databasePlasticsProvider = DatabasePlasticsProviderMock.Mock();
-                var databaseAccountsProvider = DatabaseAccountsProviderMock.Mock();
-                var _mapper = MapperProviderMock.Mock();
+                var executionContextMock = ExecutionContextMock.Mock();
 
-                _controller = new BankingAppDataTier.Controllers.CardsController(
-                    logger,
-                    _mapper,
-                    databaseCardsProvider,
-                    databasePlasticsProvider,
-                    databaseAccountsProvider);
+                _controller = new Controllers.CardsController(executionContextMock);
             }
 
             return _controller;

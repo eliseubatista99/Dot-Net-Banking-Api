@@ -5,6 +5,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,21 +17,17 @@ namespace BankingAppDataTier.Controllers
     [Route("[controller]")]
     public class ClientsController : Controller
     {
-        private readonly ILogger<ClientsController> logger;
+        private readonly ILogger logger;
         private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public ClientsController(
-            ILogger<ClientsController> _logger,
-            IMapperProvider _mapper,
-            IDatabaseClientsProvider _dbClientsProvider,
-            IDatabaseAccountsProvider _dbAccountsProvider)
+        public ClientsController(IExecutionContext _executionContext)
         {
-            logger = _logger;
-            mapperProvider = _mapper;
-            databaseClientsProvider = _dbClientsProvider;
-            databaseAccountsProvider = _dbAccountsProvider;
+            logger = _executionContext.GetDependency<ILogger>()!;
+            mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
+            databaseClientsProvider = _executionContext.GetDependency<IDatabaseClientsProvider>()!;
+            databaseAccountsProvider = _executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }
 
         [HttpGet("GetClients")]

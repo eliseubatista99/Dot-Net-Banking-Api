@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Plastics
 {
-    public class ActivateOrDeactivatePlasticInput
+    public class ActivateOrDeactivatePlasticInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the id.

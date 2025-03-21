@@ -6,6 +6,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,20 +18,16 @@ namespace BankingAppDataTier.Controllers
     [Route("[controller]")]
     public class PlasticsController : Controller
     {
-        private readonly ILogger<ClientsController> logger;
+        private readonly ILogger logger;
         private readonly IMapperProvider mapperProvider;
         private readonly IDatabasePlasticsProvider databasePlasticsProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
-        public PlasticsController(
-            ILogger<ClientsController> _logger,
-            IMapperProvider _mapper,
-            IDatabasePlasticsProvider _dbPlasticsProvider,
-            IDatabaseCardsProvider _dbCardsProvider)
+        public PlasticsController(IExecutionContext _executionContext)
         {
-            logger = _logger;
-            mapperProvider = _mapper;
-            databasePlasticsProvider = _dbPlasticsProvider;
-            databaseCardsProvider = _dbCardsProvider;
+            logger = _executionContext.GetDependency<ILogger>()!;
+            mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
+            databasePlasticsProvider = _executionContext.GetDependency<IDatabasePlasticsProvider>()!;
+            databaseCardsProvider = _executionContext.GetDependency<IDatabaseCardsProvider>()!;
         }
 
         [HttpGet("GetPlasticsOfType/{cardType}&{includeInactive}")]

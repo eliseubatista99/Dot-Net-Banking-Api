@@ -12,13 +12,13 @@ namespace BankingAppDataTier.Tests.Mocks.Database
             {
                 Token = TestsConstants.PermanentToken,
                 ClientId = "Permanent_Client_02",
-                ExpirationDate = DateTime.Now.AddMinutes(15),
+                ExpirationDate = DateTime.Now.AddMinutes(15).ToUniversalTime(),
             },
             new TokenTableEntry
             {
                 Token = TestsConstants.ExpiredToken,
                 ClientId = "Permanent_Client_03",
-                ExpirationDate = DateTime.Now.AddMinutes(-15),
+                ExpirationDate = DateTime.Now.AddMinutes(-15).ToUniversalTime(),
             }
         ];
 

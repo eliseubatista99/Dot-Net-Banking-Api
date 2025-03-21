@@ -17,24 +17,19 @@ namespace BankingAppDataTier.Controllers
     [Route("[controller]")]
     public class LoansController : Controller
     {
-        private readonly ILogger<ClientsController> logger;
+        private readonly ILogger logger;
         private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseLoansProvider databaseLoansProvider;
         private readonly IDatabaseLoanOfferProvider databaseLoanOffersProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public LoansController(
-            ILogger<ClientsController> _logger,
-            IMapperProvider _mapper,
-            IDatabaseLoansProvider _dbLoansProvider, 
-            IDatabaseAccountsProvider _dbAccountsProvider,
-            IDatabaseLoanOfferProvider _dbLoanOffersProvider)
+        public LoansController(IExecutionContext _executionContext)
         {
-            logger = _logger;
-            mapperProvider = _mapper;
-            databaseLoansProvider = _dbLoansProvider;
-            databaseAccountsProvider = _dbAccountsProvider;
-            databaseLoanOffersProvider = _dbLoanOffersProvider;
+            logger = _executionContext.GetDependency<ILogger>()!;
+            mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
+            databaseLoansProvider = _executionContext.GetDependency<IDatabaseLoansProvider>()!;
+            databaseLoanOffersProvider = _executionContext.GetDependency<IDatabaseLoanOfferProvider>()!;
+            databaseAccountsProvider = _executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }
 
         [HttpGet("GetLoansOfAccount/{account}")]

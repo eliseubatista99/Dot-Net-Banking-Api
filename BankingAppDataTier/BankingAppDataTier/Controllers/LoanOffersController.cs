@@ -6,6 +6,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,21 +18,17 @@ namespace BankingAppDataTier.Controllers
     [Route("[controller]")]
     public class LoanOffersController : Controller
     {
-        private readonly ILogger<ClientsController> logger;
+        private readonly ILogger logger;
         private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseLoansProvider databaseLoansProvider;
         private readonly IDatabaseLoanOfferProvider databaseLoanOffersProvider;
 
-        public LoanOffersController(
-            ILogger<ClientsController> _logger,
-            IMapperProvider _mapper,
-            IDatabaseLoanOfferProvider _dbLoanOffersProvider,
-            IDatabaseLoansProvider _dbLoansProvider)
+        public LoanOffersController(IExecutionContext _executionContext)
         {
-            logger = _logger;
-            mapperProvider = _mapper;
-            databaseLoanOffersProvider = _dbLoanOffersProvider;
-            databaseLoansProvider = _dbLoansProvider;
+            logger = _executionContext.GetDependency<ILogger>()!;
+            mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
+            databaseLoansProvider = _executionContext.GetDependency<IDatabaseLoansProvider>()!;
+            databaseLoanOffersProvider = _executionContext.GetDependency<IDatabaseLoanOfferProvider>()!;
         }
 
         [HttpGet("GetLoanOfferByType/{loanType}&{includeInactive}")]

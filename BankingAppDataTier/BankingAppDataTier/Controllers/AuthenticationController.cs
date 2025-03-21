@@ -5,6 +5,7 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -14,21 +15,17 @@ namespace BankingAppDataTier.Controllers
     [Route("[controller]")]
     public class AuthenticationController : Controller
     {
-        private readonly ILogger<AuthenticationController> logger;
+        private readonly ILogger logger;
         private readonly IAuthenticationProvider authenticationProvider;
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseTokenProvider databaseTokensProvider;
 
-        public AuthenticationController(
-            ILogger<AuthenticationController> _logger,
-            IAuthenticationProvider _authProvider,
-            IDatabaseClientsProvider _dbClientsProvider,
-            IDatabaseTokenProvider _dbTokensProvider)
+        public AuthenticationController(IExecutionContext _executionContext)
         {
-            logger = _logger;
-            authenticationProvider = _authProvider;
-            databaseClientsProvider = _dbClientsProvider;
-            databaseTokensProvider = _dbTokensProvider;
+            logger = _executionContext.GetDependency<ILogger>()!;
+            authenticationProvider = _executionContext.GetDependency<IAuthenticationProvider>()!;
+            databaseClientsProvider = _executionContext.GetDependency<IDatabaseClientsProvider>()!;
+            databaseTokensProvider = _executionContext.GetDependency<IDatabaseTokenProvider>()!;
         }
 
         [HttpPost("Authenticate")]

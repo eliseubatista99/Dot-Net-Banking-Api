@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Clients
 {
-    public class ChangeClientPasswordInput
+    public class ChangeClientPasswordInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the client id.

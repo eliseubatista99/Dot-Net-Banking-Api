@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Clients
 {
-    public class AddClientInput
+    public class AddClientInput : _BaseInput
     {
         public required ClientDto Client { get; set; }
 

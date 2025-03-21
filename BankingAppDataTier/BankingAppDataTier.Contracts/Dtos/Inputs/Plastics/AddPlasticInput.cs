@@ -2,7 +2,7 @@
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Plastics
 {
-    public class AddPlasticInput
+    public class AddPlasticInput : _BaseInput
     {
         public required PlasticDto Plastic { get; set; }
     }

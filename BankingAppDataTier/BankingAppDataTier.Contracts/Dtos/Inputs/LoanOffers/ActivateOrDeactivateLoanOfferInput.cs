@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer
 {
-    public class ActivateOrDeactivateLoanOfferInput
+    public class ActivateOrDeactivateLoanOfferInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the id.

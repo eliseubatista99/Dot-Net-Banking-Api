@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Cards
 {
-    public class EditCardInput
+    public class EditCardInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the id.

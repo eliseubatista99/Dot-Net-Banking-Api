@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Plastics
 {
-    public class EditPlasticInput
+    public class EditPlasticInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the id.

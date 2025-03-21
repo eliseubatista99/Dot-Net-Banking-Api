@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Accounts
 {
-    public class EditAccountInput
+    public class EditAccountInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the account id.

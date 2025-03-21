@@ -7,33 +7,32 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace BankingAppDataTier.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class AccountsController : Controller
     {
-        private readonly ILogger<ClientsController> logger;
+        private readonly ILogger logger;
         private readonly IMapperProvider mapperProvider;
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
         private readonly IDatabaseLoansProvider databaseLoansProvider;
 
-        public AccountsController(ILogger<ClientsController> _logger, IMapperProvider _mapper, IDatabaseClientsProvider _dbClientsProvider,
-            IDatabaseAccountsProvider _dbAccountsProvider, IDatabaseCardsProvider _dbCardsProvider, IDatabaseLoansProvider _dbLoansProvider)
+        public AccountsController(IExecutionContext _executionContext)
         {
-            logger = _logger;
-            mapperProvider = _mapper;
-            databaseClientsProvider = _dbClientsProvider;
-            databaseAccountsProvider = _dbAccountsProvider;
-            databaseCardsProvider = _dbCardsProvider;
-            databaseLoansProvider = _dbLoansProvider;
+            logger = _executionContext.GetDependency<ILogger>()!;
+            mapperProvider = _executionContext.GetDependency <IMapperProvider>()!;
+            databaseClientsProvider = _executionContext.GetDependency<IDatabaseClientsProvider>()!;
+            databaseAccountsProvider = _executionContext.GetDependency<IDatabaseAccountsProvider>()!;
+            databaseCardsProvider = _executionContext.GetDependency<IDatabaseCardsProvider>()!;
+            databaseLoansProvider = _executionContext.GetDependency<IDatabaseLoansProvider>()!;
         }
 
         [HttpGet("GetClientAccounts/{clientId}")]

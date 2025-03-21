@@ -1,6 +1,6 @@
 ﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Loans
 {
-    public class EditLoanInput
+    public class EditLoanInput : _BaseInput
     {
         /// <summary>
         /// Gets or sets the loan id.

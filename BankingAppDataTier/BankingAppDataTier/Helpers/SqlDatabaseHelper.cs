@@ -52,7 +52,7 @@ namespace BankingAppDataTier.Database
 
         public static string FormatDateWithTime(DateTime date)
         {
-            return date.ToUniversalTime().ToString("yyyy-MM-ddThh:mm:ss");
+            return date.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss");
         }
     }
 }

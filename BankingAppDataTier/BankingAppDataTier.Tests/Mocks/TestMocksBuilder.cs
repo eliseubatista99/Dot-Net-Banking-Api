@@ -10,16 +10,7 @@ namespace BankingAppDataTier.Tests.Mocks
         private static readonly object _lock = new object();
 
         //PROVIDERS
-        public static IAuthenticationProvider _AuthenticationProviderMock { get; set; }
-        public static IDatabaseTokenProvider _DatabaseTokensProviderMock { get; set; }
-        public static IDatabaseAccountsProvider _DatabaseAccountsProviderMock { get; set; }
-        public static IDatabaseCardsProvider _DatabaseCardsProviderMock { get; set; }
-        public static IDatabaseClientsProvider _DatabaseClientsProviderMock { get; set; }
-        public static IDatabaseLoanOfferProvider _DatabaseLoanOffersProviderMock { get; set; }
-        public static IDatabaseLoansProvider _DatabaseLoanProviderMock { get; set; }
-        public static IDatabasePlasticsProvider _DatabasePlasticsProviderMock { get; set; }
-        public static IDatabaseTransactionsProvider _DatabaseTransactionsProviderMock { get; set; }
-
+        public static IExecutionContext _ExecutionContextMock { get; set; }
 
         // CONTROLLERS
         public static AccountsController _AccountsControllerMock { get; set; }
@@ -31,8 +22,6 @@ namespace BankingAppDataTier.Tests.Mocks
         public static PlasticsController _PlasticsControllerMock { get; set; }
         public static TransactionsController _TransactionsControllerMock { get; set; }
 
-
-
         public static void Mock()
         {
             lock (_lock)
@@ -43,25 +32,26 @@ namespace BankingAppDataTier.Tests.Mocks
                 }
 
                 // Mock the providers
-                _AuthenticationProviderMock = AuthenticationProviderMock.Mock();
-                _DatabaseClientsProviderMock = DatabaseClientsProviderMock.Mock();
-                _DatabaseTokensProviderMock = DatabaseTokensProviderMock.Mock();
-                _DatabaseAccountsProviderMock = DatabaseAccountsProviderMock.Mock();
-                _DatabasePlasticsProviderMock = DatabasePlasticsProviderMock.Mock();
-                _DatabaseCardsProviderMock = DatabaseCardsProviderMock.Mock();
-                _DatabaseLoanOffersProviderMock = DatabaseLoanOffersProviderMock.Mock();
-                _DatabaseLoanProviderMock = DatabaseLoanProviderMock.Mock();
-                _DatabaseTransactionsProviderMock = DatabaseTransactionsProviderMock.Mock();
+                _ExecutionContextMock = ExecutionContextMock.Mock();
+                var _AuthenticationProviderMock = _ExecutionContextMock.GetDependency<IAuthenticationProvider>();
+                var _DatabaseClientsProviderMock = _ExecutionContextMock.GetDependency<IDatabaseClientsProvider>();
+                var _DatabaseTokensProviderMock = _ExecutionContextMock.GetDependency<IDatabaseTokenProvider>();
+                var _DatabaseAccountsProviderMock = _ExecutionContextMock.GetDependency<IDatabaseAccountsProvider>();
+                var _DatabasePlasticsProviderMock = _ExecutionContextMock.GetDependency<IDatabasePlasticsProvider>();
+                var _DatabaseCardsProviderMock = _ExecutionContextMock.GetDependency<IDatabaseCardsProvider>();
+                var _DatabaseLoanOffersProviderMock = _ExecutionContextMock.GetDependency<IDatabaseLoanOfferProvider>();
+                var _DatabaseLoanProviderMock = _ExecutionContextMock.GetDependency<IDatabaseLoansProvider>();
+                var _DatabaseTransactionsProviderMock = _ExecutionContextMock.GetDependency<IDatabaseTransactionsProvider>();
 
                 // Create databases if not exists
-                _DatabaseClientsProviderMock.CreateTableIfNotExists();
-                _DatabaseTokensProviderMock.CreateTableIfNotExists();
-                _DatabaseAccountsProviderMock.CreateTableIfNotExists();
-                _DatabasePlasticsProviderMock.CreateTableIfNotExists();
-                _DatabaseCardsProviderMock.CreateTableIfNotExists();
-                _DatabaseLoanOffersProviderMock.CreateTableIfNotExists();
-                _DatabaseLoanProviderMock.CreateTableIfNotExists();
-                _DatabaseTransactionsProviderMock.CreateTableIfNotExists();
+                _DatabaseClientsProviderMock!.CreateTableIfNotExists();
+                _DatabaseTokensProviderMock!.CreateTableIfNotExists();
+                _DatabaseAccountsProviderMock!.CreateTableIfNotExists();
+                _DatabasePlasticsProviderMock!.CreateTableIfNotExists();
+                _DatabaseCardsProviderMock!.CreateTableIfNotExists();
+                _DatabaseLoanOffersProviderMock!.CreateTableIfNotExists();
+                _DatabaseLoanProviderMock!.CreateTableIfNotExists();
+                _DatabaseTransactionsProviderMock!.CreateTableIfNotExists();
 
                 // Clean database values
                 _DatabaseTransactionsProviderMock.DeleteAll();
