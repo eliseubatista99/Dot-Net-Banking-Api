@@ -15,6 +15,8 @@ namespace BankingAppDataTier.Controllers.Accounts
         private IDatabaseClientsProvider databaseClientsProvider;
         private IDatabaseAccountsProvider databaseAccountsProvider;
 
+        //protected override bool NeedsAuthorization { get; set; } = false;
+
         protected override async Task InitAsync()
         {
             await base.InitAsync();

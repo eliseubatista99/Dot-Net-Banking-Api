@@ -48,7 +48,7 @@ namespace BankingAppDataTier.Operations
             if (NeedsAuthorization && !IsAuthorized(input))
             {
                 //return Results.Unauthorized();
-                //return new OperationResultDto(HttpStatusCode.Unauthorized);
+                return new OperationResultDto(HttpStatusCode.Unauthorized);
             }
 
             var executionResponse = await ExecuteAsync(input).ConfigureAwait(false);

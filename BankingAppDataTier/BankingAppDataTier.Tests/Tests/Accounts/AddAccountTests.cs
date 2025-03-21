@@ -1,10 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Controllers.Accounts;
+using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,6 +41,7 @@ public class AddAccountTests
                 Name = "Test Current Account",
                 Image = "image",
             },
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response = (VoidOutput)result.Output!;
@@ -48,6 +51,7 @@ public class AddAccountTests
         result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "TEST0001",
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response2 = (GetAccountByIdOutput)result.Output!;
@@ -71,6 +75,7 @@ public class AddAccountTests
                 Name = "Test Savings Account",
                 Image = "image",
             },
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response = (VoidOutput)result.Output!;
@@ -80,6 +85,7 @@ public class AddAccountTests
         result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "TEST0002",
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response2 = (GetAccountByIdOutput)result.Output!;
@@ -106,6 +112,7 @@ public class AddAccountTests
                 Duration = 10,
                 SourceAccountId = "ACJW000000",
             },
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response = (VoidOutput)result.Output!;
@@ -115,6 +122,7 @@ public class AddAccountTests
         result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "TEST0003",
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response2 = (GetAccountByIdOutput)result.Output!;
@@ -145,6 +153,7 @@ public class AddAccountTests
                 Duration = duration,
                 SourceAccountId = sourceAccountId,
             },
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response = (VoidOutput)result.Output!;
@@ -168,6 +177,7 @@ public class AddAccountTests
                 Name = "Test Current Account",
                 Image = "image",
             },
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response = (VoidOutput)result.Output!;

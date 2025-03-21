@@ -4,6 +4,7 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Controllers.Accounts;
+using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +31,8 @@ public class GetAccountsByIdTests
 
         var result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
-            Id = id
+            Id = id,
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!; 
         
         var response = (GetAccountByIdOutput)result.Output!;
@@ -45,7 +47,8 @@ public class GetAccountsByIdTests
 
         var result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
-            Id = "invalid"
+            Id = "invalid",
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!; 
         
         var response = (GetAccountByIdOutput)result.Output!;

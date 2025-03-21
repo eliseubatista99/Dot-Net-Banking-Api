@@ -3,6 +3,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Controllers.Accounts;
+using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -26,7 +27,8 @@ public class GetClientAccountsTests
 
         var result = (OperationResultDto) await getClientAccountsOperation.Call(new GetClientAccountsInput
         {
-            ClientId = "Permanent_Client_01"
+            ClientId = "Permanent_Client_01",
+            Metadata = TestsConstants.TestsMetadata,
         }).ConfigureAwait(false);
 
         var tipo = result.GetType();

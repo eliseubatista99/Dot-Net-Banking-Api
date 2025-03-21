@@ -4,6 +4,7 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Controllers.Accounts;
+using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,7 @@ public class DeleteAccountTests
         var result = (OperationResultDto)deleteAccountOperation.Call(new DeleteAccountInput
         {
             Id = "To_Delete_Current_01",
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response = (VoidOutput)result.Output!;
@@ -43,6 +45,7 @@ public class DeleteAccountTests
         var result = (OperationResultDto)deleteAccountOperation.Call(new DeleteAccountInput
         {
             Id = "invalidId",
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
         var response = (VoidOutput)result.Output!;
 
@@ -57,6 +60,7 @@ public class DeleteAccountTests
         var result = (OperationResultDto)deleteAccountOperation.Call(new DeleteAccountInput
         {
             Id = "Permanent_Current_01",
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response = (VoidOutput)result.Output!;
@@ -73,6 +77,7 @@ public class DeleteAccountTests
         var result = (OperationResultDto)deleteAccountOperation.Call(new DeleteAccountInput
         {
             Id = "Permanent_Current_02",
+            Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
         var response = (VoidOutput)result.Output!;
