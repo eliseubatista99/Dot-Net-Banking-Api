@@ -21,6 +21,17 @@ namespace BankingAppDataTier.Tests.Mocks.Database
                 new ClientsTableEntry
                 {
                     Id = "Permanent_Client_02",
+                    Password = "xe",
+                    Name = "Jack",
+                    Surname = "Sparrow",
+                    BirthDate = new DateTime(1995, 06, 21),
+                    VATNumber = "111222333",
+                    PhoneNumber = "911111112",
+                    Email = "jacl.sparrow@dotnetbanking.com"
+                },
+                new ClientsTableEntry
+                {
+                    Id = "Permanent_Client_03",
                     Password = "password",
                     Name = "Jack",
                     Surname = "Sparrow",

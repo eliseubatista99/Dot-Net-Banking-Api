@@ -1,6 +1,6 @@
-﻿using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Database;
+﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Tests.Constants;
 
 namespace BankingAppDataTier.Tests.Mocks.Database
 {
@@ -10,9 +10,15 @@ namespace BankingAppDataTier.Tests.Mocks.Database
         [
             new TokenTableEntry
             {
-                Token = "AA",
-                ClientId = "Permanent_Client_01",
-                ExpirationDate = DateTime.Now,
+                Token = TestsConstants.PermanentToken,
+                ClientId = "Permanent_Client_02",
+                ExpirationDate = DateTime.Now.AddMinutes(15),
+            },
+            new TokenTableEntry
+            {
+                Token = TestsConstants.ExpiredToken,
+                ClientId = "Permanent_Client_03",
+                ExpirationDate = DateTime.Now.AddMinutes(-15),
             }
         ];
 

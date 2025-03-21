@@ -105,31 +105,39 @@ namespace BankingAppDataTier.Providers
 
         public (bool isValid, DateTime expirationTime) IsValidToken(string token)
         {
-            var configs = GetTokenConfigs();
-
-            var tokenValidationParameters = new TokenValidationParameters
+            try
             {
-                ValidateAudience = true,
-                ValidateIssuer = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = configs.key,
-                ValidateLifetime = false,
-                ValidIssuer = configs.issuer,
-                ValidAudience = configs.audience,
-            };
+                var configs = GetTokenConfigs();
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = configs.key,
+                    ValidateLifetime = false,
+                    ValidIssuer = configs.issuer,
+                    ValidAudience = configs.audience,
+                };
 
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
+                var tokenHandler = new JwtSecurityTokenHandler();
+                SecurityToken securityToken;
+                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
 
-            if (jwtSecurityToken is null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+                if (jwtSecurityToken is null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return (false, DateTime.Now);
+                }
+
+                return (true, jwtSecurityToken.ValidTo);
+            }
+            catch (Exception ex)
             {
                 return (false, DateTime.Now);
             }
 
-            return (true, jwtSecurityToken.ValidTo);
         }
 
         public int GetTokenLifeTime()
