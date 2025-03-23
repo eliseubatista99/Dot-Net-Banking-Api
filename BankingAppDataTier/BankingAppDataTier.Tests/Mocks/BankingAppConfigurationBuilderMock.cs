@@ -1,34 +1,31 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Tests.Mocks;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BankingAppDataTier.Tests.Mocks
 {
-    public static class ConfigurationMock
+    public class BankingAppConfigurationBuilderMock : TestsConfigurationBuilderMock
     {
-        private static IConfiguration _configuration;
-
-        public static IConfiguration Mock()
+        protected override IConfiguration? ConfigureMock()
         {
             var inMemorySettings = new Dictionary<string, string?> {
                 {$"{DatabaseConfigs.DatabaseSection}:{DatabaseConfigs.DatabaseConnection}", TestsConstants.ConnectionString},
                 {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Issuer}", TestsConstants.AuthenticationIssuer},
                 {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Audience}", TestsConstants.AuthenticationAudience},
                 {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Key}", TestsConstants.AuthenticationKey},
-                {"SectionName:SomeKey", "SectionValue"},
-                //...populate as needed for the test
             };
 
-            return Mock(inMemorySettings);
-        }
-
-        public static IConfiguration Mock(Dictionary<string, string?> mock)
-        {
-            _configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(mock)
+            return new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
                 .Build();
-
-            return _configuration;
         }
     }
 }

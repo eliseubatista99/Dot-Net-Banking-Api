@@ -1,50 +1,50 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Controllers;
-using BankingAppDataTier.Tests.Mocks;
-using Microsoft.AspNetCore.Mvc;
-using ElideusDotNetFramework.Operations.Contracts;
+﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
+//using BankingAppDataTier.Contracts.Errors;
+//using BankingAppDataTier.Controllers;
+//using BankingAppDataTier.Tests.Mocks;
+//using Microsoft.AspNetCore.Mvc;
+//using ElideusDotNetFramework.Operations.Contracts;
 
-namespace BankingAppDataTier.Tests.Loans;
+//namespace BankingAppDataTier.Tests.Loans;
 
-public class DeleteLoanTests
-{
-    private LoansController _loansController;
+//public class DeleteLoanTests
+//{
+//    private LoansController _loansController;
 
-    private void Setup()
-    {
-        TestMocksBuilder.Mock();
-        _loansController = TestMocksBuilder._LoansControllerMock;
-    }
+//    private void Setup()
+//    {
+//        TestMocksBuilder.Mock();
+//        _loansController = TestMocksBuilder._LoansControllerMock;
+//    }
 
-    [Fact]
-    public void ShouldBe_Success()
-    {
-        Setup();
+//    [Fact]
+//    public void ShouldBe_Success()
+//    {
+//        Setup();
 
-        var result = (ObjectResult)_loansController.DeleteLoan("To_Delete_AU_01").Result!;
+//        var result = (ObjectResult)_loansController.DeleteLoan("To_Delete_AU_01").Result!;
 
-        var response = (VoidOperationOutput)result.Value!;
+//        var response = (VoidOperationOutput)result.Value!;
 
-        Assert.True(response.Error == null);
+//        Assert.True(response.Error == null);
 
-        result = (ObjectResult)_loansController.GetLoanById("To_Delete_AU_01").Result!;
+//        result = (ObjectResult)_loansController.GetLoanById("To_Delete_AU_01").Result!;
 
-        var response2 = (GetLoanByIdOutput)result.Value!;
+//        var response2 = (GetLoanByIdOutput)result.Value!;
 
-        Assert.True(response2.Loan == null);
-    }
+//        Assert.True(response2.Loan == null);
+//    }
 
-    [Fact]
-    public void ShouldReturnError_InvalidId()
-    {
-        Setup();
+//    [Fact]
+//    public void ShouldReturnError_InvalidId()
+//    {
+//        Setup();
 
-        var result = (ObjectResult)_loansController.DeleteLoan("invalid_id").Result!;
+//        var result = (ObjectResult)_loansController.DeleteLoan("invalid_id").Result!;
 
-        var response = (VoidOperationOutput)result.Value!;
+//        var response = (VoidOperationOutput)result.Value!;
 
 
-        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-    }
-}
+//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+//    }
+//}

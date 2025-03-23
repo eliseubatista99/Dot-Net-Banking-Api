@@ -1,4 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+﻿using Azure;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
@@ -6,28 +7,31 @@ using BankingAppDataTier.Controllers.Accounts;
 using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
 using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using ElideusDotNetFramework.Tests.Helpers;
 
 namespace BankingAppDataTier.Tests.Accounts;
 
-public class AddAccountTests
+public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput, VoidOperationOutput>
 {
-    private AddAccountOperation addAccountOperation;
+    protected override ElideusDotNetFrameworkTestsBuilder TestsBuilder { get; set; } = new BankingAppDataTierTestsBuilder();
+   
     private GetAccountByIdOperation getAccountByIdOperation;
 
-    private void Setup()
+    protected override void Setup()
     {
-        TestMocksBuilder.Mock();
+        base.Setup();
 
-        addAccountOperation = new AddAccountOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
-        getAccountByIdOperation = new GetAccountByIdOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
+        OperationToTest = new AddAccountOperation(TestsBuilder.ApplicationContextMock!, string.Empty);
+        getAccountByIdOperation = new GetAccountByIdOperation(TestsBuilder.ApplicationContextMock!, string.Empty);
     }
 
     [Fact]
-    public void ShouldBe_Success_CurrentAccount()
+    public async Task ShouldBe_Success_CurrentAccountAsync()
     {
         Setup();
 
-        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
+        var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -39,29 +43,25 @@ public class AddAccountTests
                 Image = "image",
             },
             Metadata = TestsConstants.TestsMetadata,
-        }).Result!;
+        });
 
-        var response = (VoidOperationOutput)result.Output!;
+        Assert.True(addResponse.Error == null);
 
-        Assert.True(response.Error == null);
-
-        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
+        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
         {
             Id = "TEST0001",
             Metadata = TestsConstants.TestsMetadata,
-        }).Result!;
+        });
 
-        var response2 = (GetAccountByIdOutput)result.Output!;
-
-        Assert.True(response2.Account != null);
+        Assert.True(getByIdResponse.Account != null);
     }
 
     [Fact]
-    public void ShouldBe_Success_SavingsAccount()
+    public async Task ShouldBe_Success_SavingsAccountAsync()
     {
         Setup();
 
-        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
+        var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -73,29 +73,25 @@ public class AddAccountTests
                 Image = "image",
             },
             Metadata = TestsConstants.TestsMetadata,
-        }).Result!;
+        });
 
-        var response = (VoidOperationOutput)result.Output!;
+        Assert.True(addResponse.Error == null);
 
-        Assert.True(response.Error == null);
-
-        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
+        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
         {
             Id = "TEST0002",
             Metadata = TestsConstants.TestsMetadata,
-        }).Result!;
+        });
 
-        var response2 = (GetAccountByIdOutput)result.Output!;
-
-        Assert.True(response2.Account != null);
+        Assert.True(getByIdResponse.Account != null);
     }
 
     [Fact]
-    public void ShouldBe_Success_InvestementsAccount()
+    public async Task ShouldBe_Success_InvestementsAccountAsync()
     {
         Setup();
 
-        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
+        var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -110,21 +106,17 @@ public class AddAccountTests
                 SourceAccountId = "ACJW000000",
             },
             Metadata = TestsConstants.TestsMetadata,
-        }).Result!;
+        });
 
-        var response = (VoidOperationOutput)result.Output!;
+        Assert.True(addResponse.Error == null);
 
-        Assert.True(response.Error == null);
-
-        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
+        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
         {
             Id = "TEST0003",
             Metadata = TestsConstants.TestsMetadata,
-        }).Result!;
+        });
 
-        var response2 = (GetAccountByIdOutput)result.Output!;
-
-        Assert.True(response2.Account != null);
+        Assert.True(getByIdResponse.Account != null);
     }
 
 
@@ -132,11 +124,11 @@ public class AddAccountTests
     [InlineData(null, 10, 0.3)]
     [InlineData("JW0000000", null, 0.3)]
     [InlineData("JW0000000", 10, null)]
-    public void ShouldReturnError_MissingInvestmentAccountDetails(string? sourceAccountId, int? duration, double? interest)
+    public async Task ShouldReturnError_MissingInvestmentAccountDetailsAsync(string? sourceAccountId, int? duration, double? interest)
     {
         Setup();
 
-        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
+        var response = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -146,24 +138,22 @@ public class AddAccountTests
                 Balance = 1000,
                 Name = "Test Investments Account",
                 Image = "image",
-                Interest = interest != null ? (decimal) interest : null,
+                Interest = interest != null ? (decimal)interest : null,
                 Duration = duration,
                 SourceAccountId = sourceAccountId,
             },
             Metadata = TestsConstants.TestsMetadata,
-        }).Result!;
-
-        var response = (VoidOperationOutput)result.Output!;
+        });
 
         Assert.True(response.Error?.Code == AccountsErrors.MissingInvestementsAccountDetails.Code);
     }
 
     [Fact]
-    public void ShouldReturnError_IdAlreadyInUse()
+    public async Task ShouldReturnError_IdAlreadyInUseAsync()
     {
         Setup();
 
-        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
+        var response = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -175,9 +165,7 @@ public class AddAccountTests
                 Image = "image",
             },
             Metadata = TestsConstants.TestsMetadata,
-        }).Result!;
-
-        var response = (VoidOperationOutput)result.Output!;
+        });
 
         Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
     }

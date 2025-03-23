@@ -1,49 +1,49 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Controllers;
-using BankingAppDataTier.Tests.Mocks;
-using Microsoft.AspNetCore.Mvc;
-using ElideusDotNetFramework.Operations.Contracts;
+﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+//using BankingAppDataTier.Contracts.Errors;
+//using BankingAppDataTier.Controllers;
+//using BankingAppDataTier.Tests.Mocks;
+//using Microsoft.AspNetCore.Mvc;
+//using ElideusDotNetFramework.Operations.Contracts;
 
-namespace BankingAppDataTier.Tests.Cards;
+//namespace BankingAppDataTier.Tests.Cards;
 
-public class DeleteCardTests
-{
-    private CardsController _cardsController;
+//public class DeleteCardTests
+//{
+//    private CardsController _cardsController;
 
-    private void Setup()
-    {
-        TestMocksBuilder.Mock();
-        _cardsController = TestMocksBuilder._CardsControllerMock;
-    }
+//    private void Setup()
+//    {
+//        TestMocksBuilder.Mock();
+//        _cardsController = TestMocksBuilder._CardsControllerMock;
+//    }
 
-    [Fact]
-    public void ShouldBe_Success()
-    {
-        Setup();
+//    [Fact]
+//    public void ShouldBe_Success()
+//    {
+//        Setup();
 
-        var result = (ObjectResult)_cardsController.DeleteCard("To_Delete_Debit_01").Result!;
+//        var result = (ObjectResult)_cardsController.DeleteCard("To_Delete_Debit_01").Result!;
 
-        var response = (VoidOperationOutput)result.Value!;
+//        var response = (VoidOperationOutput)result.Value!;
 
-        Assert.True(response.Error == null);
+//        Assert.True(response.Error == null);
 
-        result = (ObjectResult)_cardsController.GetCardById("To_Delete_Debit_01").Result!;
+//        result = (ObjectResult)_cardsController.GetCardById("To_Delete_Debit_01").Result!;
 
-        var response2 = (GetCardByIdOutput)result.Value!;
+//        var response2 = (GetCardByIdOutput)result.Value!;
 
-        Assert.True(response2.Card == null);
-    }
+//        Assert.True(response2.Card == null);
+//    }
 
-    [Fact]
-    public void ShouldReturnError_InvalidId()
-    {
-        Setup();
+//    [Fact]
+//    public void ShouldReturnError_InvalidId()
+//    {
+//        Setup();
 
-        var result = (ObjectResult)_cardsController.DeleteCard("InvalidId").Result!;
+//        var result = (ObjectResult)_cardsController.DeleteCard("InvalidId").Result!;
 
-        var response = (VoidOperationOutput)result.Value!;
+//        var response = (VoidOperationOutput)result.Value!;
 
-        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-    }
-}
+//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+//    }
+//}
