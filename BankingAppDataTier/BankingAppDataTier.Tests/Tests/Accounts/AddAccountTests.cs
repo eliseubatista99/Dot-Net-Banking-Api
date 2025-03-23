@@ -13,17 +13,17 @@ using ElideusDotNetFramework.Tests.Helpers;
 namespace BankingAppDataTier.Tests.Accounts;
 
 public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput, VoidOperationOutput>
-{
-    protected override ElideusDotNetFrameworkTestsBuilder TestsBuilder { get; set; } = new BankingAppDataTierTestsBuilder();
-   
+{   
     private GetAccountByIdOperation getAccountByIdOperation;
 
     protected override void Setup()
     {
         base.Setup();
 
-        OperationToTest = new AddAccountOperation(TestsBuilder.ApplicationContextMock!, string.Empty);
-        getAccountByIdOperation = new GetAccountByIdOperation(TestsBuilder.ApplicationContextMock!, string.Empty);
+        var ApplicationContext = BankingAppDataTierTestsBuilder.Instance.ApplicationContextMock;
+
+        OperationToTest = new AddAccountOperation(ApplicationContext!, string.Empty);
+        getAccountByIdOperation = new GetAccountByIdOperation(ApplicationContext!, string.Empty);
     }
 
     [Fact]
