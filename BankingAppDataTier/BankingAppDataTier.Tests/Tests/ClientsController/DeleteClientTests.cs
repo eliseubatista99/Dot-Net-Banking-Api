@@ -1,9 +1,9 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
+﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 using BankingAppDataTier.Controllers;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Clients;
 
@@ -29,7 +29,7 @@ public class DeleteClientTests
         Assert.True(response.Client != null);
 
         result = (ObjectResult)_clientsController.DeleteClient("To_Delete_Client_01").Result!;
-        var response2 = (VoidOutput)result.Value!;
+        var response2 = (VoidOperationOutput)result.Value!;
 
         Assert.True(response2.Error == null);
 
@@ -47,7 +47,7 @@ public class DeleteClientTests
 
         var result = (ObjectResult)_clientsController.DeleteClient("Invalidid").Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }
@@ -58,7 +58,7 @@ public class DeleteClientTests
         Setup();
 
         var result = (ObjectResult)_clientsController.DeleteClient("Permanent_Client_01").Result!;
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == ClientsErrors.CantCloseWithActiveAccounts.Code);
     }

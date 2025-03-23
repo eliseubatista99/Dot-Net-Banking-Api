@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Accounts
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Accounts
 {
-    public class DeleteAccountInput : _BaseInput
+    public class DeleteAccountInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the id.

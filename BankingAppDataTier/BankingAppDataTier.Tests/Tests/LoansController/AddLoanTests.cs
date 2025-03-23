@@ -1,11 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Loans;
 
@@ -41,7 +41,7 @@ public class AddLoanTests
             }
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -74,7 +74,7 @@ public class AddLoanTests
             }
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
 
         Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);

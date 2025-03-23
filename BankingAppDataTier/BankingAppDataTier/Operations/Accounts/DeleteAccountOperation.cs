@@ -1,13 +1,15 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Operations;
 using System.Net;
+using ElideusDotNetFramework.Providers.Contracts;
 
 namespace BankingAppDataTier.Controllers.Accounts
 {
-    public class DeleteAccountOperation(IExecutionContext context) : _BankingAppDataTierOperation<DeleteAccountInput, VoidOutput>(context)
+    public class DeleteAccountOperation(IApplicationContext context, string endpoint)
+        : BaseOperation<DeleteAccountInput, VoidOperationOutput>(context, endpoint)
     {
         private IDatabaseAccountsProvider databaseAccountsProvider;
         private IDatabaseCardsProvider databaseCardsProvider;
@@ -21,14 +23,14 @@ namespace BankingAppDataTier.Controllers.Accounts
             databaseCardsProvider = executionContext.GetDependency<IDatabaseCardsProvider>()!;
             databaseLoansProvider = executionContext.GetDependency<IDatabaseLoansProvider>()!;
         }
-        protected override async Task<VoidOutput> ExecuteAsync(DeleteAccountInput input)
+        protected override async Task<VoidOperationOutput> ExecuteAsync(DeleteAccountInput input)
         {
             var result = false;
             var entryInDb = databaseAccountsProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     Error = GenericErrors.InvalidId,
@@ -39,7 +41,7 @@ namespace BankingAppDataTier.Controllers.Accounts
 
             if (cardsOfAccount != null && cardsOfAccount.Count > 0)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     Error = AccountsErrors.CantCloseWithRelatedCards,
@@ -50,7 +52,7 @@ namespace BankingAppDataTier.Controllers.Accounts
 
             if (loansOfAccount != null && loansOfAccount.Count > 0)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     Error = AccountsErrors.CantCloseWithActiveLoans,
@@ -61,14 +63,14 @@ namespace BankingAppDataTier.Controllers.Accounts
 
             if (!result)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 };
             }
 
-            return new VoidOutput();
+            return new VoidOperationOutput();
         }
     }
 }

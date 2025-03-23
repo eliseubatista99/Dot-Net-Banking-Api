@@ -1,14 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Controllers.Accounts;
 using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
-using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Accounts;
 
@@ -21,8 +18,8 @@ public class AddAccountTests
     {
         TestMocksBuilder.Mock();
 
-        addAccountOperation = new AddAccountOperation(TestMocksBuilder._ExecutionContextMock);
-        getAccountByIdOperation = new GetAccountByIdOperation(TestMocksBuilder._ExecutionContextMock);
+        addAccountOperation = new AddAccountOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
+        getAccountByIdOperation = new GetAccountByIdOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
     }
 
     [Fact]
@@ -30,7 +27,7 @@ public class AddAccountTests
     {
         Setup();
 
-        var result = (OperationResultDto)addAccountOperation.Call(new AddAccountInput
+        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -44,11 +41,11 @@ public class AddAccountTests
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error == null);
 
-        result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
+        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "TEST0001",
             Metadata = TestsConstants.TestsMetadata,
@@ -64,7 +61,7 @@ public class AddAccountTests
     {
         Setup();
 
-        var result = (OperationResultDto)addAccountOperation.Call(new AddAccountInput
+        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -78,11 +75,11 @@ public class AddAccountTests
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error == null);
 
-        result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
+        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "TEST0002",
             Metadata = TestsConstants.TestsMetadata,
@@ -98,7 +95,7 @@ public class AddAccountTests
     {
         Setup();
 
-        var result = (OperationResultDto)addAccountOperation.Call(new AddAccountInput
+        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -115,11 +112,11 @@ public class AddAccountTests
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error == null);
 
-        result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
+        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "TEST0003",
             Metadata = TestsConstants.TestsMetadata,
@@ -139,7 +136,7 @@ public class AddAccountTests
     {
         Setup();
 
-        var result = (OperationResultDto)addAccountOperation.Call(new AddAccountInput
+        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -156,7 +153,7 @@ public class AddAccountTests
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error?.Code == AccountsErrors.MissingInvestementsAccountDetails.Code);
     }
@@ -166,7 +163,7 @@ public class AddAccountTests
     {
         Setup();
 
-        var result = (OperationResultDto)addAccountOperation.Call(new AddAccountInput
+        var result = (OperationHttpResult)addAccountOperation.Call(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -180,7 +177,7 @@ public class AddAccountTests
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
     }

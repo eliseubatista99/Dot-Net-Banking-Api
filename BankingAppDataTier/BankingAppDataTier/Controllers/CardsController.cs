@@ -1,11 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Providers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +24,7 @@ namespace BankingAppDataTier.Controllers
         private readonly IDatabasePlasticsProvider databasePlasticsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public CardsController(IExecutionContext _executionContext)
+        public CardsController(IApplicationContext _executionContext)
         {
             logger = _executionContext.GetDependency<ILogger>()!;
             mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
@@ -86,13 +87,13 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost("AddCard")]
-        public ActionResult<VoidOutput> AddCard([FromBody] AddCardInput input)
+        public ActionResult<VoidOperationOutput> AddCard([FromBody] AddCardInput input)
         {
             var cardInDb = databaseCardsProvider.GetById(input.Card.Id);
 
             if (cardInDb != null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = GenericErrors.IdAlreadyInUse,
                 });
@@ -100,14 +101,14 @@ namespace BankingAppDataTier.Controllers
 
             if(input.Card.CardType == CardType.Credit && (input.Card.PaymentDay == null || input.Card.Balance == null))
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = CardsErrors.MissingCreditCardDetails,
                 });
             }
             else if (input.Card.CardType == CardType.PrePaid && input.Card.Balance == null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = CardsErrors.MissingPrePaidCardDetails,
                 });
@@ -117,7 +118,7 @@ namespace BankingAppDataTier.Controllers
 
             if (relatedPlastic == null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = CardsErrors.InvalidPlastic,
                 });
@@ -129,23 +130,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("EditCard")]
-        public ActionResult<VoidOutput> EditCard([FromBody] EditCardInput input)
+        public ActionResult<VoidOperationOutput> EditCard([FromBody] EditCardInput input)
         {
             var entryInDb = databaseCardsProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -174,24 +175,24 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpDelete("DeleteCard/{id}")]
-        public ActionResult<VoidOutput> DeleteCard(string id)
+        public ActionResult<VoidOperationOutput> DeleteCard(string id)
         {
             var result = false;
             var entryInDb = databaseCardsProvider.GetById(id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId,
                 });
@@ -201,13 +202,13 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         private CardDto BuildCardDto(CardsTableEntry entry)

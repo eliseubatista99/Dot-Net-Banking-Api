@@ -4,6 +4,7 @@ using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
+using ElideusDotNetFramework.Providers.Contracts;
 using Npgsql;
 
 namespace BankingAppDataTier.Providers
@@ -16,12 +17,12 @@ namespace BankingAppDataTier.Providers
 
         private string connectionString;
 
-        public DatabaseAccountsProvider(IConfiguration configuration, IMapperProvider _mapperProvider)
+        public DatabaseAccountsProvider(IApplicationContext applicationContext)
         {
-            this.Configuration = configuration;
-            this.mapperProvider = _mapperProvider;
+            this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
+            this.mapperProvider = applicationContext.GetDependency<IMapperProvider>()!;
 
-            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection);
+            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
         }
 
         public bool CreateTableIfNotExists()

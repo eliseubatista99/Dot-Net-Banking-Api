@@ -1,10 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Providers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace BankingAppDataTier.Controllers
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public ClientsController(IExecutionContext _executionContext)
+        public ClientsController(IApplicationContext _executionContext)
         {
             logger = _executionContext.GetDependency<ILogger>()!;
             mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
@@ -90,13 +91,13 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost("AddClient")]
-        public ActionResult<VoidOutput> AddClient([FromBody] AddClientInput input)
+        public ActionResult<VoidOperationOutput> AddClient([FromBody] AddClientInput input)
         {
             var clientInDb = databaseClientsProvider.GetById(input.Client.Id);
 
             if (clientInDb != null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = GenericErrors.IdAlreadyInUse,
                 });
@@ -109,23 +110,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("EditClient")]
-        public ActionResult<VoidOutput> EditClient([FromBody] EditClientInput input)
+        public ActionResult<VoidOperationOutput> EditClient([FromBody] EditClientInput input)
         {
             var entryInDb = databaseClientsProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -142,23 +143,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPost("ChangePassword")]
-        public ActionResult<VoidOutput> ChangePassword([FromBody] ChangeClientPasswordInput input)
+        public ActionResult<VoidOperationOutput> ChangePassword([FromBody] ChangeClientPasswordInput input)
         {
             var entryInDb = databaseClientsProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return NotFound(new VoidOutput
+                return NotFound(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -168,25 +169,25 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
 
         [HttpDelete("DeleteClient/{id}")]
-        public ActionResult<VoidOutput> DeleteClient(string id)
+        public ActionResult<VoidOperationOutput> DeleteClient(string id)
         {
             var result = false;
             var entryInDb = databaseClientsProvider.GetById(id);
 
             if (entryInDb == null)
             {
-                return NotFound(new VoidOutput
+                return NotFound(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId,
                 });
@@ -196,7 +197,7 @@ namespace BankingAppDataTier.Controllers
 
             if (accountsOfClient != null && accountsOfClient.Count > 0)
             {
-                return NotFound(new VoidOutput
+                return NotFound(new VoidOperationOutput
                 {
                     Error = ClientsErrors.CantCloseWithActiveAccounts,
                 });
@@ -206,13 +207,13 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
     }

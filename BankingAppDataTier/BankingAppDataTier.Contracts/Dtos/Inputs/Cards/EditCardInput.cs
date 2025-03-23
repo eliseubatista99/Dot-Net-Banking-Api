@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Cards
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Cards
 {
-    public class EditCardInput : _BaseInput
+    public class EditCardInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the id.

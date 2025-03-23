@@ -1,4 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs;
+﻿using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Constants
 {

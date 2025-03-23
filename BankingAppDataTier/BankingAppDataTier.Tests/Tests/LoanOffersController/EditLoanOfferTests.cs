@@ -1,10 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.LoanOffers;
 
@@ -33,7 +33,7 @@ public class EditLoanOfferTests
             Interest = 12.0M,
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -55,7 +55,7 @@ public class EditLoanOfferTests
             Description = "new Desc",
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }

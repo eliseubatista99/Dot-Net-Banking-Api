@@ -1,11 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Providers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace BankingAppDataTier.Controllers
         private readonly IMapperProvider mapperProvider;
         private readonly IDatabasePlasticsProvider databasePlasticsProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
-        public PlasticsController(IExecutionContext _executionContext)
+        public PlasticsController(IApplicationContext _executionContext)
         {
             logger = _executionContext.GetDependency<ILogger>()!;
             mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
@@ -75,13 +76,13 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost("AddPlastic")]
-        public ActionResult<VoidOutput> AddPlastic([FromBody] AddPlasticInput input)
+        public ActionResult<VoidOperationOutput> AddPlastic([FromBody] AddPlasticInput input)
         {
             var plasticInDb = databasePlasticsProvider.GetById(input.Plastic.Id);
 
             if (plasticInDb != null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = GenericErrors.IdAlreadyInUse,
                 });
@@ -93,23 +94,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("EditPlastic")]
-        public ActionResult<VoidOutput> EditPlastic([FromBody] EditPlasticInput input)
+        public ActionResult<VoidOperationOutput> EditPlastic([FromBody] EditPlasticInput input)
         {
             var entryInDb = databasePlasticsProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -125,23 +126,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("ActivateOrDeactivatePlastic")]
-        public ActionResult<VoidOutput> ActivateOrDeactivatePlastic([FromBody] ActivateOrDeactivatePlasticInput input)
+        public ActionResult<VoidOperationOutput> ActivateOrDeactivatePlastic([FromBody] ActivateOrDeactivatePlasticInput input)
         {
             var entryInDb = databasePlasticsProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -149,7 +150,7 @@ namespace BankingAppDataTier.Controllers
 
             if (input.Active == entryInDb.IsActive)
             {
-                return Ok(new VoidOutput());
+                return Ok(new VoidOperationOutput());
             }
 
             entryInDb.IsActive = input.Active;
@@ -158,25 +159,25 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
 
         [HttpDelete("DeletePlastic/{id}")]
-        public ActionResult<VoidOutput> DeletePlastic(string id)
+        public ActionResult<VoidOperationOutput> DeletePlastic(string id)
         {
             var result = false;
             var entryInDb = databasePlasticsProvider.GetById(id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId,
                 });
@@ -186,7 +187,7 @@ namespace BankingAppDataTier.Controllers
 
             if (cardsWithThisPlastic != null && cardsWithThisPlastic.Count > 0)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = PlasticsErrors.CantDeleteWithRelatedCards,
                 });
@@ -196,13 +197,13 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
     }

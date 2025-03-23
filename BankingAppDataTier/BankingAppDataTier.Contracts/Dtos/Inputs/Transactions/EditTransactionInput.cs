@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
 {
-    public class EditTransactionInput : _BaseInput
+    public class EditTransactionInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the id.

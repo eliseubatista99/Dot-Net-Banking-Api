@@ -1,10 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.LoanOffers;
 
@@ -29,7 +29,7 @@ public class ActivateOrDeactivateLoanOfferTests
             Active = false,
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -45,7 +45,7 @@ public class ActivateOrDeactivateLoanOfferTests
             Active = true,
         }).Result!;
 
-        response = (VoidOutput)result.Value!;
+        response = (VoidOperationOutput)result.Value!;
         Assert.True(response.Error == null);
 
         result = (ObjectResult)_loanOffersController.GetLoanOfferByType(Contracts.Enums.LoanType.Auto).Result!;
@@ -66,7 +66,7 @@ public class ActivateOrDeactivateLoanOfferTests
             Active = false,
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }

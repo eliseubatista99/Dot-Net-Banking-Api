@@ -1,8 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Enums;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
 {
-    public class GetTransactionsOfClientInput: _BaseInput
+    public class GetTransactionsOfClientInput: OperationInput
     {
         public required string Client { get; set; }
 

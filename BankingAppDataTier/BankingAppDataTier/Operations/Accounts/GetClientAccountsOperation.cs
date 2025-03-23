@@ -4,12 +4,14 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations;
+using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;
 
 namespace BankingAppDataTier.Controllers.Accounts
 {
-    public class GetClientAccountsOperation(IExecutionContext context) : _BankingAppDataTierOperation<GetClientAccountsInput, GetClientAccountsOutput>(context)
+    public class GetClientAccountsOperation(IApplicationContext context, string endpoint)
+            : BaseOperation<GetClientAccountsInput, GetClientAccountsOutput>(context, endpoint)
     {
         private IMapperProvider mapperProvider;
         private IDatabaseClientsProvider databaseClientsProvider;

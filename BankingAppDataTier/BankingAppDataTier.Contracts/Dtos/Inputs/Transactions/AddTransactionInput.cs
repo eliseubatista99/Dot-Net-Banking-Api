@@ -1,8 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
 {
-    public class AddTransactionInput : _BaseInput
+    public class AddTransactionInput : OperationInput
     {
         public required TransactionDto Transaction { get; set; }
     }

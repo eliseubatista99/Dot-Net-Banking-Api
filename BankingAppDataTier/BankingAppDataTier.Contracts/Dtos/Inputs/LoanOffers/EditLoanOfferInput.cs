@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer
 {
-    public class EditLoanOfferInput : _BaseInput
+    public class EditLoanOfferInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the loan offer id.

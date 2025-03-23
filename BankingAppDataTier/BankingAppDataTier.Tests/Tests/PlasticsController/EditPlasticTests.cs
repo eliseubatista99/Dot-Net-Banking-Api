@@ -1,10 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Plastics;
 
@@ -33,7 +33,7 @@ public class EditPlasticTests
             Commission = 20,
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -55,7 +55,7 @@ public class EditPlasticTests
             Name = "new name",
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }

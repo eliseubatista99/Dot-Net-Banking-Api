@@ -1,16 +1,18 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations;
+using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;
 
 namespace BankingAppDataTier.Controllers.Accounts
 {
-    public class AddAccountOperation(IExecutionContext context) : _BankingAppDataTierOperation<AddAccountInput, VoidOutput>(context)
+    public class AddAccountOperation(IApplicationContext context, string endpoint)
+        : BaseOperation<AddAccountInput, VoidOperationOutput>(context, endpoint)
     {
         private IMapperProvider mapperProvider;
         private IDatabaseClientsProvider databaseClientsProvider;
@@ -24,13 +26,13 @@ namespace BankingAppDataTier.Controllers.Accounts
             databaseClientsProvider = executionContext.GetDependency<IDatabaseClientsProvider>()!;
             databaseAccountsProvider = executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }
-        protected override async Task<VoidOutput> ExecuteAsync(AddAccountInput input)
+        protected override async Task<VoidOperationOutput> ExecuteAsync(AddAccountInput input)
         {
             if (input.Account.AccountType == AccountType.Investments)
             {
                 if (input.Account.SourceAccountId == null || input.Account.Duration == null || input.Account.Interest == null)
                 {
-                    return new VoidOutput
+                    return new VoidOperationOutput
                     {
                         StatusCode = HttpStatusCode.BadRequest,
                         Error = AccountsErrors.MissingInvestementsAccountDetails,
@@ -42,7 +44,7 @@ namespace BankingAppDataTier.Controllers.Accounts
 
             if (clientInDb == null)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     Error = AccountsErrors.InvalidOwnerId,
@@ -54,7 +56,7 @@ namespace BankingAppDataTier.Controllers.Accounts
 
             if (accountInDb != null)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     Error = GenericErrors.IdAlreadyInUse,
@@ -67,14 +69,14 @@ namespace BankingAppDataTier.Controllers.Accounts
 
             if (!result)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 };
             }
 
-            return new VoidOutput
+            return new VoidOperationOutput
             {
             };
         }

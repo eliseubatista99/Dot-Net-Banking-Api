@@ -1,10 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Plastics;
 
@@ -29,7 +29,7 @@ public class ActivateOrDeactivatePlasticTests
             Active = false,
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -45,7 +45,7 @@ public class ActivateOrDeactivatePlasticTests
             Active = true,
         }).Result!;
 
-        response = (VoidOutput)result.Value!;
+        response = (VoidOperationOutput)result.Value!;
         Assert.True(response.Error == null);
 
         result = (ObjectResult)_plasticsController.GetPlasticsOfType(Contracts.Enums.CardType.Debit).Result!;
@@ -65,7 +65,7 @@ public class ActivateOrDeactivatePlasticTests
             Active = false,
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }

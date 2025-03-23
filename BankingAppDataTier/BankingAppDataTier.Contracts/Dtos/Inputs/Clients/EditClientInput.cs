@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Clients
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Clients
 {
-    public class EditClientInput : _BaseInput
+    public class EditClientInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the client id.

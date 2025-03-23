@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer
 {
-    public class ActivateOrDeactivateLoanOfferInput : _BaseInput
+    public class ActivateOrDeactivateLoanOfferInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the id.

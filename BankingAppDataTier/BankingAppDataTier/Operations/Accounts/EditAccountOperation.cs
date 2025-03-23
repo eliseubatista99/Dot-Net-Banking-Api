@@ -1,14 +1,16 @@
 ﻿using BankingAppDataTier.Contracts.Constants;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;
 
 namespace BankingAppDataTier.Controllers.Accounts
 {
-    public class EditAccountOperation(IExecutionContext context) : _BankingAppDataTierOperation<EditAccountInput, VoidOutput>(context)
+    public class EditAccountOperation(IApplicationContext context, string endpoint)
+            : BaseOperation<EditAccountInput, VoidOperationOutput>(context, endpoint)
     {
         private IDatabaseAccountsProvider databaseAccountsProvider;
 
@@ -18,13 +20,13 @@ namespace BankingAppDataTier.Controllers.Accounts
 
             databaseAccountsProvider = executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }
-        protected override async Task<VoidOutput> ExecuteAsync(EditAccountInput input)
+        protected override async Task<VoidOperationOutput> ExecuteAsync(EditAccountInput input)
         {
             var entryInDb = databaseAccountsProvider.GetById(input.AccountId);
 
             if (entryInDb == null)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     Error = GenericErrors.InvalidId
@@ -39,7 +41,7 @@ namespace BankingAppDataTier.Controllers.Accounts
 
                     if (sourceAccountInDb == null)
                     {
-                        return new VoidOutput
+                        return new VoidOperationOutput
                         {
                             StatusCode = HttpStatusCode.BadRequest,
                             Error = AccountsErrors.InvalidSourceAccount,
@@ -60,14 +62,14 @@ namespace BankingAppDataTier.Controllers.Accounts
 
             if (!result)
             {
-                return new VoidOutput
+                return new VoidOperationOutput
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 };
             }
 
-            return new VoidOutput();
+            return new VoidOperationOutput();
         }
     }
 }

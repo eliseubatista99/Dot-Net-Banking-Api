@@ -1,8 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Enums;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Loans
 {
-    public class GetLoansOfAccountInput : _BaseInput
+    public class GetLoansOfAccountInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the account id.

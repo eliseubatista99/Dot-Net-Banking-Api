@@ -1,9 +1,9 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
+﻿using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.LoanOffers;
 
@@ -24,7 +24,7 @@ public class DeleteLoanOfferTests
 
         var result = (ObjectResult)_loanOffersController.DeleteLoanOffer("To_Delete_AU_01").Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -43,7 +43,7 @@ public class DeleteLoanOfferTests
         var result = (ObjectResult)_loanOffersController.DeleteLoanOffer("Invalid_id").Result!;
 
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }
@@ -56,7 +56,7 @@ public class DeleteLoanOfferTests
         var result = (ObjectResult)_loanOffersController.DeleteLoanOffer("Permanent_AU_01").Result!;
 
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == LoanOffersErrors.CantDeleteWithRelatedLoans.Code);
     }

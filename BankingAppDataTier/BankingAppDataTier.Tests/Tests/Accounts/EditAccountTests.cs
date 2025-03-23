@@ -1,13 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations;
-using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Controllers.Accounts;
 using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
-using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Accounts;
 
@@ -20,8 +17,8 @@ public class EditAccountTests
     {
         TestMocksBuilder.Mock();
 
-        editAccountOperation = new EditAccountOperation(TestMocksBuilder._ExecutionContextMock);
-        getAccountByIdOperation = new GetAccountByIdOperation(TestMocksBuilder._ExecutionContextMock);
+        editAccountOperation = new EditAccountOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
+        getAccountByIdOperation = new GetAccountByIdOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
     }
 
     [Fact]
@@ -30,18 +27,18 @@ public class EditAccountTests
         const string newName = "NewName";
         Setup();
 
-        var result = (OperationResultDto)editAccountOperation.Call(new EditAccountInput 
+        var result = (OperationHttpResult)editAccountOperation.Call(new EditAccountInput 
         {
             AccountId = "To_Edit_Current_01",
             Name = newName,
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error == null);
 
-        result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
+        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "To_Edit_Current_01",
             Metadata = TestsConstants.TestsMetadata,
@@ -60,7 +57,7 @@ public class EditAccountTests
         const int newDuration = 15;
         Setup();
 
-        var result = (OperationResultDto)editAccountOperation.Call(new EditAccountInput
+        var result = (OperationHttpResult)editAccountOperation.Call(new EditAccountInput
         {
             AccountId = "To_Edit_Investements_01",
             SourceAccountId = newSourceAccount,
@@ -69,11 +66,11 @@ public class EditAccountTests
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error == null);
 
-        result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
+        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "To_Edit_Investements_01",
             Metadata = TestsConstants.TestsMetadata,
@@ -91,14 +88,14 @@ public class EditAccountTests
     {
         Setup();
 
-        var result = (OperationResultDto)editAccountOperation.Call(new EditAccountInput
+        var result = (OperationHttpResult)editAccountOperation.Call(new EditAccountInput
         {
             AccountId = "invalid id",
             Name = "invalid name",
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }
@@ -108,14 +105,14 @@ public class EditAccountTests
     {
         Setup();
 
-        var result = (OperationResultDto)editAccountOperation.Call(new EditAccountInput
+        var result = (OperationHttpResult)editAccountOperation.Call(new EditAccountInput
         {
             AccountId = "To_Edit_Investements_01",
             SourceAccountId = "invalid_source",
             Metadata = TestsConstants.TestsMetadata,
         }).Result!;
 
-        var response = (VoidOutput)result.Output!;
+        var response = (VoidOperationOutput)result.Output!;
 
         Assert.True(response.Error?.Code == AccountsErrors.InvalidSourceAccount.Code);
     }

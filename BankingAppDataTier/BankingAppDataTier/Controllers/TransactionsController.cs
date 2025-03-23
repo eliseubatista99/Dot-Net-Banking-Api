@@ -1,11 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Providers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -25,7 +26,7 @@ namespace BankingAppDataTier.Controllers
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
         private readonly IDatabaseCardsProvider databaseCardsProvider;
 
-        public TransactionsController(IExecutionContext _executionContext)
+        public TransactionsController(IApplicationContext _executionContext)
         {
             logger = _executionContext.GetDependency<ILogger>()!;
             mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
@@ -130,13 +131,13 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost("AddTransaction")]
-        public ActionResult<VoidOutput> AddTransaction([FromBody] AddTransactionInput input)
+        public ActionResult<VoidOperationOutput> AddTransaction([FromBody] AddTransactionInput input)
         {
             var transactionInDb = databaseTransactionsProvider.GetById(input.Transaction.Id);
 
             if (transactionInDb != null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = GenericErrors.IdAlreadyInUse,
                 });
@@ -148,7 +149,7 @@ namespace BankingAppDataTier.Controllers
 
                 if (accountInDb == null)
                 {
-                    return BadRequest(new VoidOutput()
+                    return BadRequest(new VoidOperationOutput()
                     {
                         Error = TransactionsErrors.InvalidSourceAccount,
                     });
@@ -161,7 +162,7 @@ namespace BankingAppDataTier.Controllers
 
                 if (cardInDb == null)
                 {
-                    return BadRequest(new VoidOutput()
+                    return BadRequest(new VoidOperationOutput()
                     {
                         Error = TransactionsErrors.InvalidSourceCard,
                     });
@@ -174,23 +175,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("EditTransaction")]
-        public ActionResult<VoidOutput> EditTransaction([FromBody] EditTransactionInput input)
+        public ActionResult<VoidOperationOutput> EditTransaction([FromBody] EditTransactionInput input)
         {
             var entryInDb = databaseTransactionsProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -203,24 +204,24 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpDelete("DeleteTransaction/{id}")]
-        public ActionResult<VoidOutput> DeleteTransaction(string id)
+        public ActionResult<VoidOperationOutput> DeleteTransaction(string id)
         {
             var result = false;
             var entryInDb = databaseTransactionsProvider.GetById(id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId,
                 });
@@ -231,13 +232,13 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         private List<TransactionDto> GetTransactionsForAccount(string account)

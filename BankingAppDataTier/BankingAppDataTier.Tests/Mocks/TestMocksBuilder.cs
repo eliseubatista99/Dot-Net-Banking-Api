@@ -1,6 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks.Database;
+using ElideusDotNetFramework.Providers.Contracts;
 
 namespace BankingAppDataTier.Tests.Mocks
 {
@@ -10,7 +11,7 @@ namespace BankingAppDataTier.Tests.Mocks
         private static readonly object _lock = new object();
 
         //PROVIDERS
-        public static IExecutionContext _ExecutionContextMock { get; set; }
+        public static IApplicationContext  _ExecutionContextMock { get; set; }
 
         // CONTROLLERS
         public static AuthenticationController _AuthenticationControllerMock { get; set; }
@@ -31,7 +32,7 @@ namespace BankingAppDataTier.Tests.Mocks
                 }
 
                 // Mock the providers
-                _ExecutionContextMock = ExecutionContextMock.Mock();
+                _ExecutionContextMock = new TestsApplicationContext();
                 var _AuthenticationProviderMock = _ExecutionContextMock.GetDependency<IAuthenticationProvider>();
                 var _DatabaseClientsProviderMock = _ExecutionContextMock.GetDependency<IDatabaseClientsProvider>();
                 var _DatabaseTokensProviderMock = _ExecutionContextMock.GetDependency<IDatabaseTokenProvider>();

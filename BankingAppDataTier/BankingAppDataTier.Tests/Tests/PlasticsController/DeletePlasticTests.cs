@@ -1,9 +1,10 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
+﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
+
 
 namespace BankingAppDataTier.Tests.Plastics;
 
@@ -24,7 +25,7 @@ public class DeletePlasticTests
 
         var result = (ObjectResult)_plasticsController.DeletePlastic("To_Delete_Debit_01").Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -43,7 +44,7 @@ public class DeletePlasticTests
         var result = (ObjectResult)_plasticsController.DeletePlastic("Invalid_id").Result!;
 
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }
@@ -56,7 +57,7 @@ public class DeletePlasticTests
         var result = (ObjectResult)_plasticsController.DeletePlastic("Permanent_Debit_01").Result!;
 
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == PlasticsErrors.CantDeleteWithRelatedCards.Code);
     }

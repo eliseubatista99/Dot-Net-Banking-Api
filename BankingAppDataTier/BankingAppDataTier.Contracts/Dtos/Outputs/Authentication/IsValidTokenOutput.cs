@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Outputs.Authentication
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Outputs.Authentication
 {
-    public class IsValidTokenOutput : _BaseOutput
+    public class IsValidTokenOutput : OperationOutput
     {
         public required bool IsValid { get; set; }
 

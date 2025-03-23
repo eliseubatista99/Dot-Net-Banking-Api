@@ -1,11 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Providers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +24,7 @@ namespace BankingAppDataTier.Controllers
         private readonly IDatabaseLoanOfferProvider databaseLoanOffersProvider;
         private readonly IDatabaseAccountsProvider databaseAccountsProvider;
 
-        public LoansController(IExecutionContext _executionContext)
+        public LoansController(IApplicationContext _executionContext)
         {
             logger = _executionContext.GetDependency<ILogger>()!;
             mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
@@ -117,13 +118,13 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost("AddLoan")]
-        public ActionResult<VoidOutput> AddLoan([FromBody] AddLoanInput input)
+        public ActionResult<VoidOperationOutput> AddLoan([FromBody] AddLoanInput input)
         {
             var itemInDb = databaseLoansProvider.GetById(input.Loan.Id);
 
             if (itemInDb != null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = GenericErrors.IdAlreadyInUse,
                 });
@@ -133,7 +134,7 @@ namespace BankingAppDataTier.Controllers
 
             if (relatedOffer == null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = LoansErrors.InvalidRelatedOffer,
                 });
@@ -145,23 +146,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("AmortizeLoan")]
-        public ActionResult<VoidOutput> AmortizeLoan([FromBody] AmortizeLoanInput input)
+        public ActionResult<VoidOperationOutput> AmortizeLoan([FromBody] AmortizeLoanInput input)
         {
             var entryInDb = databaseLoansProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -171,7 +172,7 @@ namespace BankingAppDataTier.Controllers
 
             if (relatedAccountInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = LoansErrors.InvalidRelatedAccount
                 });
@@ -179,7 +180,7 @@ namespace BankingAppDataTier.Controllers
 
             if (relatedAccountInDb.Balance < input.Amount)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = LoansErrors.InsufficientFunds
                 });
@@ -191,23 +192,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("EditLoan")]
-        public ActionResult<VoidOutput> EditLoan([FromBody] EditLoanInput input)
+        public ActionResult<VoidOperationOutput> EditLoan([FromBody] EditLoanInput input)
         {
             var entryInDb = databaseLoansProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -221,7 +222,7 @@ namespace BankingAppDataTier.Controllers
 
                 if (relatedOffer == null)
                 {
-                    return BadRequest(new VoidOutput()
+                    return BadRequest(new VoidOperationOutput()
                     {
                         Error = LoansErrors.InvalidRelatedOffer,
                     });
@@ -231,7 +232,7 @@ namespace BankingAppDataTier.Controllers
 
                 if (relatedOfferLoanType != loan.LoanType)
                 {
-                    return BadRequest(new VoidOutput()
+                    return BadRequest(new VoidOperationOutput()
                     {
                         Error = LoansErrors.CantChangeLoanType,
                     });
@@ -244,7 +245,7 @@ namespace BankingAppDataTier.Controllers
 
                 if (relatedAccount == null)
                 {
-                    return BadRequest(new VoidOutput()
+                    return BadRequest(new VoidOperationOutput()
                     {
                         Error = LoansErrors.InvalidRelatedAccount,
                     });
@@ -262,24 +263,24 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpDelete("DeleteLoan/{id}")]
-        public ActionResult<VoidOutput> DeleteLoan(string id)
+        public ActionResult<VoidOperationOutput> DeleteLoan(string id)
         {
             var result = false;
             var entryInDb = databaseLoansProvider.GetById(id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId,
                 });
@@ -289,13 +290,13 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         private LoanDto BuildLoanDto(LoanTableEntry entry)

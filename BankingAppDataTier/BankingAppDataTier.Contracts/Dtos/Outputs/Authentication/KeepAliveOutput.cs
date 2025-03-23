@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Outputs.Authentication
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Outputs.Authentication
 {
-    public class KeepAliveOutput : _BaseOutput
+    public class KeepAliveOutput : OperationOutput
     {
         public DateTime? ExpirationDateTime { get; set; }
     }

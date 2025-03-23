@@ -1,11 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
-using BankingAppDataTier.Contracts.Operations;
-using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Controllers.Accounts;
 using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
-using Microsoft.AspNetCore.Http.HttpResults;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Accounts;
 
@@ -17,7 +15,7 @@ public class GetClientAccountsTests
     {
         TestMocksBuilder.Mock();
 
-        getClientAccountsOperation = new GetClientAccountsOperation(TestMocksBuilder._ExecutionContextMock);
+        getClientAccountsOperation = new GetClientAccountsOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
     }
 
     [Fact]
@@ -25,7 +23,7 @@ public class GetClientAccountsTests
     {
         Setup();
 
-        var result = (OperationResultDto) await getClientAccountsOperation.Call(new GetClientAccountsInput
+        var result = (OperationHttpResult) await getClientAccountsOperation.Call(new GetClientAccountsInput
         {
             ClientId = "Permanent_Client_01",
             Metadata = TestsConstants.TestsMetadata,

@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Authentication
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Authentication
 {
-    public class GetAuthenticationPositionsInput : _BaseInput
+    public class GetAuthenticationPositionsInput : OperationInput
     {
         public required string ClientId { get; set; }
 

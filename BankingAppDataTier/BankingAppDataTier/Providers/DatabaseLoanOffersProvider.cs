@@ -3,24 +3,24 @@ using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Database;
+using ElideusDotNetFramework.Providers.Contracts;
 using Npgsql;
 
 namespace BankingAppDataTier.Providers
 {
     public class DatabaseLoanOffersProvider : IDatabaseLoanOfferProvider
     {
-
         private IConfiguration Configuration;
         private IMapperProvider mapperProvider;
 
         private string connectionString;
 
-        public DatabaseLoanOffersProvider(IConfiguration configuration, IMapperProvider _mapperProvider)
+        public DatabaseLoanOffersProvider(IApplicationContext applicationContext)
         {
-            this.Configuration = configuration;
-            this.mapperProvider = _mapperProvider;
+            this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
+            this.mapperProvider = applicationContext.GetDependency<IMapperProvider>()!;
 
-            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection);
+            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
         }
 
         public bool CreateTableIfNotExists()

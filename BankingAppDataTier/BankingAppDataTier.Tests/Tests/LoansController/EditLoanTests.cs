@@ -1,10 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Loans;
 
@@ -34,7 +34,7 @@ public class EditLoanTests
             PaidAmount = 0,
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -52,7 +52,7 @@ public class EditLoanTests
 
         var result = (ObjectResult)_loansController.DeleteLoan("invalid_id").Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
@@ -68,7 +68,7 @@ public class EditLoanTests
             Id = "Permanent_AU_01",
             RelatedOffer = "Permanent_MO_01",
         }).Result!;
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
 
         Assert.True(response.Error?.Code == LoansErrors.CantChangeLoanType.Code);
@@ -85,7 +85,7 @@ public class EditLoanTests
             Id = "Permanent_AU_01",
             RelatedOffer = "invalid",
         }).Result!;
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
 
         Assert.True(response.Error?.Code == LoansErrors.InvalidRelatedOffer.Code);
@@ -102,7 +102,7 @@ public class EditLoanTests
             Id = "Permanent_AU_01",
             RelatedAccount = "invalid",
         }).Result!;
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
 
         Assert.True(response.Error?.Code == LoansErrors.InvalidRelatedAccount.Code);

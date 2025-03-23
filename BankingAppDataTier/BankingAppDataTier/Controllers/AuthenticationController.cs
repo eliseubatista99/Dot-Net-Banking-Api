@@ -5,6 +5,7 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Providers.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -19,7 +20,7 @@ namespace BankingAppDataTier.Controllers
         private readonly IDatabaseClientsProvider databaseClientsProvider;
         private readonly IDatabaseTokenProvider databaseTokensProvider;
 
-        public AuthenticationController(IExecutionContext _executionContext)
+        public AuthenticationController(IApplicationContext _executionContext)
         {
             logger = _executionContext.GetDependency<ILogger>()!;
             authenticationProvider = _executionContext.GetDependency<IAuthenticationProvider>()!;

@@ -1,9 +1,9 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
+﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
 using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Transactions;
 
@@ -24,7 +24,7 @@ public class DeleteTransactionTests
 
         var result = (ObjectResult)_transactionsController.DeleteTransaction("To_Delete_Transaction_01").Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -42,7 +42,7 @@ public class DeleteTransactionTests
 
         var result = (ObjectResult)_transactionsController.DeleteTransaction("invalid_id").Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
     }

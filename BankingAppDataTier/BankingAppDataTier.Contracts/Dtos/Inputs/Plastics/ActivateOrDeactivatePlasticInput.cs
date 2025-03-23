@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Plastics
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Plastics
 {
-    public class ActivateOrDeactivatePlasticInput : _BaseInput
+    public class ActivateOrDeactivatePlasticInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the id.

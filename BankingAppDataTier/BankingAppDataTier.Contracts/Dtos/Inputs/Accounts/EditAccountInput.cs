@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Accounts
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Accounts
 {
-    public class EditAccountInput : _BaseInput
+    public class EditAccountInput : OperationInput
     {
         /// <summary>
         /// Gets or sets the account id.

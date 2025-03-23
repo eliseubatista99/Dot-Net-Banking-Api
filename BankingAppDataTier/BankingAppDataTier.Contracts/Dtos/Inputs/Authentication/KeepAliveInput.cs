@@ -1,6 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Inputs.Authentication
+﻿using ElideusDotNetFramework.Operations.Contracts;
+
+namespace BankingAppDataTier.Contracts.Dtos.Inputs.Authentication
 {
-    public class KeepAliveInput : _BaseInput
+    public class KeepAliveInput : OperationInput
     {
         public required string Token { get; set; }
 

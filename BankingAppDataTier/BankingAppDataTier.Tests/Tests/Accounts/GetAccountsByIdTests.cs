@@ -1,12 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations;
-using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Controllers.Accounts;
 using BankingAppDataTier.Tests.Constants;
 using BankingAppDataTier.Tests.Mocks;
-using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Accounts;
 
@@ -18,7 +16,7 @@ public class GetAccountsByIdTests
     {
         TestMocksBuilder.Mock();
 
-        getAccountByIdOperation = new GetAccountByIdOperation(TestMocksBuilder._ExecutionContextMock);
+        getAccountByIdOperation = new GetAccountByIdOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
     }
 
     [Theory]
@@ -29,7 +27,7 @@ public class GetAccountsByIdTests
     {
         Setup();
 
-        var result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
+        var result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = id,
             Metadata = TestsConstants.TestsMetadata,
@@ -45,7 +43,7 @@ public class GetAccountsByIdTests
     {
         Setup();
 
-        var result = (OperationResultDto)getAccountByIdOperation.Call(new GetAccountByIdInput
+        var result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
         {
             Id = "invalid",
             Metadata = TestsConstants.TestsMetadata,

@@ -1,11 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Providers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,7 @@ namespace BankingAppDataTier.Controllers
         private readonly IDatabaseLoansProvider databaseLoansProvider;
         private readonly IDatabaseLoanOfferProvider databaseLoanOffersProvider;
 
-        public LoanOffersController(IExecutionContext _executionContext)
+        public LoanOffersController(IApplicationContext _executionContext)
         {
             logger = _executionContext.GetDependency<ILogger>()!;
             mapperProvider = _executionContext.GetDependency<IMapperProvider>()!;
@@ -76,13 +77,13 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpPost("AddLoanOffer")]
-        public ActionResult<VoidOutput> AddLoanOffer([FromBody] AddLoanOfferInput input)
+        public ActionResult<VoidOperationOutput> AddLoanOffer([FromBody] AddLoanOfferInput input)
         {
             var itemInDb = databaseLoanOffersProvider.GetById(input.LoanOffer.Id);
 
             if (itemInDb != null)
             {
-                return BadRequest(new VoidOutput()
+                return BadRequest(new VoidOperationOutput()
                 {
                     Error = GenericErrors.IdAlreadyInUse,
                 });
@@ -95,23 +96,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("EditLoanOffer")]
-        public ActionResult<VoidOutput> EditLoanOffer([FromBody] EditLoanOfferInput input)
+        public ActionResult<VoidOperationOutput> EditLoanOffer([FromBody] EditLoanOfferInput input)
         {
             var entryInDb = databaseLoanOffersProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -126,23 +127,23 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
         [HttpPatch("ActivateOrDeactivatePlastic")]
-        public ActionResult<VoidOutput> ActivateOrDeactivateLoanOffer([FromBody] ActivateOrDeactivateLoanOfferInput input)
+        public ActionResult<VoidOperationOutput> ActivateOrDeactivateLoanOffer([FromBody] ActivateOrDeactivateLoanOfferInput input)
         {
             var entryInDb = databaseLoanOffersProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId
                 });
@@ -150,7 +151,7 @@ namespace BankingAppDataTier.Controllers
 
             if (input.Active == entryInDb.IsActive)
             {
-                return Ok(new VoidOutput());
+                return Ok(new VoidOperationOutput());
             }
 
             entryInDb.IsActive = input.Active;
@@ -159,25 +160,25 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
 
         [HttpDelete("DeleteLoanOffer/{id}")]
-        public ActionResult<VoidOutput> DeleteLoanOffer(string id)
+        public ActionResult<VoidOperationOutput> DeleteLoanOffer(string id)
         {
             var result = false;
             var entryInDb = databaseLoanOffersProvider.GetById(id);
 
             if (entryInDb == null)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = GenericErrors.InvalidId,
                 });
@@ -187,7 +188,7 @@ namespace BankingAppDataTier.Controllers
 
             if (loansWithThisOffer?.Count > 0)
             {
-                return BadRequest(new VoidOutput
+                return BadRequest(new VoidOperationOutput
                 {
                     Error = LoanOffersErrors.CantDeleteWithRelatedLoans,
                 });
@@ -197,13 +198,13 @@ namespace BankingAppDataTier.Controllers
 
             if (!result)
             {
-                return new InternalServerError(new VoidOutput
+                return new InternalServerError(new VoidOperationOutput
                 {
                     Error = GenericErrors.FailedToPerformDatabaseOperation,
                 });
             }
 
-            return Ok(new VoidOutput());
+            return Ok(new VoidOperationOutput());
         }
 
     }

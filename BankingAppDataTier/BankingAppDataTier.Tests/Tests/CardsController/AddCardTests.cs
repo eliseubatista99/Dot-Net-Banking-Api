@@ -1,10 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
-using BankingAppDataTier.Contracts.Dtos.Outputs;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Tests.Mocks;
+using ElideusDotNetFramework.Operations.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingAppDataTier.Tests.Cards;
@@ -40,7 +40,7 @@ public class AddCardTests
             },
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -74,7 +74,7 @@ public class AddCardTests
             },
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -107,7 +107,7 @@ public class AddCardTests
             },
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error == null);
 
@@ -139,7 +139,7 @@ public class AddCardTests
             },
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
     }
@@ -169,7 +169,7 @@ public class AddCardTests
             },
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == CardsErrors.MissingCreditCardDetails.Code);
     }
@@ -195,7 +195,7 @@ public class AddCardTests
             },
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == CardsErrors.MissingPrePaidCardDetails.Code);
     }
@@ -221,7 +221,7 @@ public class AddCardTests
             },
         }).Result!;
 
-        var response = (VoidOutput)result.Value!;
+        var response = (VoidOperationOutput)result.Value!;
 
         Assert.True(response.Error?.Code == CardsErrors.InvalidPlastic.Code);
     }

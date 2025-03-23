@@ -1,5 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Providers.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,12 +12,11 @@ namespace BankingAppDataTier.Providers
 {
     public class AuthenticationProvider : IAuthenticationProvider
     {
-
         private IConfiguration Configuration;
 
-        public AuthenticationProvider(IConfiguration configuration)
+        public AuthenticationProvider(IApplicationContext applicationContext)
         {
-            this.Configuration = configuration;
+            this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
         }
 
         public void AddAuthenticationToApplicationBuilder(ref WebApplicationBuilder builder)
