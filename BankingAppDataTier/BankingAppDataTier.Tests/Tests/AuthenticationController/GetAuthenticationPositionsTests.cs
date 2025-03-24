@@ -1,74 +1,69 @@
-﻿//using BankingAppDataTier.Contracts.Constants;
-//using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Accounts;
+using BankingAppDataTier.Tests.Constants;
+using BankingAppDataTier.Tests;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests.Helpers;
+using ElideusDotNetFramework.Tests;
+using System.Diagnostics.Contracts;
+using BankingAppDataTier.Operations.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Constants;
 
-//namespace BankingAppDataTier.Tests.Authentication;
+namespace BankingAppDataTier.Tests.Authentication;
 
-//public class GetAuthenticationPositionsTests
-//{
-//    private AuthenticationController _authController;
+public class GetAuthenticationPositionsTests : OperationTest<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>
+{
+    public GetAuthenticationPositionsTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new GetAuthenticationPositionsOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _authController = TestMocksBuilder._AuthenticationControllerMock;
-//    }
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var response = await TestsHelper.SimulateCall<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(OperationToTest!, new GetAuthenticationPositionsInput
+        {
+            ClientId = "Permanent_Client_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+        Assert.True(response.Error == null);
+        Assert.True(response.Positions.Count == BankingAppDataTierConstants.DEDFAULT_NUMBER_OF_POSITIONS);
+    }
 
-//        var result = (ObjectResult)_authController.GetAuthenticationPositions(new GetAuthenticationPositionsInput
-//        {
-//            ClientId = "Permanent_Client_01",
-//        }).Result!;
+    [Theory]
+    [InlineData(1)]
+    [InlineData(4)]
+    [InlineData(10)]
+    public async Task ShouldBe_Success_ForSpecificNumberOfPositions(int numberOfPositions)
+    {
+        // This client password has only 8 chars, so we should expect the final count of positions to be 8 at max
+        var finalNumberOfPositions = numberOfPositions < 8 ? numberOfPositions : 8;
 
-//        var response = (GetAuthenticationPositionsOutput)result.Value!;
+        var response = await TestsHelper.SimulateCall<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(OperationToTest!, new GetAuthenticationPositionsInput
+        {
+            ClientId = "Permanent_Client_01",
+            NumberOfPositions = numberOfPositions,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response.Error == null);
-//        Assert.True(response.Positions.Count == BankingAppDataTierConstants.DEDFAULT_NUMBER_OF_POSITIONS);
-//    }
+        Assert.True(response.Error == null);
+        Assert.True(response.Positions.Count == finalNumberOfPositions);
+    }
 
-//    [Theory]
-//    [InlineData(1)]
-//    [InlineData(4)]
-//    [InlineData(10)]
-//    public void ShouldBe_Success_ForSpecificNumberOfPositions(int numberOfPositions)
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldReturnError_InvalidClient()
+    {
+        var response = await TestsHelper.SimulateCall<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(OperationToTest!, new GetAuthenticationPositionsInput
+        {
+            ClientId = "InvalidClient",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        // This client password has only 8 chars, so we should expect the final count of positions to be 8 at max
-//        var finalNumberOfPositions = numberOfPositions < 8 ? numberOfPositions : 8;
+        Assert.True(response.Error?.Code == AuthenticationErrors.InvalidClient.Code);
+    }
+}
 
-//        var result = (ObjectResult)_authController.GetAuthenticationPositions(new GetAuthenticationPositionsInput
-//        {
-//            ClientId = "Permanent_Client_01",
-//            NumberOfPositions = numberOfPositions,
-//        }).Result!;
-
-//        var response = (GetAuthenticationPositionsOutput)result.Value!;
-
-//        Assert.True(response.Error == null);
-//        Assert.True(response.Positions.Count == finalNumberOfPositions);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidClient()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_authController.GetAuthenticationPositions(new GetAuthenticationPositionsInput
-//        {
-//            ClientId = "InvalidClient",
-//        }).Result!;
-
-//        var response = (GetAuthenticationPositionsOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == AuthenticationErrors.InvalidClient.Code);
-//    }
-//}

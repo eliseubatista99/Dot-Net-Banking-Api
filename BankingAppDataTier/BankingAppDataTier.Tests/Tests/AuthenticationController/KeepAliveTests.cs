@@ -1,76 +1,79 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Constants;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Accounts;
+using BankingAppDataTier.Tests.Constants;
+using BankingAppDataTier.Tests;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests.Helpers;
+using ElideusDotNetFramework.Tests;
+using System.Diagnostics.Contracts;
+using BankingAppDataTier.Operations.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Constants;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.Authentication;
+namespace BankingAppDataTier.Tests.Authentication;
 
-//public class KeepAliveTests
-//{
-//    private AuthenticationController _authController;
+public class KeepAliveTests : OperationTest<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>
+{
+    private IsValidTokenOperation isValidTokenOperation { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _authController = TestMocksBuilder._AuthenticationControllerMock;
-//    }
+    public KeepAliveTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new KeepAliveOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        isValidTokenOperation = new IsValidTokenOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var metadata = TestsConstants.TestsMetadata;
+        metadata.Token = TestsConstants.PermanentToken;
 
+        var isValidResponse = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(isValidTokenOperation!, new IsValidTokenInput
+        {
+            Token = TestsConstants.PermanentToken,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var isValidResult = (ObjectResult)_authController.IsValidToken(new IsValidTokenInput
-//        {
-//            Token = TestsConstants.PermanentToken,
-//        }).Result!;
+        var originalExpirationTime = isValidResponse.ExpirationDateTime.GetValueOrDefault();
 
-//        var isValidResponse = (IsValidTokenOutput)isValidResult.Value!;
+        var keepAliveResponse = await TestsHelper.SimulateCall<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(OperationToTest!, new KeepAliveInput
+        {
+            Metadata = metadata,
+        });
 
-//        var originalExpirationTime = isValidResponse.ExpirationDateTime.GetValueOrDefault();
+        Assert.True(keepAliveResponse.Error == null);
+        Assert.True(keepAliveResponse.ExpirationDateTime.GetValueOrDefault().Ticks > originalExpirationTime.Ticks);
+    }
 
-//        var result = (ObjectResult)_authController.KeepAlive(new KeepAliveInput
-//        {
-//            Token = TestsConstants.PermanentToken,
-//        }).Result!;
+    [Fact]
+    public async Task ShouldBeError_InvalidToken()
+    {
+        var metadata = TestsConstants.TestsMetadata;
+        metadata.Token = "invalid-token";
 
-//        var response = (KeepAliveOutput)result.Value!;
+        var response = await TestsHelper.SimulateCall<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(OperationToTest!, new KeepAliveInput
+        {
+            Metadata = metadata,
+        });
 
-//        Assert.True(response.Error == null);
-//        Assert.True(response.ExpirationDateTime.GetValueOrDefault().Ticks > originalExpirationTime.Ticks);
-//    }
+        Assert.True(response.Error?.Code == AuthenticationErrors.InvalidToken.Code);
+    }
 
-//    [Fact]
-//    public void ShouldBeError_InvalidToken()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBeError_TokenExpired()
+    {
+        var metadata = TestsConstants.TestsMetadata;
+        metadata.Token = TestsConstants.ExpiredToken;
 
-//        var result = (ObjectResult)_authController.KeepAlive(new KeepAliveInput
-//        {
-//            Token = "invalid-token",
-//        }).Result!;
+        var response = await TestsHelper.SimulateCall<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(OperationToTest!, new KeepAliveInput
+        {
+            Metadata = metadata,
+        });
 
-//        var response = (KeepAliveOutput)result.Value!;
+        Assert.True(response.Error?.Code == AuthenticationErrors.TokenExpired.Code);
+    }
+}
 
-//        Assert.True(response.Error.Code == AuthenticationErrors.InvalidToken.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldBeError_TokenExpired()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_authController.KeepAlive(new KeepAliveInput
-//        {
-//            Token = TestsConstants.ExpiredToken,
-//        }).Result!;
-
-//        var response = (KeepAliveOutput)result.Value!;
-
-//        Assert.True(response.Error.Code == AuthenticationErrors.TokenExpired.Code);
-//    }
-//}

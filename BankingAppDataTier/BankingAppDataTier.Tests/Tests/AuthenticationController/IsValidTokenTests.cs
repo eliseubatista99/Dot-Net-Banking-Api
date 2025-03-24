@@ -1,71 +1,66 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Constants;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Accounts;
+using BankingAppDataTier.Tests.Constants;
+using BankingAppDataTier.Tests;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests.Helpers;
+using ElideusDotNetFramework.Tests;
+using System.Diagnostics.Contracts;
+using BankingAppDataTier.Operations.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Constants;
 
-//namespace BankingAppDataTier.Tests.Authentication;
+namespace BankingAppDataTier.Tests.Authentication;
 
-//public class IsValidTokenTests
-//{
-//    private AuthenticationController _authController;
+public class IsValidTokenTests : OperationTest<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>
+{
+    public IsValidTokenTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new IsValidTokenOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _authController = TestMocksBuilder._AuthenticationControllerMock;
-//    }
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var response = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(OperationToTest!, new IsValidTokenInput
+        {
+            Token = TestsConstants.PermanentToken,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+        Assert.True(response.Error == null);
+        Assert.True(response.IsValid);
+        Assert.True(response.ExpirationDateTime != null);
+    }
 
-//        var result = (ObjectResult)_authController.IsValidToken(new IsValidTokenInput
-//        {
-//            Token = TestsConstants.PermanentToken,
-//        }).Result!;
+    [Fact]
+    public async Task ShouldBe_InvalidForExpiredToken()
+    {
+        var response = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(OperationToTest!, new IsValidTokenInput
+        {
+            Token = TestsConstants.ExpiredToken,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (IsValidTokenOutput)result.Value!;
+        Assert.True(response.Error == null);
+        Assert.True(!response.IsValid);
+        Assert.True(response.Reason == AuthenticationErrors.TokenExpired.Code);
+    }
 
-//        Assert.True(response.Error == null);
-//        Assert.True(response.IsValid);
-//        Assert.True(response.ExpirationDateTime != null);
-//    }
+    [Fact]
+    public async Task ShouldBe_InvalidForInvalidToken()
+    {
+        var response = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(OperationToTest!, new IsValidTokenInput
+        {
+            Token = "invalid-token",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldBe_InvalidForExpiredToken()
-//    {
-//        Setup();
+        Assert.True(response.Error == null);
+        Assert.True(!response.IsValid);
+        Assert.True(response.Reason == AuthenticationErrors.InvalidToken.Code);
+    }
+}
 
-//        var result = (ObjectResult)_authController.IsValidToken(new IsValidTokenInput
-//        {
-//            Token = TestsConstants.ExpiredToken,
-//        }).Result!;
-
-//        var response = (IsValidTokenOutput)result.Value!;
-
-//        Assert.True(response.Error == null);
-//        Assert.True(!response.IsValid);
-//        Assert.True(response.Reason == AuthenticationErrors.TokenExpired.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldBe_InvalidForInvalidToken()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_authController.IsValidToken(new IsValidTokenInput
-//        {
-//            Token = "invalid-token",
-//        }).Result!;
-
-//        var response = (IsValidTokenOutput)result.Value!;
-
-//        Assert.True(response.Error == null);
-//        Assert.True(!response.IsValid);
-//        Assert.True(response.Reason == AuthenticationErrors.InvalidToken.Code);
-//    }
-//}
