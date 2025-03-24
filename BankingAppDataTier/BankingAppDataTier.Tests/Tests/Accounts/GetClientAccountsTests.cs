@@ -20,7 +20,7 @@ public class GetClientAccountsTests : OperationTest<GetClientAccountsOperation, 
     [InlineData("Permanent_Investements_01")]
     public async Task ShouldBe_Success(string id)
     {
-        var response = await TestsHelper.SimulateCall<GetClientAccountsOperation, GetClientAccountsInput, GetClientAccountsOutput>(OperationToTest!, new GetClientAccountsInput
+        var response = await SimulateOperationToTestCall(new GetClientAccountsInput
         {
             ClientId = "Permanent_Client_01",
             Metadata = TestsConstants.TestsMetadata,

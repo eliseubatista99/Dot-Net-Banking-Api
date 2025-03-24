@@ -9,7 +9,7 @@ using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Authentication;
 
-public class KeepAliveTests : OperationTest<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>
+public class KeepAliveTests : OperationTest<KeepAliveOperation, VoidOperationInput, KeepAliveOutput>
 {
     private IsValidTokenOperation isValidTokenOperation { get; set; }
 
@@ -35,7 +35,7 @@ public class KeepAliveTests : OperationTest<KeepAliveOperation, KeepAliveInput, 
 
         var originalExpirationTime = isValidResponse.ExpirationDateTime.GetValueOrDefault();
 
-        var keepAliveResponse = await TestsHelper.SimulateCall<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(OperationToTest!, new KeepAliveInput
+        var keepAliveResponse = await SimulateOperationToTestCall(new VoidOperationInput
         {
             Metadata = metadata,
         });
@@ -47,7 +47,7 @@ public class KeepAliveTests : OperationTest<KeepAliveOperation, KeepAliveInput, 
     [Fact]
     public async Task ShouldBeError_InvalidToken()
     {
-        var response = await TestsHelper.SimulateCall<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(OperationToTest!, new KeepAliveInput
+        var response = await SimulateOperationToTestCall(new VoidOperationInput
         {
             Metadata = new InputMetadata
             {
@@ -61,7 +61,7 @@ public class KeepAliveTests : OperationTest<KeepAliveOperation, KeepAliveInput, 
     [Fact]
     public async Task ShouldBeError_TokenExpired()
     {
-        var response = await TestsHelper.SimulateCall<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(OperationToTest!, new KeepAliveInput
+        var response = await SimulateOperationToTestCall(new VoidOperationInput
         {
             Metadata = new InputMetadata
             {

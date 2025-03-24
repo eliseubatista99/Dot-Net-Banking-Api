@@ -1,45 +1,4 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-
-//namespace BankingAppDataTier.Tests.Cards;
-
-//public class GetCardsOfAccountTests
-//{
-//    private CardsController _cardsController;
-
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _cardsController = TestMocksBuilder._CardsControllerMock;
-//    }
-
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.GetCardsOfAccount("Permanent_Current_01").Result!;
-//        var response = (GetCardsOfAccountOutput)result.Value!;
-
-//        Assert.True(response.Cards.Count > 0);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidAccountId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.GetCardsOfAccount("invalid_id").Result!;
-//        var response = (GetCardsOfAccountOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == CardsErrors.InvalidAccount.Code);
-//    }
-//}
-
-using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Operations.Cards;
@@ -61,7 +20,7 @@ public class GetCardsOfAccountTests : OperationTest<GetCardsOfAccountOperation, 
     [Fact]
     public async Task ShouldBe_Success()
     {
-        var response = await TestsHelper.SimulateCall<GetCardsOfAccountOperation, GetCardsOfAccountInput, GetCardsOfAccountOutput>(OperationToTest!, new GetCardsOfAccountInput
+        var response = await SimulateOperationToTestCall(new GetCardsOfAccountInput
         {
             AccountId = "Permanent_Current_01",
             Metadata = TestsConstants.TestsMetadata,
@@ -73,7 +32,7 @@ public class GetCardsOfAccountTests : OperationTest<GetCardsOfAccountOperation, 
     [Fact]
     public async Task ShouldReturnError_InvalidAccountId()
     {
-        var response = await TestsHelper.SimulateCall<GetCardsOfAccountOperation, GetCardsOfAccountInput, GetCardsOfAccountOutput>(OperationToTest!, new GetCardsOfAccountInput
+        var response = await SimulateOperationToTestCall(new GetCardsOfAccountInput
         {
             AccountId = "invalid_id",
             Metadata = TestsConstants.TestsMetadata,

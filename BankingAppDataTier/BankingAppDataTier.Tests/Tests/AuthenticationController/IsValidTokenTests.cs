@@ -18,7 +18,7 @@ public class IsValidTokenTests : OperationTest<IsValidTokenOperation, IsValidTok
     [Fact]
     public async Task ShouldBe_Success()
     {
-        var response = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(OperationToTest!, new IsValidTokenInput
+        var response = await SimulateOperationToTestCall(new IsValidTokenInput
         {
             Token = TestsConstants.PermanentToken,
             Metadata = TestsConstants.TestsMetadata,
@@ -32,7 +32,7 @@ public class IsValidTokenTests : OperationTest<IsValidTokenOperation, IsValidTok
     [Fact]
     public async Task ShouldBe_InvalidForExpiredToken()
     {
-        var response = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(OperationToTest!, new IsValidTokenInput
+        var response = await SimulateOperationToTestCall(new IsValidTokenInput
         {
             Token = TestsConstants.ExpiredToken,
             Metadata = TestsConstants.TestsMetadata,
@@ -46,7 +46,7 @@ public class IsValidTokenTests : OperationTest<IsValidTokenOperation, IsValidTok
     [Fact]
     public async Task ShouldBe_InvalidForInvalidToken()
     {
-        var response = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(OperationToTest!, new IsValidTokenInput
+        var response = await SimulateOperationToTestCall(new IsValidTokenInput
         {
             Token = "invalid-token",
             Metadata = TestsConstants.TestsMetadata,

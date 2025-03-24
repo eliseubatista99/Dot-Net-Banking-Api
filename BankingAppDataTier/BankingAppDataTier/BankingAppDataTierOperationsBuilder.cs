@@ -1,12 +1,15 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
 using BankingAppDataTier.Operations.Accounts;
 using BankingAppDataTier.Operations.Authentication;
 using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Operations.Clients;
 using ElideusDotNetFramework.Operations;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Providers.Contracts;
@@ -23,7 +26,7 @@ namespace BankingAppDataTier
 
             MapPostOperation<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(ref app, context, new IsValidTokenOperation(context, "/IsValidToken"));
 
-            MapPostOperation<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(ref app, context, new KeepAliveOperation(context, "/KeepAlive"));
+            MapPostOperation<KeepAliveOperation, VoidOperationInput, KeepAliveOutput>(ref app, context, new KeepAliveOperation(context, "/KeepAlive"));
         }
 
         private void MapAccountsOperations(ref WebApplication app, IApplicationContext context)
@@ -52,6 +55,21 @@ namespace BankingAppDataTier
             MapPostOperation<GetCardsOfAccountOperation, GetCardsOfAccountInput, GetCardsOfAccountOutput>(ref app, context, new GetCardsOfAccountOperation(context, "/GetCardsOfAccount"));
         }
 
+        private void MapClientsOperations(ref WebApplication app, IApplicationContext context)
+        {
+            MapPostOperation<AddClientOperation, AddClientInput, VoidOperationOutput>(ref app, context, new AddClientOperation(context, "/AddClient"));
+
+            MapPostOperation<ChangePasswordOperation, ChangeClientPasswordInput, VoidOperationOutput>(ref app, context, new ChangePasswordOperation(context, "/ChangePassword"));
+
+            MapPostOperation<DeleteClientOperation, DeleteClientInput, VoidOperationOutput>(ref app, context, new DeleteClientOperation(context, "/DeletClient"));
+
+            MapPostOperation<EditClientOperation, EditClientInput, VoidOperationOutput>(ref app, context, new EditClientOperation(context, "/EditClient"));
+
+            MapPostOperation<GetClientByIdOperation, GetClientByIdInput, GetClientByIdOutput>(ref app, context, new GetClientByIdOperation(context, "/GetClientById"));
+
+            MapPostOperation<GetClientsOperation, VoidOperationInput, GetClientsOutput>(ref app, context, new GetClientsOperation(context, "/GetClients"));
+        }
+
         public override void MapOperations(ref WebApplication app, IApplicationContext context)
         {
             base.MapOperations(ref app, context);
@@ -59,6 +77,7 @@ namespace BankingAppDataTier
             MapAuthenticationOperations(ref app, context);
             MapAccountsOperations(ref app, context);
             MapCardsOperations(ref app, context);
+            MapClientsOperations(ref app, context);
         }
     }
 }

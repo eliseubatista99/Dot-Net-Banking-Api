@@ -23,7 +23,7 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
     [Fact]
     public async Task ShouldBe_Success_DebitCard()
     {
-        var addResponse = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        var addResponse = await SimulateOperationToTestCall(new AddCardInput
         {
             Card = new CardDto
             {
@@ -53,7 +53,7 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
     [Fact]
     public async Task ShouldBe_Success_CreditCard()
     {
-        var addResponse = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        var addResponse = await SimulateOperationToTestCall(new AddCardInput
         {
             Card = new CardDto
             {
@@ -85,7 +85,7 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
     [Fact]
     public async Task ShouldBe_Success_PrePaidCard()
     {
-        var addResponse = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        var addResponse = await SimulateOperationToTestCall(new AddCardInput
         {
             Card = new CardDto
             {
@@ -116,7 +116,7 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
     [Fact]
     public async Task ShouldReturnError_IdAlreadyInUse()
     {
-        var response = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        var response = await SimulateOperationToTestCall(new AddCardInput
         {
             Card = new CardDto
             {
@@ -141,7 +141,7 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
     [InlineData(15, null)]
     public async Task ShouldReturnError_MissingCreditCardDetails(int? paymentDay, double? balance)
     {
-        var response = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        var response = await SimulateOperationToTestCall(new AddCardInput
         {
             Card = new CardDto
             {
@@ -165,7 +165,7 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
     [Fact]
     public async Task ShouldReturnError_MissingPrePaidCardDetails()
     {
-        var response = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        var response = await SimulateOperationToTestCall(new AddCardInput
         {
             Card = new CardDto
             {
@@ -187,7 +187,7 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
     [Fact]
     public async Task ShouldReturnError_InvalidPlastic()
     {
-        var response = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        var response = await SimulateOperationToTestCall(new AddCardInput
         {
             Card = new CardDto
             {

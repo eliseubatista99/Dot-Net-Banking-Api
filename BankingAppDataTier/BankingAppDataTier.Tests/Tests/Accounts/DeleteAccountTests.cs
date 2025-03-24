@@ -18,7 +18,7 @@ public class DeleteAccountTests : OperationTest<DeleteAccountOperation, DeleteAc
     [Fact]
     public async Task ShouldBe_Success()
     {
-        var response = await TestsHelper.SimulateCall<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>(OperationToTest!, new DeleteAccountInput
+        var response = await SimulateOperationToTestCall(new DeleteAccountInput
         {
             Id = "To_Delete_Current_01",
             Metadata = TestsConstants.TestsMetadata,
@@ -30,7 +30,7 @@ public class DeleteAccountTests : OperationTest<DeleteAccountOperation, DeleteAc
     [Fact]
     public async Task ShouldReturnError_InvalidAccountId()
     {
-        var response = await TestsHelper.SimulateCall<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>(OperationToTest!, new DeleteAccountInput
+        var response = await SimulateOperationToTestCall(new DeleteAccountInput
         {
             Id = "invalidId",
             Metadata = TestsConstants.TestsMetadata,
@@ -42,7 +42,7 @@ public class DeleteAccountTests : OperationTest<DeleteAccountOperation, DeleteAc
     [Fact]
     public async Task ShouldReturnError_CantCloseWithRelatedCards()
     {
-        var response = await TestsHelper.SimulateCall<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>(OperationToTest!, new DeleteAccountInput
+        var response = await SimulateOperationToTestCall(new DeleteAccountInput
         {
             Id = "Permanent_Current_01",
             Metadata = TestsConstants.TestsMetadata,
@@ -55,7 +55,7 @@ public class DeleteAccountTests : OperationTest<DeleteAccountOperation, DeleteAc
     [Fact]
     public async Task ShouldReturnError_CantCloseWithActiveLoans()
     {
-        var response = await TestsHelper.SimulateCall<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>(OperationToTest!, new DeleteAccountInput
+        var response = await SimulateOperationToTestCall(new DeleteAccountInput
         {
             Id = "Permanent_Current_02",
             Metadata = TestsConstants.TestsMetadata,

@@ -19,7 +19,7 @@ public class AuthenticateTests : OperationTest<AuthenticateOperation, Authentica
     [Fact]
     public async Task ShouldBe_Success()
     {
-        var response = await TestsHelper.SimulateCall<AuthenticateOperation, AuthenticateInput, AuthenticateOutput>(OperationToTest!, new AuthenticateInput
+        var response = await SimulateOperationToTestCall(new AuthenticateInput
         {
             ClientId = "Permanent_Client_01",
             AuthenticationCode = new List<AuthenticationCodeItemDto>
@@ -51,7 +51,7 @@ public class AuthenticateTests : OperationTest<AuthenticateOperation, Authentica
     [Fact]
     public async Task ShouldReturnError_InvalidClient()
     {
-        var response = await TestsHelper.SimulateCall<AuthenticateOperation, AuthenticateInput, AuthenticateOutput>(OperationToTest!, new AuthenticateInput
+        var response = await SimulateOperationToTestCall(new AuthenticateInput
         {
             ClientId = "Invalid_Client",
             AuthenticationCode = new List<AuthenticationCodeItemDto>(),
@@ -64,7 +64,7 @@ public class AuthenticateTests : OperationTest<AuthenticateOperation, Authentica
     [Fact]
     public async Task ShouldReturnError_WrongCode()
     {
-        var response = await TestsHelper.SimulateCall<AuthenticateOperation, AuthenticateInput, AuthenticateOutput>(OperationToTest!, new AuthenticateInput
+        var response = await SimulateOperationToTestCall(new AuthenticateInput
         {
             ClientId = "Permanent_Client_01",
             AuthenticationCode = new List<AuthenticationCodeItemDto>

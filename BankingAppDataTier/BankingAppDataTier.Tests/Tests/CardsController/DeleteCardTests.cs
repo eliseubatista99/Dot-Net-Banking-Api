@@ -23,7 +23,7 @@ public class DeleteCardTests : OperationTest<DeleteCardOperation, DeleteCardInpu
     [Fact]
     public async Task ShouldBe_Success()
     {
-        var deleteResponse = await TestsHelper.SimulateCall<DeleteCardOperation, DeleteCardInput, VoidOperationOutput>(OperationToTest!, new DeleteCardInput
+        var deleteResponse = await SimulateOperationToTestCall(new DeleteCardInput
         {
             Id = "To_Delete_Debit_01",
             Metadata = TestsConstants.TestsMetadata,
@@ -42,7 +42,7 @@ public class DeleteCardTests : OperationTest<DeleteCardOperation, DeleteCardInpu
     [Fact]
     public async Task ShouldReturnError_InvalidId()
     {
-        var response = await TestsHelper.SimulateCall<DeleteCardOperation, DeleteCardInput, VoidOperationOutput>(OperationToTest!, new DeleteCardInput
+        var response = await SimulateOperationToTestCall(new DeleteCardInput
         {
             Id = "InvalidId",
             Metadata = TestsConstants.TestsMetadata,

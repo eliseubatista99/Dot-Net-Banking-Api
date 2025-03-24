@@ -19,7 +19,7 @@ public class GetAuthenticationPositionsTests : OperationTest<GetAuthenticationPo
     [Fact]
     public async Task ShouldBe_Success()
     {
-        var response = await TestsHelper.SimulateCall<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(OperationToTest!, new GetAuthenticationPositionsInput
+        var response = await SimulateOperationToTestCall(new GetAuthenticationPositionsInput
         {
             ClientId = "Permanent_Client_01",
             Metadata = TestsConstants.TestsMetadata,
@@ -38,7 +38,7 @@ public class GetAuthenticationPositionsTests : OperationTest<GetAuthenticationPo
         // This client password has only 8 chars, so we should expect the final count of positions to be 8 at max
         var finalNumberOfPositions = numberOfPositions < 8 ? numberOfPositions : 8;
 
-        var response = await TestsHelper.SimulateCall<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(OperationToTest!, new GetAuthenticationPositionsInput
+        var response = await SimulateOperationToTestCall(new GetAuthenticationPositionsInput
         {
             ClientId = "Permanent_Client_01",
             NumberOfPositions = numberOfPositions,
@@ -52,7 +52,7 @@ public class GetAuthenticationPositionsTests : OperationTest<GetAuthenticationPo
     [Fact]
     public async Task ShouldReturnError_InvalidClient()
     {
-        var response = await TestsHelper.SimulateCall<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(OperationToTest!, new GetAuthenticationPositionsInput
+        var response = await SimulateOperationToTestCall(new GetAuthenticationPositionsInput
         {
             ClientId = "InvalidClient",
             Metadata = TestsConstants.TestsMetadata,

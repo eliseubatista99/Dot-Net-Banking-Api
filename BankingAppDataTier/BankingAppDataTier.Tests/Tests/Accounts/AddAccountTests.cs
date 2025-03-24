@@ -23,7 +23,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     [Fact]
     public async Task ShouldBe_Success_CurrentAccount()
     {
-        var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
+        var addResponse = await SimulateOperationToTestCall(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -51,7 +51,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     [Fact]
     public async Task ShouldBe_Success_SavingsAccount()
     {
-        var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
+        var addResponse = await SimulateOperationToTestCall(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -79,7 +79,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     [Fact]
     public async Task ShouldBe_Success_InvestementsAccount()
     {
-        var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
+        var addResponse = await SimulateOperationToTestCall(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -114,7 +114,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     [InlineData("JW0000000", 10, null)]
     public async Task ShouldReturnError_MissingInvestmentAccountDetails(string? sourceAccountId, int? duration, double? interest)
     {
-         var response = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
+         var response = await SimulateOperationToTestCall(new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -137,7 +137,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     [Fact]
     public async Task ShouldReturnError_IdAlreadyInUse()
     {
-        var response = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
+        var response = await SimulateOperationToTestCall(new AddAccountInput
         {
             Account = new AccountDto
             {

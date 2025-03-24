@@ -26,7 +26,7 @@ public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, Voi
     {
         const string newName = "MyCardNameTest";
 
-        var editResponse = await TestsHelper.SimulateCall<EditCardOperation, EditCardInput, VoidOperationOutput>(OperationToTest!, new EditCardInput
+        var editResponse = await SimulateOperationToTestCall(new EditCardInput
         {
             Id = "To_Edit_Debit_01",
             Name = newName,
@@ -52,7 +52,7 @@ public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, Voi
     {
         const string newName = "MyCardNameTest";
 
-        var editResponse = await TestsHelper.SimulateCall<EditCardOperation, EditCardInput, VoidOperationOutput>(OperationToTest!, new EditCardInput
+        var editResponse = await SimulateOperationToTestCall(new EditCardInput
         {
             Id = "To_Edit_Credit_01",
             Name = newName,
@@ -80,7 +80,7 @@ public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, Voi
     {
         const string newName = "MyCardNameTest";
 
-        var editResponse = await TestsHelper.SimulateCall<EditCardOperation, EditCardInput, VoidOperationOutput>(OperationToTest!, new EditCardInput
+        var editResponse = await SimulateOperationToTestCall(new EditCardInput
         {
             Id = "To_Edit_PrePaid_01",
             Name = newName,
@@ -105,7 +105,7 @@ public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, Voi
     [Fact]
     public async Task ShouldReturnError_InvalidId()
     {
-        var response = await TestsHelper.SimulateCall<EditCardOperation, EditCardInput, VoidOperationOutput>(OperationToTest!, new EditCardInput
+        var response = await SimulateOperationToTestCall(new EditCardInput
         {
             Id = "invalid_id",
             Name = "test",

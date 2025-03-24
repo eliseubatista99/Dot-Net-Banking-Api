@@ -24,7 +24,7 @@ public class EditAccountTests : OperationTest<EditAccountOperation, EditAccountI
     {
         const string newName = "NewName";
 
-        var editResponse = await TestsHelper.SimulateCall<EditAccountOperation, EditAccountInput, VoidOperationOutput>(OperationToTest!, new EditAccountInput
+        var editResponse = await SimulateOperationToTestCall(new EditAccountInput
         {
             AccountId = "To_Edit_Current_01",
             Name = newName,
@@ -48,7 +48,7 @@ public class EditAccountTests : OperationTest<EditAccountOperation, EditAccountI
         const decimal newInterest = 20;
         const int newDuration = 15;
 
-        var editResponse = await TestsHelper.SimulateCall<EditAccountOperation, EditAccountInput, VoidOperationOutput>(OperationToTest!, new EditAccountInput
+        var editResponse = await SimulateOperationToTestCall(new EditAccountInput
         {
             AccountId = "To_Edit_Investements_01",
             SourceAccountId = newSourceAccount,
@@ -73,7 +73,7 @@ public class EditAccountTests : OperationTest<EditAccountOperation, EditAccountI
     [Fact]
     public async Task ShouldReturnError_InvalidId()
     {
-        var response = await TestsHelper.SimulateCall<EditAccountOperation, EditAccountInput, VoidOperationOutput>(OperationToTest!, new EditAccountInput
+        var response = await SimulateOperationToTestCall(new EditAccountInput
         {
             AccountId = "invalid id",
             Name = "invalid name",
@@ -86,7 +86,7 @@ public class EditAccountTests : OperationTest<EditAccountOperation, EditAccountI
     [Fact]
     public async Task ShouldReturnError_InvalidSourceAccount()
     {
-        var response = await TestsHelper.SimulateCall<EditAccountOperation, EditAccountInput, VoidOperationOutput>(OperationToTest!, new EditAccountInput
+        var response = await SimulateOperationToTestCall(new EditAccountInput
         {
             AccountId = "To_Edit_Investements_01",
             SourceAccountId = "invalid_source",

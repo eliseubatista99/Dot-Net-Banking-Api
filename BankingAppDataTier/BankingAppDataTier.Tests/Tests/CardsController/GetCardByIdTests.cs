@@ -23,7 +23,7 @@ public class GetCardByIdTests : OperationTest<GetCardByIdOperation, GetCardByIdI
     [InlineData("Permanent_Credit_01")]
     public async Task ShouldBe_Success(string id)
     {
-        var response = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(OperationToTest!, new GetCardByIdInput
+        var response = await SimulateOperationToTestCall(new GetCardByIdInput
         {
             Id = id,
             Metadata = TestsConstants.TestsMetadata,
@@ -35,7 +35,7 @@ public class GetCardByIdTests : OperationTest<GetCardByIdOperation, GetCardByIdI
     [Fact]
     public async Task ShouldReturnError_InvalidId()
     {
-        var response = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(OperationToTest!, new GetCardByIdInput
+        var response = await SimulateOperationToTestCall(new GetCardByIdInput
         {
             Id = "invalid",
             Metadata = TestsConstants.TestsMetadata,

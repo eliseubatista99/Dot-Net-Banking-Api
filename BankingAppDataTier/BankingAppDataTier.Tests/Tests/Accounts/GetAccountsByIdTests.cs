@@ -21,7 +21,7 @@ public class GetAccountsByIdTests : OperationTest<GetAccountByIdOperation, GetAc
     [InlineData("Permanent_Investements_01")]
     public async Task ShouldBe_Success(string id)
     {
-        var response = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(OperationToTest!, new GetAccountByIdInput
+        var response = await SimulateOperationToTestCall(new GetAccountByIdInput
         {
             Id = id,
             Metadata = TestsConstants.TestsMetadata,
@@ -33,7 +33,7 @@ public class GetAccountsByIdTests : OperationTest<GetAccountByIdOperation, GetAc
     [Fact]
     public async Task ShouldReturnError_InvalidId()
     {
-        var response = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(OperationToTest!, new GetAccountByIdInput
+        var response = await SimulateOperationToTestCall(new GetAccountByIdInput
         {
             Id = "invalid",
             Metadata = TestsConstants.TestsMetadata,
