@@ -1,117 +1,117 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using ElideusDotNetFramework.Tests.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.Cards;
+namespace BankingAppDataTier.Tests.Cards;
 
-//public class EditCardTests
-//{
-//    private CardsController _cardsController;
+public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, VoidOperationOutput>
+{
+    private GetCardByIdOperation getCardByIdOperation;
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _cardsController = TestMocksBuilder._CardsControllerMock;
-//    }
+    public EditCardTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new EditCardOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        getCardByIdOperation = new GetCardByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success_DebitCard()
-//    {
-//        const string newName = "MyCardNameTest";
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success_DebitCard()
+    {
+        const string newName = "MyCardNameTest";
 
-//        var result = (ObjectResult)_cardsController.EditCard(new EditCardInput
-//        {
-//            Id = "To_Edit_Debit_01",
-//            Name = newName,
-//            RequestDate = new DateTime(2025, 02, 01),
-//            ActivationDate = new DateTime(2025, 02, 15),
-//            ExpirationDate = new DateTime(2028, 02, 15),
-//        }).Result!;
+        var editResponse = await TestsHelper.SimulateCall<EditCardOperation, EditCardInput, VoidOperationOutput>(OperationToTest!, new EditCardInput
+        {
+            Id = "To_Edit_Debit_01",
+            Name = newName,
+            RequestDate = new DateTime(2025, 02, 01),
+            ActivationDate = new DateTime(2025, 02, 15),
+            ExpirationDate = new DateTime(2028, 02, 15),
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (VoidOperationOutput)result.Value!;
+        Assert.True(editResponse.Error == null);
 
-//        Assert.True(response.Error == null);
+        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
+        {
+            Id = "To_Edit_Debit_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        
+        Assert.True(getByIdResponse.Card?.Name == newName);
+    }
 
-//        result = (ObjectResult)_cardsController.GetCardById("To_Edit_Debit_01").Result!;
+    [Fact]
+    public async Task ShouldBe_Success_CreditCard()
+    {
+        const string newName = "MyCardNameTest";
 
-//        var response2 = (GetCardByIdOutput)result.Value!;
+        var editResponse = await TestsHelper.SimulateCall<EditCardOperation, EditCardInput, VoidOperationOutput>(OperationToTest!, new EditCardInput
+        {
+            Id = "To_Edit_Credit_01",
+            Name = newName,
+            RequestDate = new DateTime(2025, 02, 01),
+            ActivationDate = new DateTime(2025, 02, 15),
+            ExpirationDate = new DateTime(2028, 02, 15),
+            PaymentDay = 11,
+            Balance = 50,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response2.Card?.Name == newName);
-//    }
+        Assert.True(editResponse.Error == null);
 
-//    [Fact]
-//    public void ShouldBe_Success_CreditCard()
-//    {
-//        const string newName = "MyCardNameTest";
-//        Setup();
+        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
+        {
+            Id = "To_Edit_Credit_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_cardsController.EditCard(new EditCardInput
-//        {
-//            Id = "To_Edit_Credit_01",
-//            Name = newName,
-//            RequestDate = new DateTime(2025, 02, 01),
-//            ActivationDate = new DateTime(2025, 02, 15),
-//            ExpirationDate = new DateTime(2028, 02, 15),
-//            PaymentDay = 11,
-//            Balance = 50,
-//        }).Result!;
+        Assert.True(getByIdResponse.Card?.Name == newName);
+    }
 
-//        var response = (VoidOperationOutput)result.Value!;
+    [Fact]
+    public async Task ShouldBe_Success_PrePaidCard()
+    {
+        const string newName = "MyCardNameTest";
 
-//        Assert.True(response.Error == null);
+        var editResponse = await TestsHelper.SimulateCall<EditCardOperation, EditCardInput, VoidOperationOutput>(OperationToTest!, new EditCardInput
+        {
+            Id = "To_Edit_PrePaid_01",
+            Name = newName,
+            RequestDate = new DateTime(2025, 02, 01),
+            ActivationDate = new DateTime(2025, 02, 15),
+            ExpirationDate = new DateTime(2028, 02, 15),
+            Balance = 50,
+            Metadata = TestsConstants.TestsMetadata
+        });
 
-//        result = (ObjectResult)_cardsController.GetCardById("To_Edit_Credit_01").Result!;
+        Assert.True(editResponse.Error == null);
 
-//        var response2 = (GetCardByIdOutput)result.Value!;
+        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
+        {
+            Id = "To_Edit_PrePaid_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response2.Card?.Name == newName);
-//    }
+        Assert.True(getByIdResponse.Card?.Name == newName);
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success_PrePaidCard()
-//    {
-//        const string newName = "MyCardNameTest";
-//        Setup();
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await TestsHelper.SimulateCall<EditCardOperation, EditCardInput, VoidOperationOutput>(OperationToTest!, new EditCardInput
+        {
+            Id = "invalid_id",
+            Name = "test",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_cardsController.EditCard(new EditCardInput
-//        {
-//            Id = "To_Edit_PrePaid_01",
-//            Name = newName,
-//            RequestDate = new DateTime(2025, 02, 01),
-//            ActivationDate = new DateTime(2025, 02, 15),
-//            ExpirationDate = new DateTime(2028, 02, 15),
-//            Balance = 50,
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error == null);
-
-//        result = (ObjectResult)_cardsController.GetCardById("To_Edit_PrePaid_01").Result!;
-
-//        var response2 = (GetCardByIdOutput)result.Value!;
-
-//        Assert.True(response2.Card?.Name == newName);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.EditCard(new EditCardInput
-//        {
-//            Id = "invalid_id",
-//            Name = "test",
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

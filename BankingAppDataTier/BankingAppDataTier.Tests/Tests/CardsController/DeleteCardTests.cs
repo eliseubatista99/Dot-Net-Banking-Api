@@ -1,49 +1,52 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using ElideusDotNetFramework.Tests.Helpers;
 
-//namespace BankingAppDataTier.Tests.Cards;
+namespace BankingAppDataTier.Tests.Cards;
 
-//public class DeleteCardTests
-//{
-//    private CardsController _cardsController;
+public class DeleteCardTests : OperationTest<DeleteCardOperation, DeleteCardInput, VoidOperationOutput>
+{
+    private GetCardByIdOperation getCardByIdOperation;
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _cardsController = TestMocksBuilder._CardsControllerMock;
-//    }
+    public DeleteCardTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new DeleteCardOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        getCardByIdOperation = new GetCardByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var deleteResponse = await TestsHelper.SimulateCall<DeleteCardOperation, DeleteCardInput, VoidOperationOutput>(OperationToTest!, new DeleteCardInput
+        {
+            Id = "To_Delete_Debit_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_cardsController.DeleteCard("To_Delete_Debit_01").Result!;
+        Assert.True(deleteResponse.Error == null);
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
+        {
+            Id = "To_Delete_Debit_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        Assert.True(getByIdResponse.Card == null);
+    }
 
-//        Assert.True(response.Error == null);
-
-//        result = (ObjectResult)_cardsController.GetCardById("To_Delete_Debit_01").Result!;
-
-//        var response2 = (GetCardByIdOutput)result.Value!;
-
-//        Assert.True(response2.Card == null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.DeleteCard("InvalidId").Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await TestsHelper.SimulateCall<DeleteCardOperation, DeleteCardInput, VoidOperationOutput>(OperationToTest!, new DeleteCardInput
+        {
+            Id = "InvalidId",
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}
