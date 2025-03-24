@@ -1,17 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Operations.Accounts;
 using BankingAppDataTier.Tests.Constants;
-using BankingAppDataTier.Tests;
-using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Tests.Helpers;
 using ElideusDotNetFramework.Tests;
-using System.Diagnostics.Contracts;
 using BankingAppDataTier.Operations.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Constants;
-using Microsoft.AspNetCore.Mvc;
+using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Tests.Authentication;
 
@@ -28,8 +22,10 @@ public class KeepAliveTests : OperationTest<KeepAliveOperation, KeepAliveInput, 
     [Fact]
     public async Task ShouldBe_Success()
     {
-        var metadata = TestsConstants.TestsMetadata;
-        metadata.Token = TestsConstants.PermanentToken;
+        var metadata = new InputMetadata
+        {
+            Token = TestsConstants.PermanentToken,
+        };
 
         var isValidResponse = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(isValidTokenOperation!, new IsValidTokenInput
         {
@@ -51,12 +47,12 @@ public class KeepAliveTests : OperationTest<KeepAliveOperation, KeepAliveInput, 
     [Fact]
     public async Task ShouldBeError_InvalidToken()
     {
-        var metadata = TestsConstants.TestsMetadata;
-        metadata.Token = "invalid-token";
-
         var response = await TestsHelper.SimulateCall<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(OperationToTest!, new KeepAliveInput
         {
-            Metadata = metadata,
+            Metadata = new InputMetadata
+            {
+                Token = "invalid-token",
+            },
         });
 
         Assert.True(response.Error?.Code == AuthenticationErrors.InvalidToken.Code);
@@ -65,12 +61,12 @@ public class KeepAliveTests : OperationTest<KeepAliveOperation, KeepAliveInput, 
     [Fact]
     public async Task ShouldBeError_TokenExpired()
     {
-        var metadata = TestsConstants.TestsMetadata;
-        metadata.Token = TestsConstants.ExpiredToken;
-
         var response = await TestsHelper.SimulateCall<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(OperationToTest!, new KeepAliveInput
         {
-            Metadata = metadata,
+            Metadata = new InputMetadata
+            {
+                Token = TestsConstants.ExpiredToken,
+            },
         });
 
         Assert.True(response.Error?.Code == AuthenticationErrors.TokenExpired.Code);

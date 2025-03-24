@@ -1,229 +1,208 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Entitites;
-//using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using ElideusDotNetFramework.Operations.Contracts;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using ElideusDotNetFramework.Tests.Helpers;
 
-//namespace BankingAppDataTier.Tests.Cards;
+namespace BankingAppDataTier.Tests.Cards;
 
-//public class AddCardTests
-//{
-//    private CardsController _cardsController;
+public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOperationOutput>
+{
+    private GetCardByIdOperation getCardByIdOperation;
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _cardsController = TestMocksBuilder._CardsControllerMock;
-//    }
+    public AddCardTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new AddCardOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        getCardByIdOperation = new GetCardByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success_DebitCard()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success_DebitCard()
+    {
+        var addResponse = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        {
+            Card = new CardDto
+            {
+                Id = "TestCard01",
+                Name = "DB_Basic",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "Permanent_Debit_01",
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+                CardType = Contracts.Enums.CardType.Debit,
+                Image = "img",
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_cardsController.AddCard(new AddCardInput
-//        {
-//            Card = new CardDto
-//            {
-//                Id = "TestCard01",
-//                Name = "DB_Basic",
-//                RelatedAccountID = "Permanent_Current_01",
-//                PlasticId = "Permanent_Debit_01",
-//                RequestDate = new DateTime(2025, 01, 01),
-//                ActivationDate = new DateTime(2025, 01, 15),
-//                ExpirationDate = new DateTime(2028, 01, 15),
-//                CardType = Contracts.Enums.CardType.Debit,
-//                Image = "img",
-//            },
-//        }).Result!;
+        Assert.True(addResponse.Error == null);
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
+        {
+            Id = "TestCard01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        Assert.True(getByIdResponse.Card != null);
+    }
 
-//        Assert.True(response.Error == null);
+    [Fact]
+    public async Task ShouldBe_Success_CreditCard()
+    {
+        var addResponse = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        {
+            Card = new CardDto
+            {
+                Id = "TestCard02",
+                Name = "CR_Prestige",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "Permanent_Credit_01",
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+                CardType = Contracts.Enums.CardType.Credit,
+                Image = "img",
+                PaymentDay = 21,
+                Balance = 500,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        result = (ObjectResult)_cardsController.GetCardById("TestCard01").Result!;
+        Assert.True(addResponse.Error == null);
 
-//        var response2 = (GetCardByIdOutput)result.Value!;
+        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
+        {
+            Id = "TestCard02",
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        Assert.True(getByIdResponse.Card != null);
+    }
 
-//        Assert.True(response2.Card != null);
-//    }
+    [Fact]
+    public async Task ShouldBe_Success_PrePaidCard()
+    {
+        var addResponse = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        {
+            Card = new CardDto
+            {
+                Id = "TestCard03",
+                Name = "PP_Agile",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "Permanent_PrePaid_01",
+                Balance = 100,
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+                CardType = Contracts.Enums.CardType.PrePaid,
+                Image = "img",
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldBe_Success_CreditCard()
-//    {
-//        Setup();
+        Assert.True(addResponse.Error == null);
 
-//        var result = (ObjectResult)_cardsController.AddCard(new AddCardInput
-//        {
-//            Card = new CardDto
-//            {
-//                Id = "TestCard02",
-//                Name = "CR_Prestige",
-//                RelatedAccountID = "Permanent_Current_01",
-//                PlasticId = "Permanent_Credit_01",
-//                RequestDate = new DateTime(2025, 01, 01),
-//                ActivationDate = new DateTime(2025, 01, 15),
-//                ExpirationDate = new DateTime(2028, 01, 15),
-//                CardType = Contracts.Enums.CardType.Credit,
-//                Image = "img",
-//                PaymentDay = 21,
-//                Balance = 500,
-//            },
-//        }).Result!;
+        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
+        {
+            Id = "TestCard03",
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        Assert.True(getByIdResponse.Card != null);
+    }
 
-//        var response = (VoidOperationOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_IdAlreadyInUse()
+    {
+        var response = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        {
+            Card = new CardDto
+            {
+                Id = "Permanent_Debit_01",
+                Name = "DB_Basic",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "DB_Basic",
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+                CardType = Contracts.Enums.CardType.Debit,
+                Image = "img",
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response.Error == null);
+        Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
+    }
 
-//        result = (ObjectResult)_cardsController.GetCardById("TestCard02").Result!;
+    [Theory]
+    [InlineData(null, 500.0)]
+    [InlineData(15, null)]
+    public async Task ShouldReturnError_MissingCreditCardDetails(int? paymentDay, double? balance)
+    {
+        var response = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        {
+            Card = new CardDto
+            {
+                Id = "TestCard05",
+                Name = "CR_Prestige",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "CR_Prestige",
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+                CardType = Contracts.Enums.CardType.Credit,
+                Image = "img",
+                PaymentDay = paymentDay,
+                Balance = balance != null ? (decimal)balance : null,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        Assert.True(response.Error?.Code == CardsErrors.MissingCreditCardDetails.Code);
+    }
 
-//        var response2 = (GetCardByIdOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_MissingPrePaidCardDetails()
+    {
+        var response = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        {
+            Card = new CardDto
+            {
+                Id = "TestCard06",
+                Name = "PP_Agile",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "PP_Agile",
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+                CardType = Contracts.Enums.CardType.PrePaid,
+                Image = "img",
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        Assert.True(response.Error?.Code == CardsErrors.MissingPrePaidCardDetails.Code);
+    }
 
-//        Assert.True(response2.Card != null);
-//    }
-
-//    [Fact]
-//    public void ShouldBe_Success_PrePaidCard()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.AddCard(new AddCardInput
-//        {
-//            Card = new CardDto
-//            {
-//                Id = "TestCard03",
-//                Name = "PP_Agile",
-//                RelatedAccountID = "Permanent_Current_01",
-//                PlasticId = "Permanent_PrePaid_01",
-//                Balance = 100,
-//                RequestDate = new DateTime(2025, 01, 01),
-//                ActivationDate = new DateTime(2025, 01, 15),
-//                ExpirationDate = new DateTime(2028, 01, 15),
-//                CardType= Contracts.Enums.CardType.PrePaid,
-//                Image = "img",
-//            },
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error == null);
-
-//        result = (ObjectResult)_cardsController.GetCardById("TestCard03").Result!;
-
-//        var response2 = (GetCardByIdOutput)result.Value!;
-
-//        Assert.True(response2.Card != null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_IdAlreadyInUse()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.AddCard(new AddCardInput
-//        {
-//            Card = new CardDto
-//            {
-//                Id = "Permanent_Debit_01",
-//                Name = "DB_Basic",
-//                RelatedAccountID = "Permanent_Current_01",
-//                PlasticId = "DB_Basic",
-//                RequestDate = new DateTime(2025, 01, 01),
-//                ActivationDate = new DateTime(2025, 01, 15),
-//                ExpirationDate = new DateTime(2028, 01, 15),
-//                CardType = Contracts.Enums.CardType.Debit,
-//                Image = "img",
-//            },
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
-//    }
-
-//    [Theory]
-//    [InlineData(null, 500.0)]
-//    [InlineData(15, null)]
-//    public void ShouldReturnError_MissingCreditCardDetails(int? paymentDay, double? balance)
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.AddCard(new AddCardInput
-//        {
-//            Card = new CardDto
-//            {
-//                Id = "TestCard05",
-//                Name = "CR_Prestige",
-//                RelatedAccountID = "Permanent_Current_01",
-//                PlasticId = "CR_Prestige",
-//                RequestDate = new DateTime(2025, 01, 01),
-//                ActivationDate = new DateTime(2025, 01, 15),
-//                ExpirationDate = new DateTime(2028, 01, 15),
-//                CardType = Contracts.Enums.CardType.Credit,
-//                Image = "img",
-//                PaymentDay = paymentDay,
-//                Balance = balance != null? (decimal) balance : null,
-//            },
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == CardsErrors.MissingCreditCardDetails.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_MissingPrePaidCardDetails()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.AddCard(new AddCardInput
-//        {
-//            Card = new CardDto
-//            {
-//                Id = "TestCard06",
-//                Name = "PP_Agile",
-//                RelatedAccountID = "Permanent_Current_01",
-//                PlasticId = "PP_Agile",
-//                RequestDate = new DateTime(2025, 01, 01),
-//                ActivationDate = new DateTime(2025, 01, 15),
-//                ExpirationDate = new DateTime(2028, 01, 15),
-//                CardType = Contracts.Enums.CardType.PrePaid,
-//                Image = "img",
-//            },
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == CardsErrors.MissingPrePaidCardDetails.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidPlastic()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_cardsController.AddCard(new AddCardInput
-//        {
-//            Card = new CardDto
-//            {
-//                Id = "TestCard07",
-//                Name = "DB_Basic",
-//                RelatedAccountID = "Permanent_Current_01",
-//                PlasticId = "invalid plastic",
-//                RequestDate = new DateTime(2025, 01, 01),
-//                ActivationDate = new DateTime(2025, 01, 15),
-//                ExpirationDate = new DateTime(2028, 01, 15),
-//                CardType = Contracts.Enums.CardType.Debit,
-//                Image = "img",
-//            },
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == CardsErrors.InvalidPlastic.Code);
-//    }
-
-//}
+    [Fact]
+    public async Task ShouldReturnError_InvalidPlastic()
+    {
+        var response = await TestsHelper.SimulateCall<AddCardOperation, AddCardInput, VoidOperationOutput>(OperationToTest!, new AddCardInput
+        {
+            Card = new CardDto
+            {
+                Id = "TestCard07",
+                Name = "DB_Basic",
+                RelatedAccountID = "Permanent_Current_01",
+                PlasticId = "invalid plastic",
+                RequestDate = new DateTime(2025, 01, 01),
+                ActivationDate = new DateTime(2025, 01, 15),
+                ExpirationDate = new DateTime(2028, 01, 15),
+                CardType = Contracts.Enums.CardType.Debit,
+                Image = "img",
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
+        Assert.True(response.Error?.Code == CardsErrors.InvalidPlastic.Code);
+    }
+}
