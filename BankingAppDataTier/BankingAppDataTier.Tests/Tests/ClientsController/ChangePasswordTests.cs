@@ -1,62 +1,48 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using BankingAppDataTier.Controllers;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using ElideusDotNetFramework.Tests.Helpers;
 
-//namespace BankingAppDataTier.Tests.Clients;
+namespace BankingAppDataTier.Tests.Clients;
 
-//public class ChangePasswordTests
-//{
-//    private ClientsController _clientsController;
+public class ChangePasswordTests : OperationTest<ChangePasswordOperation, ChangeClientPasswordInput, VoidOperationOutput>
+{
+    public ChangePasswordTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new ChangePasswordOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _clientsController = TestMocksBuilder._ClientsControllerMock;
-//    }
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        const string newPassword = "NewPassword";
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        const string newPassword = "NewPassword";
-//        Setup();
+        var response = await SimulateOperationToTestCall(new ChangeClientPasswordInput
+        {
+            Id = "To_Edit_Client_01",
+            PassWord = newPassword,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_clientsController.ChangePassword(new ChangeClientPasswordInput
-//        {
-//            Id = "To_Edit_Client_01",
-//            PassWord = newPassword,
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        result = (ObjectResult)_clientsController.HasValidPassword(new HasValidPasswordInput
-//        {
-//            Id = "To_Edit_Client_01",
-//            PassWord = newPassword,
-//        }).Result!;
-//        var response2 = (HasValidPasswordOutput)result.Value!;
+        Assert.True(response.Error == null);
+    }
 
 
-//        Assert.True(response2.Result == true);
-//    }
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new ChangeClientPasswordInput
+        {
+            Id = "invalid Id",
+            PassWord = "password",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_clientsController.ChangePassword(new ChangeClientPasswordInput
-//        {
-//            Id = "invalid Id",
-//            PassWord = "password",
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

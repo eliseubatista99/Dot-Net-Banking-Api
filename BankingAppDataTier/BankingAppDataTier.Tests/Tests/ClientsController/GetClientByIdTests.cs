@@ -1,43 +1,50 @@
-﻿
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using BankingAppDataTier.Controllers;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Providers;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using ElideusDotNetFramework.Tests.Helpers;
 
-//namespace BankingAppDataTier.Tests.Clients;
-//public class GetClientByIdTests
-//{
-//    private ClientsController _clientsController;
+namespace BankingAppDataTier.Tests.Clients;
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _clientsController = TestMocksBuilder._ClientsControllerMock;
-//    }
+public class GetClientByIdTests : OperationTest<GetClientByIdOperation, GetClientByIdInput, GetClientByIdOutput>
+{
+    public GetClientByIdTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new GetClientByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    [Theory]
-//    [InlineData("Permanent_Client_01")]
-//    [InlineData("Permanent_Client_02")]
-//    public void ShouldBe_Success(string id)
-//    {
-//        Setup();
+    [Theory]
+    [InlineData("Permanent_Client_01")]
+    [InlineData("Permanent_Client_02")]
+    public async Task ShouldBe_Success(string id)
+    {
+        var response = await SimulateOperationToTestCall(new GetClientByIdInput
+        {
+            Id = id,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_clientsController.GetClientById(id).Result!;
-//        var response = (GetClientByIdOutput)result.Value!;
+        Assert.True(response.Client != null);
+    }
 
-//        Assert.True(response.Client != null);
-//    }
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new GetClientByIdInput
+        {
+            Id = "invalid",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
+        Assert.True(response.Client == null);
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}
 
-//        var result = (ObjectResult)_clientsController.GetClientById("invalid").Result!;
-//        var response = (GetClientByIdOutput)result.Value!;
-
-//        Assert.True(response.Client == null);
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}

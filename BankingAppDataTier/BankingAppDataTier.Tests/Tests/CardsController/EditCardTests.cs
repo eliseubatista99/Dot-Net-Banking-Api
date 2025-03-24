@@ -2,7 +2,10 @@
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Providers;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Tests;
@@ -13,13 +16,14 @@ namespace BankingAppDataTier.Tests.Cards;
 
 public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, VoidOperationOutput>
 {
-    private GetCardByIdOperation getCardByIdOperation;
+    private IDatabaseCardsProvider databaseCardsProvider { get; set; }
 
     public EditCardTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
     {
         OperationToTest = new EditCardOperation(_testBuilder.ApplicationContextMock!, string.Empty);
-        getCardByIdOperation = new GetCardByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseCardsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseCardsProvider>()!;
     }
+
 
     [Fact]
     public async Task ShouldBe_Success_DebitCard()
@@ -38,13 +42,9 @@ public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, Voi
 
         Assert.True(editResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
-        {
-            Id = "To_Edit_Debit_01",
-            Metadata = TestsConstants.TestsMetadata,
-        });
-        
-        Assert.True(getByIdResponse.Card?.Name == newName);
+        var getByIdResponse = databaseCardsProvider.GetById("To_Edit_Debit_01");
+
+        Assert.True(getByIdResponse?.Name == newName);
     }
 
     [Fact]
@@ -66,13 +66,9 @@ public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, Voi
 
         Assert.True(editResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
-        {
-            Id = "To_Edit_Credit_01",
-            Metadata = TestsConstants.TestsMetadata,
-        });
+        var getByIdResponse = databaseCardsProvider.GetById("To_Edit_Credit_01");
 
-        Assert.True(getByIdResponse.Card?.Name == newName);
+        Assert.True(getByIdResponse?.Name == newName);
     }
 
     [Fact]
@@ -93,13 +89,9 @@ public class EditCardTests : OperationTest<EditCardOperation, EditCardInput, Voi
 
         Assert.True(editResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
-        {
-            Id = "To_Edit_PrePaid_01",
-            Metadata = TestsConstants.TestsMetadata,
-        });
+        var getByIdResponse = databaseCardsProvider.GetById("To_Edit_PrePaid_01");
 
-        Assert.True(getByIdResponse.Card?.Name == newName);
+        Assert.True(getByIdResponse?.Name == newName);
     }
 
     [Fact]

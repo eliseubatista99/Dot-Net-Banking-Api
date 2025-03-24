@@ -2,7 +2,9 @@
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.Accounts;
+using BankingAppDataTier.Providers;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Tests;
@@ -12,12 +14,12 @@ namespace BankingAppDataTier.Tests.Accounts;
 
 public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput, VoidOperationOutput>
 {
-    private GetAccountByIdOperation getAccountByIdOperation;
+    private IDatabaseAccountsProvider databaseAccountsProvider { get; set; }
 
     public AddAccountTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
     {
         OperationToTest = new AddAccountOperation(_testBuilder.ApplicationContextMock!, string.Empty);
-        getAccountByIdOperation = new GetAccountByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseAccountsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseAccountsProvider>()!;
     }
 
     [Fact]
@@ -39,13 +41,9 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
 
         Assert.True(addResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
-        {
-            Id = "TEST0001",
-            Metadata = TestsConstants.TestsMetadata,
-        });
+        var getByIdResponse = databaseAccountsProvider.GetById("TEST0001");
 
-        Assert.True(getByIdResponse.Account != null);
+        Assert.True(getByIdResponse != null);
     }
 
     [Fact]
@@ -67,13 +65,9 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
 
         Assert.True(addResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
-        {
-            Id = "TEST0002",
-            Metadata = TestsConstants.TestsMetadata,
-        });
+        var getByIdResponse = databaseAccountsProvider.GetById("TEST0002");
 
-        Assert.True(getByIdResponse.Account != null);
+        Assert.True(getByIdResponse != null);
     }
 
     [Fact]
@@ -98,13 +92,9 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
 
         Assert.True(addResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
-        {
-            Id = "TEST0003",
-            Metadata = TestsConstants.TestsMetadata,
-        });
+        var getByIdResponse = databaseAccountsProvider.GetById("TEST0003");
 
-        Assert.True(getByIdResponse.Account != null);
+        Assert.True(getByIdResponse != null);
     }
 
 

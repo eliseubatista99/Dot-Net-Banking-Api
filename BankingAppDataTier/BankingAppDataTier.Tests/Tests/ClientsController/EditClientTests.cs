@@ -1,58 +1,57 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using BankingAppDataTier.Controllers;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Providers;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using ElideusDotNetFramework.Tests.Helpers;
 
-//namespace BankingAppDataTier.Tests.Clients;
+namespace BankingAppDataTier.Tests.Clients;
 
-//public class EditClientTests
-//{
-//    private ClientsController _clientsController;
+public class EditClientTests : OperationTest<EditClientOperation, EditClientInput, VoidOperationOutput>
+{
+    private IDatabaseClientsProvider databaseClientsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _clientsController = TestMocksBuilder._ClientsControllerMock;
-//    }
+    public EditClientTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new EditClientOperation(_testBuilder.ApplicationContextMock!, string.Empty);
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        const string newName = "New Name";
-//        Setup();
+        databaseClientsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseClientsProvider>()!;
+    }
 
-//        var result = (ObjectResult)_clientsController.EditClient(new EditClientInput
-//        {
-//            Id = "To_Edit_Client_01",
-//            Name = newName,
-//        }).Result!;
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        const string newName = "New Name";
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var editResponse = await SimulateOperationToTestCall(new EditClientInput
+        {
+            Id = "To_Edit_Client_01",
+            Name = newName,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        result = (ObjectResult)_clientsController.GetClientById("To_Edit_Client_01").Result!;
-//        var response2 = (GetClientByIdOutput)result.Value!;
+        Assert.True(editResponse.Error == null);
 
+        var getByIdResponse = databaseClientsProvider.GetById("To_Edit_Client_01");
 
-//        Assert.True(response2.Client?.Name == newName);
-//    }
+        Assert.True(getByIdResponse?.Name == newName);
+    }
 
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new EditClientInput
+        {
+            Id = "invalid Id",
+            Name = "name",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_clientsController.EditClient(new EditClientInput
-//        {
-//            Id = "invalid Id",
-//            Name = "name",
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

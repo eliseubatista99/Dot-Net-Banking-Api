@@ -6,17 +6,18 @@ using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Tests.Helpers;
 using ElideusDotNetFramework.Tests;
+using BankingAppDataTier.Contracts.Providers;
 
 namespace BankingAppDataTier.Tests.Accounts;
 
 public class EditAccountTests : OperationTest<EditAccountOperation, EditAccountInput, VoidOperationOutput>
 {
-    private GetAccountByIdOperation getAccountByIdOperation;
+    private IDatabaseAccountsProvider databaseAccountsProvider { get; set; }
 
     public EditAccountTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
     {
         OperationToTest = new EditAccountOperation(_testBuilder.ApplicationContextMock!, string.Empty);
-        getAccountByIdOperation = new GetAccountByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseAccountsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseAccountsProvider>()!;
     }
 
     [Fact]
@@ -33,13 +34,9 @@ public class EditAccountTests : OperationTest<EditAccountOperation, EditAccountI
 
         Assert.True(editResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
-        {
-            Id = "To_Edit_Current_01",
-            Metadata = TestsConstants.TestsMetadata,
-        });
+        var getByIdResponse = databaseAccountsProvider.GetById("To_Edit_Current_01");
 
-        Assert.True(getByIdResponse.Account?.Name == newName);
+        Assert.True(getByIdResponse?.Name == newName);
     }
     [Fact]
     public async Task ShouldBe_Success_InvestementsAccount()
@@ -59,15 +56,11 @@ public class EditAccountTests : OperationTest<EditAccountOperation, EditAccountI
 
         Assert.True(editResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
-        {
-            Id = "To_Edit_Investements_01",
-            Metadata = TestsConstants.TestsMetadata,
-        });
+        var getByIdResponse = databaseAccountsProvider.GetById("To_Edit_Investements_01");
 
-        Assert.True(getByIdResponse.Account?.SourceAccountId == newSourceAccount);
-        Assert.True(getByIdResponse.Account?.Interest == newInterest);
-        Assert.True(getByIdResponse.Account?.Duration == newDuration);
+        Assert.True(getByIdResponse?.SourceAccountId == newSourceAccount);
+        Assert.True(getByIdResponse?.Interest == newInterest);
+        Assert.True(getByIdResponse?.Duration == newDuration);
     }
 
     [Fact]

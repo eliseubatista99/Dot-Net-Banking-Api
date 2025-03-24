@@ -1,28 +1,34 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Cards;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Providers;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using ElideusDotNetFramework.Tests.Helpers;
 
-//namespace BankingAppDataTier.Tests.Clients;
+namespace BankingAppDataTier.Tests.Clients;
 
-//public class GetAllClientsTests
-//{
-//    private ClientsController _clientsController;
+public class GetAllClientsTests : OperationTest<GetClientsOperation, VoidOperationInput, GetClientsOutput>
+{
+    public GetAllClientsTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new GetClientsOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _clientsController = TestMocksBuilder._ClientsControllerMock;
-//    }
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var response = await SimulateOperationToTestCall(new VoidOperationInput
+        {
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void GetAllClients_Success()
-//    {
-//        Setup();
+        Assert.True(response.Clients.Count > 0);
+    }
+}
 
-//        var result = (ObjectResult)_clientsController.GetClients().Result!;
-//        var response = (GetClientsOutput)result.Value!;
-
-//        Assert.True(response.Clients.Count > 0);
-//    }
-//}

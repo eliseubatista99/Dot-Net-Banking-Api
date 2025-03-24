@@ -2,6 +2,7 @@
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.Cards;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Operations.Contracts;
@@ -12,12 +13,12 @@ namespace BankingAppDataTier.Tests.Cards;
 
 public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOperationOutput>
 {
-    private GetCardByIdOperation getCardByIdOperation;
+    private IDatabaseCardsProvider databaseCardsProvider { get; set; }
 
     public AddCardTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
     {
         OperationToTest = new AddCardOperation(_testBuilder.ApplicationContextMock!, string.Empty);
-        getCardByIdOperation = new GetCardByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseCardsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseCardsProvider>()!;
     }
 
     [Fact]
@@ -42,12 +43,9 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
 
         Assert.True(addResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
-        {
-            Id = "TestCard01",
-            Metadata = TestsConstants.TestsMetadata,
-        });
-        Assert.True(getByIdResponse.Card != null);
+        var getByIdResponse = databaseCardsProvider.GetById("TestCard01");
+
+        Assert.True(getByIdResponse != null);
     }
 
     [Fact]
@@ -74,12 +72,9 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
 
         Assert.True(addResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
-        {
-            Id = "TestCard02",
-            Metadata = TestsConstants.TestsMetadata,
-        });
-        Assert.True(getByIdResponse.Card != null);
+        var getByIdResponse = databaseCardsProvider.GetById("TestCard02");
+
+        Assert.True(getByIdResponse != null);
     }
 
     [Fact]
@@ -105,12 +100,9 @@ public class AddCardTests : OperationTest<AddCardOperation, AddCardInput, VoidOp
 
         Assert.True(addResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
-        {
-            Id = "TestCard03",
-            Metadata = TestsConstants.TestsMetadata,
-        });
-        Assert.True(getByIdResponse.Card != null);
+        var getByIdResponse = databaseCardsProvider.GetById("TestCard03");
+
+        Assert.True(getByIdResponse != null);
     }
 
     [Fact]

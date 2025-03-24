@@ -2,6 +2,7 @@
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.Cards;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Operations.Contracts;
@@ -12,12 +13,12 @@ namespace BankingAppDataTier.Tests.Cards;
 
 public class DeleteCardTests : OperationTest<DeleteCardOperation, DeleteCardInput, VoidOperationOutput>
 {
-    private GetCardByIdOperation getCardByIdOperation;
+    private IDatabaseCardsProvider databaseCardsProvider { get; set; }
 
     public DeleteCardTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
     {
         OperationToTest = new DeleteCardOperation(_testBuilder.ApplicationContextMock!, string.Empty);
-        getCardByIdOperation = new GetCardByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseCardsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseCardsProvider>()!;
     }
 
     [Fact]
@@ -31,12 +32,9 @@ public class DeleteCardTests : OperationTest<DeleteCardOperation, DeleteCardInpu
 
         Assert.True(deleteResponse.Error == null);
 
-        var getByIdResponse = await TestsHelper.SimulateCall<GetCardByIdOperation, GetCardByIdInput, GetCardByIdOutput>(getCardByIdOperation!, new GetCardByIdInput
-        {
-            Id = "To_Delete_Debit_01",
-            Metadata = TestsConstants.TestsMetadata,
-        });
-        Assert.True(getByIdResponse.Card == null);
+        var getByIdResponse = databaseCardsProvider.GetById("To_Delete_Debit_01");
+
+        Assert.True(getByIdResponse == null);
     }
 
     [Fact]
