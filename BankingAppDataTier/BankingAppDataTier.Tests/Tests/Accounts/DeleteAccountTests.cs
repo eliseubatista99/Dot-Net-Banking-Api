@@ -1,84 +1,69 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers.Accounts;
-//using BankingAppDataTier.Tests.Constants;
-//using BankingAppDataTier.Tests.Mocks;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Accounts;
+using BankingAppDataTier.Tests.Constants;
+using BankingAppDataTier.Tests;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests.Helpers;
+using ElideusDotNetFramework.Tests;
+using System.Diagnostics.Contracts;
 
-//namespace BankingAppDataTier.Tests.Accounts;
+namespace BankingAppDataTier.Tests.Accounts;
 
-//public class DeleteAccountTests
-//{
-//    private DeleteAccountOperation deleteAccountOperation;
+public class DeleteAccountTests : OperationTest<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>
+{
+    public DeleteAccountTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new DeleteAccountOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var response = await TestsHelper.SimulateCall<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>(OperationToTest!, new DeleteAccountInput
+        {
+            Id = "To_Delete_Current_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        deleteAccountOperation = new DeleteAccountOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
-//    }
+        Assert.True(response.Error == null);
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldReturnError_InvalidAccountId()
+    {
+        var response = await TestsHelper.SimulateCall<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>(OperationToTest!, new DeleteAccountInput
+        {
+            Id = "invalidId",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (OperationHttpResult)deleteAccountOperation.Call(new DeleteAccountInput
-//        {
-//            Id = "To_Delete_Current_01",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
 
-//        var response = (VoidOperationOutput)result.Output!;
+    [Fact]
+    public async Task ShouldReturnError_CantCloseWithRelatedCards()
+    {
+        var response = await TestsHelper.SimulateCall<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>(OperationToTest!, new DeleteAccountInput
+        {
+            Id = "Permanent_Current_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response.Error == null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidAccountId()
-//    {
-//        Setup();
-
-//        var result = (OperationHttpResult)deleteAccountOperation.Call(new DeleteAccountInput
-//        {
-//            Id = "invalidId",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
-//        var response = (VoidOperationOutput)result.Output!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_CantCloseWithRelatedCards()
-//    {
-//        Setup();
-
-//        var result = (OperationHttpResult)deleteAccountOperation.Call(new DeleteAccountInput
-//        {
-//            Id = "Permanent_Current_01",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Output!;
-
-//        Assert.True(response.Error?.Code == AccountsErrors.CantCloseWithRelatedCards.Code);
-//    }
+        Assert.True(response.Error?.Code == AccountsErrors.CantCloseWithRelatedCards.Code);
+    }
 
 
-//    [Fact]
-//    public void ShouldReturnError_CantCloseWithActiveLoans()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldReturnError_CantCloseWithActiveLoans()
+    {
+        var response = await TestsHelper.SimulateCall<DeleteAccountOperation, DeleteAccountInput, VoidOperationOutput>(OperationToTest!, new DeleteAccountInput
+        {
+            Id = "Permanent_Current_02",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (OperationHttpResult)deleteAccountOperation.Call(new DeleteAccountInput
-//        {
-//            Id = "Permanent_Current_02",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Output!;
-
-//        Assert.True(response.Error?.Code == AccountsErrors.CantCloseWithActiveLoans.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == AccountsErrors.CantCloseWithActiveLoans.Code);
+    }
+}

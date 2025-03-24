@@ -5,7 +5,6 @@ using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Errors.Contracts;
-using ElideusDotNetFramework.Operations;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;

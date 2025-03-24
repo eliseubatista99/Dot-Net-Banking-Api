@@ -15,6 +15,12 @@ namespace BankingAppDataTier
         private void MapAuthenticationOperations(ref WebApplication app, IApplicationContext context)
         {
             MapPostOperation<AuthenticateOperation, AuthenticateInput, AuthenticateOutput>(ref app, context, new AuthenticateOperation(context, "/Authenticate"));
+
+            MapPostOperation<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(ref app, context, new GetAuthenticationPositionsOperation(context, "/GetAuthenticationPositions"));
+
+            MapPostOperation<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(ref app, context, new IsValidTokenOperation(context, "/IsValidToken"));
+
+            MapPostOperation<KeepAliveOperation, KeepAliveInput, KeepAliveOutput>(ref app, context, new KeepAliveOperation(context, "/KeepAlive"));
         }
 
         private void MapAccountsOperations(ref WebApplication app, IApplicationContext context)

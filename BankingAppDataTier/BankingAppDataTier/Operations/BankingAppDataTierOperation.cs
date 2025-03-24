@@ -1,4 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Errors;
+﻿using BankingAppDataTier.Contracts.Database;
+using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Errors.Contracts;
 using ElideusDotNetFramework.Operations;
@@ -26,30 +27,30 @@ namespace BankingAppDataTier.Operations
             databaseTokensProvider = executionContext.GetDependency<IDatabaseTokenProvider>()!;
         }
 
-        protected virtual Error? ValidateToken(string token)
+        protected virtual (TokenTableEntry? token, Error? error) ValidateToken(string token)
         {
             var isValidResult = authProvider.IsValidToken(token);
 
             if (!isValidResult.isValid)
             {
-                return AuthenticationErrors.InvalidToken;
+                return (null, AuthenticationErrors.InvalidToken);
             }
 
             var tokenInDb = databaseTokensProvider.GetToken(token);
 
             if (tokenInDb == null)
             {
-                return AuthenticationErrors.InvalidToken;
+                return (null, AuthenticationErrors.InvalidToken);
             }
 
             var today = DateTime.Now;
 
             if (tokenInDb.ExpirationDate.Ticks <= today.Ticks)
             {
-                return AuthenticationErrors.TokenExpired;
+                return (tokenInDb, AuthenticationErrors.TokenExpired);
             }
 
-            return null;
+            return (tokenInDb, null);
         } 
 
 
@@ -63,7 +64,7 @@ namespace BankingAppDataTier.Operations
                     return (HttpStatusCode.BadRequest, invalidInputError);
                 }
 
-                var validationError = ValidateToken(input.Metadata.Token);
+                var (_, validationError) = ValidateToken(input.Metadata.Token);
 
                 if (validationError != null)
                 {

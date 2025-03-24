@@ -1,15 +1,14 @@
-﻿using Azure;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Operations.Accounts;
 using BankingAppDataTier.Tests.Constants;
-using BankingAppDataTier.Tests.Mocks;
 using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
 using ElideusDotNetFramework.Tests;
 using ElideusDotNetFramework.Tests.Helpers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BankingAppDataTier.Tests.Accounts;
 
@@ -24,7 +23,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     }
 
     [Fact]
-    public async Task ShouldBe_Success_CurrentAccountAsync()
+    public async Task ShouldBe_Success_CurrentAccount()
     {
         var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
@@ -52,7 +51,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     }
 
     [Fact]
-    public async Task ShouldBe_Success_SavingsAccountAsync()
+    public async Task ShouldBe_Success_SavingsAccount()
     {
         var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
@@ -80,7 +79,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     }
 
     [Fact]
-    public async Task ShouldBe_Success_InvestementsAccountAsync()
+    public async Task ShouldBe_Success_InvestementsAccount()
     {
         var addResponse = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
@@ -115,9 +114,9 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     [InlineData(null, 10, 0.3)]
     [InlineData("JW0000000", null, 0.3)]
     [InlineData("JW0000000", 10, null)]
-    public async Task ShouldReturnError_MissingInvestmentAccountDetailsAsync(string? sourceAccountId, int? duration, double? interest)
+    public async Task ShouldReturnError_MissingInvestmentAccountDetails(string? sourceAccountId, int? duration, double? interest)
     {
-        var response = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
+         var response = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {
             Account = new AccountDto
             {
@@ -138,7 +137,7 @@ public class AddAccountTests: OperationTest<AddAccountOperation, AddAccountInput
     }
 
     [Fact]
-    public async Task ShouldReturnError_IdAlreadyInUseAsync()
+    public async Task ShouldReturnError_IdAlreadyInUse()
     {
         var response = await TestsHelper.SimulateCall<AddAccountOperation, AddAccountInput, VoidOperationOutput>(OperationToTest!, new AddAccountInput
         {

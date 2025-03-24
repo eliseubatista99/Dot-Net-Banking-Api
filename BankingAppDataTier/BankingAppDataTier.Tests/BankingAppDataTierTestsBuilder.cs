@@ -1,18 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Controllers;
 using BankingAppDataTier.Providers;
 using BankingAppDataTier.Tests;
 using BankingAppDataTier.Tests.Mocks;
 using BankingAppDataTier.Tests.Mocks.Database;
-using ElideusDotNetFramework.Providers;
-using ElideusDotNetFramework.Providers.Contracts;
 using ElideusDotNetFramework.Tests;
-using ElideusDotNetFramework.Tests.Mocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TechTalk.SpecFlow.xUnit.SpecFlowPlugin;
 
 [assembly: AssemblyFixture(typeof(BankingAppDataTierTestsBuilder))]

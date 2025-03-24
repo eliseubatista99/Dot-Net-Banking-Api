@@ -2,7 +2,6 @@
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Operations;
 using System.Net;
 using ElideusDotNetFramework.Providers.Contracts;
 
