@@ -7,10 +7,10 @@ using ElideusDotNetFramework.Operations;
 using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;
 
-namespace BankingAppDataTier.Controllers.Accounts
+namespace BankingAppDataTier.Operations.Accounts
 {
     public class EditAccountOperation(IApplicationContext context, string endpoint)
-            : BaseOperation<EditAccountInput, VoidOperationOutput>(context, endpoint)
+            : BankingAppDataTierOperation<EditAccountInput, VoidOperationOutput>(context, endpoint)
     {
         private IDatabaseAccountsProvider databaseAccountsProvider;
 

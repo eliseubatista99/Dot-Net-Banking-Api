@@ -13,5 +13,16 @@ namespace BankingAppDataTier.Contracts.Errors
         public static Error InvalidId = new Error { Code = "InvalidId", Message = "No Item Found For The Specified Id" };
 
         public static Error IdAlreadyInUse = new Error { Code = "IdAlreadyInUse", Message = "Id is already being used" };
+
+        public static Error InvalidInputError(string field = "")
+        {
+            var message = "Invalid Input";
+
+            if(field != string.Empty)
+            {
+                message += $": {field}";
+            }
+            return new Error { Code = "InvalidInput", Message = message };
+        }
     }
 }

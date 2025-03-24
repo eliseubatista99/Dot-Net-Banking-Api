@@ -4,17 +4,17 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
+using ElideusDotNetFramework.Errors.Contracts;
 using ElideusDotNetFramework.Operations;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;
 
-namespace BankingAppDataTier.Controllers.Accounts
+namespace BankingAppDataTier.Operations.Accounts
 {
     public class AddAccountOperation(IApplicationContext context, string endpoint)
-        : BaseOperation<AddAccountInput, VoidOperationOutput>(context, endpoint)
+        : BankingAppDataTierOperation<AddAccountInput, VoidOperationOutput>(context, endpoint)
     {
-        private IMapperProvider mapperProvider;
         private IDatabaseClientsProvider databaseClientsProvider;
         private IDatabaseAccountsProvider databaseAccountsProvider;
 
@@ -22,24 +22,30 @@ namespace BankingAppDataTier.Controllers.Accounts
         {
             await base.InitAsync();
 
-            mapperProvider = executionContext.GetDependency<IMapperProvider>()!;
             databaseClientsProvider = executionContext.GetDependency<IDatabaseClientsProvider>()!;
             databaseAccountsProvider = executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }
-        protected override async Task<VoidOperationOutput> ExecuteAsync(AddAccountInput input)
+
+        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(AddAccountInput input)
         {
-            if (input.Account.AccountType == AccountType.Investments)
+            var baseValidation = await base.ValidateInput(input);
+
+            if(baseValidation.Error == null)
             {
-                if (input.Account.SourceAccountId == null || input.Account.Duration == null || input.Account.Interest == null)
+                if (input.Account.AccountType == AccountType.Investments)
                 {
-                    return new VoidOperationOutput
+                    if (input.Account.SourceAccountId == null || input.Account.Duration == null || input.Account.Interest == null)
                     {
-                        StatusCode = HttpStatusCode.BadRequest,
-                        Error = AccountsErrors.MissingInvestementsAccountDetails,
-                    };
+                        return (HttpStatusCode.BadRequest, AccountsErrors.MissingInvestementsAccountDetails);
+                    }
                 }
             }
 
+            return baseValidation;
+        }
+
+        protected override async Task<VoidOperationOutput> ExecuteAsync(AddAccountInput input)
+        {
             var clientInDb = databaseClientsProvider.GetById(input.Account.OwnerCliendId);
 
             if (clientInDb == null)
@@ -51,7 +57,6 @@ namespace BankingAppDataTier.Controllers.Accounts
                 };
             }
         
-
             var accountInDb = databaseAccountsProvider.GetById(input.Account.Id);
 
             if (accountInDb != null)

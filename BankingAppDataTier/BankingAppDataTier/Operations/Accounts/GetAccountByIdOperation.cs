@@ -8,19 +8,17 @@ using ElideusDotNetFramework.Operations;
 using System.Net;
 using ElideusDotNetFramework.Providers.Contracts;
 
-namespace BankingAppDataTier.Controllers.Accounts
+namespace BankingAppDataTier.Operations.Accounts
 {
     public class GetAccountByIdOperation(IApplicationContext context, string endpoint)
-            : BaseOperation<GetAccountByIdInput, GetAccountByIdOutput>(context, endpoint)
+            : BankingAppDataTierOperation<GetAccountByIdInput, GetAccountByIdOutput>(context, endpoint)
     {
-        private IMapperProvider mapperProvider;
         private IDatabaseAccountsProvider databaseAccountsProvider;
 
         protected override async Task InitAsync()
         {
             await base.InitAsync();
 
-            mapperProvider = executionContext.GetDependency<IMapperProvider>()!;
             databaseAccountsProvider = executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }
         protected override async Task<GetAccountByIdOutput> ExecuteAsync(GetAccountByIdInput input)

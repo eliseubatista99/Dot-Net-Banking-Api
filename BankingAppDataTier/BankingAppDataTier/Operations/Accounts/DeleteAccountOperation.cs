@@ -6,10 +6,10 @@ using ElideusDotNetFramework.Operations;
 using System.Net;
 using ElideusDotNetFramework.Providers.Contracts;
 
-namespace BankingAppDataTier.Controllers.Accounts
+namespace BankingAppDataTier.Operations.Accounts
 {
     public class DeleteAccountOperation(IApplicationContext context, string endpoint)
-        : BaseOperation<DeleteAccountInput, VoidOperationOutput>(context, endpoint)
+        : BankingAppDataTierOperation<DeleteAccountInput, VoidOperationOutput>(context, endpoint)
     {
         private IDatabaseAccountsProvider databaseAccountsProvider;
         private IDatabaseCardsProvider databaseCardsProvider;

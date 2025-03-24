@@ -8,12 +8,11 @@ using ElideusDotNetFramework.Operations;
 using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;
 
-namespace BankingAppDataTier.Controllers.Accounts
+namespace BankingAppDataTier.Operations.Accounts
 {
     public class GetClientAccountsOperation(IApplicationContext context, string endpoint)
-            : BaseOperation<GetClientAccountsInput, GetClientAccountsOutput>(context, endpoint)
+            : BankingAppDataTierOperation<GetClientAccountsInput, GetClientAccountsOutput>(context, endpoint)
     {
-        private IMapperProvider mapperProvider;
         private IDatabaseClientsProvider databaseClientsProvider;
         private IDatabaseAccountsProvider databaseAccountsProvider;
 
@@ -23,7 +22,6 @@ namespace BankingAppDataTier.Controllers.Accounts
         {
             await base.InitAsync();
 
-            mapperProvider = executionContext.GetDependency<IMapperProvider>()!;
             databaseClientsProvider = executionContext.GetDependency<IDatabaseClientsProvider>()!;
             databaseAccountsProvider = executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }

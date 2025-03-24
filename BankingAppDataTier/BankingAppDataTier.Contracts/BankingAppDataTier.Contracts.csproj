@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="elideus-dot-net-framework" Version="1.0.26" />
+	<PackageReference Include="elideus-dot-net-framework" Version="1.0.27" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Npgsql" Version="9.0.3" />
