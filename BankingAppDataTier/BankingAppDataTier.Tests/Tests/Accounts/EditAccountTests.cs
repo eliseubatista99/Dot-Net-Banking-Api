@@ -1,119 +1,100 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers.Accounts;
-//using BankingAppDataTier.Tests.Constants;
-//using BankingAppDataTier.Tests.Mocks;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Accounts;
+using BankingAppDataTier.Tests.Constants;
+using BankingAppDataTier.Tests;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests.Helpers;
+using ElideusDotNetFramework.Tests;
+using System.Diagnostics.Contracts;
 
-//namespace BankingAppDataTier.Tests.Accounts;
+namespace BankingAppDataTier.Tests.Accounts;
 
-//public class EditAccountTests
-//{
-//    private EditAccountOperation editAccountOperation;
-//    private GetAccountByIdOperation getAccountByIdOperation;
+public class EditAccountTests : OperationTest<EditAccountOperation, EditAccountInput, VoidOperationOutput>
+{
+    private GetAccountByIdOperation getAccountByIdOperation;
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
+    public EditAccountTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new EditAccountOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        getAccountByIdOperation = new GetAccountByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//        editAccountOperation = new EditAccountOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
-//        getAccountByIdOperation = new GetAccountByIdOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
-//    }
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        const string newName = "NewName";
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        const string newName = "NewName";
-//        Setup();
+        var editResponse = await TestsHelper.SimulateCall<EditAccountOperation, EditAccountInput, VoidOperationOutput>(OperationToTest!, new EditAccountInput
+        {
+            AccountId = "To_Edit_Current_01",
+            Name = newName,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (OperationHttpResult)editAccountOperation.Call(new EditAccountInput 
-//        {
-//            AccountId = "To_Edit_Current_01",
-//            Name = newName,
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
+        Assert.True(editResponse.Error == null);
 
-//        var response = (VoidOperationOutput)result.Output!;
+        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
+        {
+            Id = "To_Edit_Current_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response.Error == null);
+        Assert.True(getByIdResponse.Account?.Name == newName);
+    }
+    [Fact]
+    public async Task ShouldBe_Success_InvestementsAccount()
+    {
+        const string newSourceAccount = "Permanent_Current_01";
+        const decimal newInterest = 20;
+        const int newDuration = 15;
 
-//        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
-//        {
-//            Id = "To_Edit_Current_01",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
+        var editResponse = await TestsHelper.SimulateCall<EditAccountOperation, EditAccountInput, VoidOperationOutput>(OperationToTest!, new EditAccountInput
+        {
+            AccountId = "To_Edit_Investements_01",
+            SourceAccountId = newSourceAccount,
+            Interest = newInterest,
+            Duration = newDuration,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response2 = (GetAccountByIdOutput)result.Output!;
+        Assert.True(editResponse.Error == null);
 
-//        Assert.True(response2.Account?.Name == newName);
-//    }
+        var getByIdResponse = await TestsHelper.SimulateCall<GetAccountByIdOperation, GetAccountByIdInput, GetAccountByIdOutput>(getAccountByIdOperation!, new GetAccountByIdInput
+        {
+            Id = "To_Edit_Investements_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldBe_Success_InvestementsAccount()
-//    {
-//        const string newSourceAccount = "Permanent_Current_01";
-//        const decimal newInterest = 20;
-//        const int newDuration = 15;
-//        Setup();
+        Assert.True(getByIdResponse.Account?.SourceAccountId == newSourceAccount);
+        Assert.True(getByIdResponse.Account?.Interest == newInterest);
+        Assert.True(getByIdResponse.Account?.Duration == newDuration);
+    }
 
-//        var result = (OperationHttpResult)editAccountOperation.Call(new EditAccountInput
-//        {
-//            AccountId = "To_Edit_Investements_01",
-//            SourceAccountId = newSourceAccount,
-//            Interest = newInterest,
-//            Duration = newDuration,
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await TestsHelper.SimulateCall<EditAccountOperation, EditAccountInput, VoidOperationOutput>(OperationToTest!, new EditAccountInput
+        {
+            AccountId = "invalid id",
+            Name = "invalid name",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (VoidOperationOutput)result.Output!;
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
 
-//        Assert.True(response.Error == null);
+    [Fact]
+    public async Task ShouldReturnError_InvalidSourceAccount()
+    {
+        var response = await TestsHelper.SimulateCall<EditAccountOperation, EditAccountInput, VoidOperationOutput>(OperationToTest!, new EditAccountInput
+        {
+            AccountId = "To_Edit_Investements_01",
+            SourceAccountId = "invalid_source",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        result = (OperationHttpResult)getAccountByIdOperation.Call(new GetAccountByIdInput
-//        {
-//            Id = "To_Edit_Investements_01",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
-
-//        var response2 = (GetAccountByIdOutput)result.Output!;
-
-//        Assert.True(response2.Account?.SourceAccountId == newSourceAccount);
-//        Assert.True(response2.Account?.Interest == newInterest);
-//        Assert.True(response2.Account?.Duration == newDuration);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (OperationHttpResult)editAccountOperation.Call(new EditAccountInput
-//        {
-//            AccountId = "invalid id",
-//            Name = "invalid name",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Output!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidSourceAccount()
-//    {
-//        Setup();
-
-//        var result = (OperationHttpResult)editAccountOperation.Call(new EditAccountInput
-//        {
-//            AccountId = "To_Edit_Investements_01",
-//            SourceAccountId = "invalid_source",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Output!;
-
-//        Assert.True(response.Error?.Code == AccountsErrors.InvalidSourceAccount.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == AccountsErrors.InvalidSourceAccount.Code);
+    }
+}

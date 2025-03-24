@@ -1,38 +1,35 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
-//using BankingAppDataTier.Controllers.Accounts;
-//using BankingAppDataTier.Tests.Constants;
-//using BankingAppDataTier.Tests.Mocks;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Operations.Accounts;
+using BankingAppDataTier.Tests.Constants;
+using BankingAppDataTier.Tests;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests.Helpers;
+using ElideusDotNetFramework.Tests;
+using System.Diagnostics.Contracts;
 
-//namespace BankingAppDataTier.Tests.Accounts;
+namespace BankingAppDataTier.Tests.Accounts;
 
-//public class GetClientAccountsTests
-//{
-//    private GetClientAccountsOperation getClientAccountsOperation;
+public class GetClientAccountsTests : OperationTest<GetClientAccountsOperation, GetClientAccountsInput, GetClientAccountsOutput>
+{
+    public GetClientAccountsTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new GetClientAccountsOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+    }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
+    [Theory]
+    [InlineData("Permanent_Current_01")]
+    [InlineData("Permanent_Savings_01")]
+    [InlineData("Permanent_Investements_01")]
+    public async Task ShouldBe_Success(string id)
+    {
+        var response = await TestsHelper.SimulateCall<GetClientAccountsOperation, GetClientAccountsInput, GetClientAccountsOutput>(OperationToTest!, new GetClientAccountsInput
+        {
+            ClientId = "Permanent_Client_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        getClientAccountsOperation = new GetClientAccountsOperation(TestMocksBuilder._ExecutionContextMock, string.Empty);
-//    }
-
-//    [Fact]
-//    public async Task ShouldBe_SuccessAsync()
-//    {
-//        Setup();
-
-//        var result = (OperationHttpResult) await getClientAccountsOperation.Call(new GetClientAccountsInput
-//        {
-//            ClientId = "Permanent_Client_01",
-//            Metadata = TestsConstants.TestsMetadata,
-//        }).ConfigureAwait(false);
-
-//        var tipo = result.GetType();
-
-//        var response = (GetClientAccountsOutput)result.Output!;
-
-//        Assert.True(response.Accounts.Count > 0);
-//    }
-//}
+        Assert.True(response.Accounts.Count > 0);
+    }
+}
