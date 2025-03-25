@@ -1,31 +1,31 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
+using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.Clients
+namespace BankingAppDataTier.Operations.LoanOffers
 {
-    public class AddClientOperation(IApplicationContext context, string endpoint)
-        : BankingAppDataTierOperation<AddClientInput, VoidOperationOutput>(context, endpoint)
+    public class AddLoanOfferOperation(IApplicationContext context, string endpoint)
+        : BankingAppDataTierOperation<AddLoanOfferInput, VoidOperationOutput>(context, endpoint)
     {
-        private IDatabaseClientsProvider databaseClientsProvider;
+        private IDatabaseLoanOfferProvider databaseLoanOffersProvider;
 
         protected override async Task InitAsync()
         {
             await base.InitAsync();
 
-            databaseClientsProvider = executionContext.GetDependency<IDatabaseClientsProvider>()!;
+            databaseLoanOffersProvider = executionContext.GetDependency<IDatabaseLoanOfferProvider>()!;
         }
 
-        protected override async Task<VoidOperationOutput> ExecuteAsync(AddClientInput input)
+        protected override async Task<VoidOperationOutput> ExecuteAsync(AddLoanOfferInput input)
         {
-            var clientInDb = databaseClientsProvider.GetById(input.Client.Id);
+            var itemInDb = databaseLoanOffersProvider.GetById(input.LoanOffer.Id);
 
-            if (clientInDb != null)
+            if (itemInDb != null)
             {
                 return new VoidOperationOutput()
                 {
@@ -34,10 +34,10 @@ namespace BankingAppDataTier.Operations.Clients
                 };
             }
 
-            var entry = mapperProvider.Map<ClientDto, ClientsTableEntry>(input.Client);
-            entry.Password = input.PassWord;
+            var entry = mapperProvider.Map<LoanOfferDto, LoanOfferTableEntry>(input.LoanOffer);
 
-            var result = databaseClientsProvider.Add(entry);
+
+            var result = databaseLoanOffersProvider.Add(entry);
 
             if (!result)
             {

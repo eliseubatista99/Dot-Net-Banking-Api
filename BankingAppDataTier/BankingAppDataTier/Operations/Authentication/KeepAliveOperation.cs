@@ -1,7 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
+﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
 using BankingAppDataTier.Contracts.Errors;
-using ElideusDotNetFramework.Errors.Contracts;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Providers.Contracts;
 using System.Net;

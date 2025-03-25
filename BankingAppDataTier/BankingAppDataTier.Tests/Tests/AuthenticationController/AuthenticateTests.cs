@@ -1,6 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Tests.Constants;
-using ElideusDotNetFramework.Tests.Helpers;
 using ElideusDotNetFramework.Tests;
 using BankingAppDataTier.Operations.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;

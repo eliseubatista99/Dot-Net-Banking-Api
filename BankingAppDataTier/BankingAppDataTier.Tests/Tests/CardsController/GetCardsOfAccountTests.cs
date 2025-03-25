@@ -3,10 +3,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Operations.Cards;
 using BankingAppDataTier.Tests.Constants;
-using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Tests;
-using ElideusDotNetFramework.Tests.Helpers;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BankingAppDataTier.Tests.Cards;
 

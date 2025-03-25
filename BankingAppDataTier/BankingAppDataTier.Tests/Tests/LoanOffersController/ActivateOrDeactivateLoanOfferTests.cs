@@ -1,73 +1,67 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
+using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Operations.LoanOffers;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
 
-//namespace BankingAppDataTier.Tests.LoanOffers;
+namespace BankingAppDataTier.Tests.LoanOffers;
 
-//public class ActivateOrDeactivateLoanOfferTests
-//{
-//    private LoanOffersController _loanOffersController;
+public class ActivateOrDeactivateLoanOfferTests : OperationTest<ActivateOrDeactivateLoanOfferOperation, ActivateOrDeactivateLoanOfferInput, VoidOperationOutput>
+{
+    private IDatabaseLoanOfferProvider databaseLoanOfferProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _loanOffersController = TestMocksBuilder._LoanOffersControllerMock;
-//    }
+    public ActivateOrDeactivateLoanOfferTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new ActivateOrDeactivateLoanOfferOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseLoanOfferProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseLoanOfferProvider>()!;
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var activateResponse = await SimulateOperationToTestCall(new ActivateOrDeactivateLoanOfferInput
+        {
+            Id = "To_Edit_AU_02",
+            Active = false,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_loanOffersController.ActivateOrDeactivateLoanOffer(new ActivateOrDeactivateLoanOfferInput
-//        {
-//            Id = "To_Edit_AU_02",
-//            Active = false,
-//        }).Result!;
+        Assert.True(activateResponse.Error == null);
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var getByTypeResponse = databaseLoanOfferProvider.GetByType(BankingAppDataTierConstants.LOAN_TYPE_AUTO, true);
 
-//        Assert.True(response.Error == null);
+        Assert.True(getByTypeResponse.Find(l => l.Id == "To_Edit_AU_02") == null);
 
-//        result = (ObjectResult)_loanOffersController.GetLoanOfferByType(Contracts.Enums.LoanType.Auto).Result!;
+        activateResponse = await SimulateOperationToTestCall(new ActivateOrDeactivateLoanOfferInput
+        {
+            Id = "To_Edit_AU_02",
+            Active = true,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response2 = (GetLoanOffersByTypeOutput)result.Value!;
+        Assert.True(activateResponse.Error == null);
 
-//        Assert.True(response2.LoanOffers.Find(l => l.Id == "To_Edit_AU_02") == null);
+        getByTypeResponse = databaseLoanOfferProvider.GetByType(BankingAppDataTierConstants.LOAN_TYPE_AUTO);
 
-//        result = (ObjectResult)_loanOffersController.ActivateOrDeactivateLoanOffer(new ActivateOrDeactivateLoanOfferInput
-//        {
-//            Id = "To_Edit_AU_02",
-//            Active = true,
-//        }).Result!;
+        Assert.True(getByTypeResponse.Find(l => l.Id == "To_Edit_AU_02") != null);
+    }
 
-//        response = (VoidOperationOutput)result.Value!;
-//        Assert.True(response.Error == null);
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new ActivateOrDeactivateLoanOfferInput
+        {
+            Id = "invalidId",
+            Active = false,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        result = (ObjectResult)_loanOffersController.GetLoanOfferByType(Contracts.Enums.LoanType.Auto).Result!;
-
-//        response2 = (GetLoanOffersByTypeOutput)result.Value!;
-
-//        Assert.True(response2.LoanOffers.Find(l => l.Id == "To_Edit_AU_02") != null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_loanOffersController.ActivateOrDeactivateLoanOffer(new ActivateOrDeactivateLoanOfferInput
-//        {
-//            Id = "invalidId",
-//            Active = false,
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}
