@@ -3,6 +3,7 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
 using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
@@ -14,6 +15,7 @@ using BankingAppDataTier.Operations.Authentication;
 using BankingAppDataTier.Operations.Cards;
 using BankingAppDataTier.Operations.Clients;
 using BankingAppDataTier.Operations.LoanOffers;
+using BankingAppDataTier.Operations.Loans;
 using ElideusDotNetFramework.Operations;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Providers.Contracts;
@@ -89,6 +91,23 @@ namespace BankingAppDataTier
             MapPostOperation<GetLoanOfferByTypeOperation, GetLoanOfferByTypeInput, GetLoanOffersByTypeOutput>(ref app, context, new GetLoanOfferByTypeOperation(context, "/GetLoanOfferByType"));
         }
 
+        private void MapLoasOperations(ref WebApplication app, IApplicationContext context)
+        {
+            MapPostOperation<AddLoanOperation, AddLoanInput, VoidOperationOutput>(ref app, context, new AddLoanOperation(context, "/AddLoan"));
+
+            MapPostOperation<AmortizeLoanOperation, AmortizeLoanInput, VoidOperationOutput>(ref app, context, new AmortizeLoanOperation(context, "/AmortizeLoan"));
+
+            MapPostOperation<DeleteLoanOperation, DeleteLoanInput, VoidOperationOutput>(ref app, context, new DeleteLoanOperation(context, "/DeleteLoan"));
+
+            MapPostOperation<EditLoanOperation, EditLoanInput, VoidOperationOutput>(ref app, context, new EditLoanOperation(context, "/EditLoan"));
+
+            MapPostOperation<GetLoanByIdOperation, GetLoanByIdInput, GetLoanByIdOutput>(ref app, context, new GetLoanByIdOperation(context, "/GetLoanById"));
+
+            MapPostOperation<GetLoansOfAccountOperation, GetLoansOfAccountInput, GetLoansOfAccountOutput>(ref app, context, new GetLoansOfAccountOperation(context, "/GetLoansOfAccount"));
+            
+            MapPostOperation<GetLoansOfClientOperation, GetLoansOfClientInput, GetLoansOfClientOutput>(ref app, context, new GetLoansOfClientOperation(context, "/GetLoansOfClient"));
+        }
+
         public override void MapOperations(ref WebApplication app, IApplicationContext context)
         {
             base.MapOperations(ref app, context);
@@ -98,6 +117,7 @@ namespace BankingAppDataTier
             MapCardsOperations(ref app, context);
             MapClientsOperations(ref app, context);
             MapLoanOffersOperations(ref app, context);
+            MapLoasOperations(ref app, context);
         }
     }
 }
