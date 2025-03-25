@@ -7,17 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="C:\Users\elise\.nuget\packages\elideus-dot-net-framework\1.0.3\contentFiles\any\net9.0\testhost.dll" />
-    <Content Remove="C:\Users\elise\.nuget\packages\elideus-dot-net-framework\1.0.3\contentFiles\any\net9.0\testhost.exe" />
-    <Content Remove="C:\Users\elise\.nuget\packages\elideus-dot-net-framework\1.0.5\contentFiles\any\net9.0\testhost.dll" />
-    <Content Remove="C:\Users\elise\.nuget\packages\elideus-dot-net-framework\1.0.5\contentFiles\any\net9.0\testhost.exe" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<PackageReference Include="elideus-dot-net-framework" Version="1.0.29" />
-	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
-    <PackageReference Include="Npgsql" Version="9.0.3" />
   </ItemGroup>
 
 </Project>
