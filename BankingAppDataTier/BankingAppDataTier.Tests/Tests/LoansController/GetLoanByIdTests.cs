@@ -1,46 +1,51 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Operations.LoanOffers;
+using BankingAppDataTier.Operations.Loans;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.Loans;
+namespace BankingAppDataTier.Tests.Loans;
 
-//public class GetLoanByIdTests
-//{
-//    private LoansController _loansController;
+public class GetLoanByIdTests : OperationTest<GetLoanByIdOperation, GetLoanByIdInput, GetLoanByIdOutput>
+{
+    private IDatabaseLoansProvider databaseLoansProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _loansController = TestMocksBuilder._LoansControllerMock;
-//    }
+    public GetLoanByIdTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new GetLoanByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseLoansProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseLoansProvider>()!;
+    }
 
-//    [Theory]
-//    [InlineData("Permanent_AU_01")]
-//    [InlineData("Permanent_MO_01")]
-//    [InlineData("Permanent_PE_01")]
-//    public void ShouldBe_Success(string id)
-//    {
-//        Setup();
+    [Theory]
+    [InlineData("Permanent_AU_01")]
+    [InlineData("Permanent_MO_01")]
+    [InlineData("Permanent_PE_01")]
+    public async Task ShouldBe_Success(string id)
+    {
+        var response = await SimulateOperationToTestCall(new GetLoanByIdInput
+        {
+            Id = id,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_loansController.GetLoanById(id).Result!;
+        Assert.True(response.Loan != null);
+    }
 
-//        var response = (GetLoanByIdOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new GetLoanByIdInput
+        {
+            Id = "invalid",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response.Loan != null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_loansController.GetLoanById("invalid").Result!;
-
-//        var response = (GetLoanByIdOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

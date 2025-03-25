@@ -1,110 +1,101 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Operations.LoanOffers;
+using BankingAppDataTier.Operations.Loans;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.Loans;
+namespace BankingAppDataTier.Tests.Loans;
 
-//public class EditLoanTests
-//{
-//    private LoansController _loansController;
+public class EditLoanTests : OperationTest<EditLoanOperation, EditLoanInput, VoidOperationOutput>
+{
+    private IDatabaseLoansProvider databaseLoansProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _loansController = TestMocksBuilder._LoansControllerMock;
-//    }
+    public EditLoanTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new EditLoanOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseLoansProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseLoansProvider>()!;
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        const string newName = "newName";
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        const string newName = "newName";
 
-//        var result = (ObjectResult)_loansController.EditLoan(new EditLoanInput
-//        {
-//            Id = "Permanent_AU_01",
-//            Name = newName,
-//            RelatedOffer = "Permanent_AU_01",
-//            RelatedAccount = "Permanent_Current_01",
-//            Duration = 10,
-//            PaidAmount = 0,
-//        }).Result!;
+        var editResponse = await SimulateOperationToTestCall(new EditLoanInput
+        {
+            Id = "Permanent_AU_01",
+            Name = newName,
+            RelatedOffer = "Permanent_AU_01",
+            RelatedAccount = "Permanent_Current_01",
+            Duration = 10,
+            PaidAmount = 0,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (VoidOperationOutput)result.Value!;
+        Assert.True(editResponse.Error == null);
 
-//        Assert.True(response.Error == null);
+        var getByIdResponse = databaseLoansProvider.GetById("Permanent_AU_01");
 
-//        result = (ObjectResult)_loansController.GetLoanById("Permanent_AU_01").Result!;
+        Assert.True(getByIdResponse?.Name == newName);
+    }
 
-//        var response2 = (GetLoanByIdOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new EditLoanInput
+        {
+            Id = "invalid_id",
+            Name = "name",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response2.Loan?.Name == newName);
-//    }
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
 
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldReturnError_CantChangeLoanType()
+    {
+        var response = await SimulateOperationToTestCall(new EditLoanInput
+        {
+            Id = "Permanent_AU_01",
+            RelatedOffer = "Permanent_MO_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_loansController.DeleteLoan("invalid_id").Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_CantChangeLoanType()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_loansController.EditLoan(new EditLoanInput
-//        {
-//            Id = "Permanent_AU_01",
-//            RelatedOffer = "Permanent_MO_01",
-//        }).Result!;
-//        var response = (VoidOperationOutput)result.Value!;
-
-
-//        Assert.True(response.Error?.Code == LoansErrors.CantChangeLoanType.Code);
-//    }
+        Assert.True(response.Error?.Code == LoansErrors.CantChangeLoanType.Code);
+    }
 
 
-//    [Fact]
-//    public void ShouldReturnError_InvalidRelatedOffer()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldReturnError_InvalidRelatedOffer()
+    {
+        var response = await SimulateOperationToTestCall(new EditLoanInput
+        {
+            Id = "Permanent_AU_01",
+            RelatedOffer = "invalid",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_loansController.EditLoan(new EditLoanInput
-//        {
-//            Id = "Permanent_AU_01",
-//            RelatedOffer = "invalid",
-//        }).Result!;
-//        var response = (VoidOperationOutput)result.Value!;
-
-
-//        Assert.True(response.Error?.Code == LoansErrors.InvalidRelatedOffer.Code);
-//    }
+        Assert.True(response.Error?.Code == LoansErrors.InvalidRelatedOffer.Code);
+    }
 
 
-//    [Fact]
-//    public void ShouldReturnError_InvalidRelatedAccount()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldReturnError_InvalidRelatedAccount()
+    {
+        var response = await SimulateOperationToTestCall(new EditLoanInput
+        {
+            Id = "Permanent_AU_01",
+            RelatedAccount = "invalid",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_loansController.EditLoan(new EditLoanInput
-//        {
-//            Id = "Permanent_AU_01",
-//            RelatedAccount = "invalid",
-//        }).Result!;
-//        var response = (VoidOperationOutput)result.Value!;
-
-
-//        Assert.True(response.Error?.Code == LoansErrors.InvalidRelatedAccount.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == LoansErrors.InvalidRelatedAccount.Code);
+    }
+}

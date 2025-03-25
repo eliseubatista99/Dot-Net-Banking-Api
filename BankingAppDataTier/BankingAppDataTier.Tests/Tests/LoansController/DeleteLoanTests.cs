@@ -1,50 +1,52 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Operations.LoanOffers;
+using BankingAppDataTier.Operations.Loans;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.Loans;
+namespace BankingAppDataTier.Tests.Loans;
 
-//public class DeleteLoanTests
-//{
-//    private LoansController _loansController;
+public class DeleteLoanTests : OperationTest<DeleteLoanOperation, DeleteLoanInput, VoidOperationOutput>
+{
+    private IDatabaseLoansProvider databaseLoansProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _loansController = TestMocksBuilder._LoansControllerMock;
-//    }
+    public DeleteLoanTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new DeleteLoanOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseLoansProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseLoansProvider>()!;
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var delResponse = await SimulateOperationToTestCall(new DeleteLoanInput
+        {
+            Id = "To_Delete_AU_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_loansController.DeleteLoan("To_Delete_AU_01").Result!;
+        Assert.True(delResponse.Error == null);
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var getByIdResponse = databaseLoansProvider.GetById("To_Delete_AU_01");
 
-//        Assert.True(response.Error == null);
+        Assert.True(getByIdResponse == null);
+    }
 
-//        result = (ObjectResult)_loansController.GetLoanById("To_Delete_AU_01").Result!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new DeleteLoanInput
+        {
+            Id = "invalid_id",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response2 = (GetLoanByIdOutput)result.Value!;
-
-//        Assert.True(response2.Loan == null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_loansController.DeleteLoan("invalid_id").Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}
