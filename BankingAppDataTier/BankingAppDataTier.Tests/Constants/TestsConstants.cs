@@ -18,7 +18,7 @@ namespace BankingAppDataTier.Tests.Constants
 
         public static InputMetadata TestsMetadata = new InputMetadata
         {
-            Token = TestsConstants.PermanentToken,
+            Token = PermanentToken,
         };
     }
 }
