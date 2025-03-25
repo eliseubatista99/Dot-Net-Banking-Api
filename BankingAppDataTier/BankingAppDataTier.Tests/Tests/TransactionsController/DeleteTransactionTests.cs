@@ -1,49 +1,50 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Transactions;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
 
-//namespace BankingAppDataTier.Tests.Transactions;
+namespace BankingAppDataTier.Tests.Transactions;
 
-//public class DeleteTransactionTests
-//{
-//    private TransactionsController _transactionsController;
+public class DeleteTransactionTests : OperationTest<DeleteTransactionOperation, DeleteTransactionInput, VoidOperationOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
+    private IDatabaseTransactionsProvider databaseTransactionsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _transactionsController = TestMocksBuilder._TransactionsControllerMock;
-//    }
+    public DeleteTransactionTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new DeleteTransactionOperation(_testBuilder.ApplicationContextMock!, string.Empty);
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+        databaseTransactionsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseTransactionsProvider>()!;
+    }
 
-//        var result = (ObjectResult)_transactionsController.DeleteTransaction("To_Delete_Transaction_01").Result!;
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var delResponse = await SimulateOperationToTestCall(new DeleteTransactionInput
+        {
+            Id = "To_Delete_Transaction_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (VoidOperationOutput)result.Value!;
+        Assert.True(delResponse.Error == null);
 
-//        Assert.True(response.Error == null);
+        var getByIdResult = databaseTransactionsProvider.GetById("To_Delete_Transaction_01");
 
-//        result = (ObjectResult)_transactionsController.GetTransactionById("To_Delete_Transaction_01").Result!;
+        Assert.True(getByIdResult == null);
+    }
 
-//        var response2 = (GetTransactionByIdOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new DeleteTransactionInput
+        {
+            Id = "invalid_id",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response2.Transaction == null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_transactionsController.DeleteTransaction("invalid_id").Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

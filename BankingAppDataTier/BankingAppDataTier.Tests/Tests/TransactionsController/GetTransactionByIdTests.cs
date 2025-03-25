@@ -1,45 +1,49 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Transactions;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Tests;
 
-//namespace BankingAppDataTier.Tests.Transactions;
+namespace BankingAppDataTier.Tests.Transactions;
 
-//public class GetTransactionByIdTests
-//{
-//    private TransactionsController _transactionsController;
+public class GetTransactionByIdTests : OperationTest<GetTransactionByIdOperation, GetTransactionByIdInput, GetTransactionByIdOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
+    private IDatabaseTransactionsProvider databaseTransactionsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _transactionsController = TestMocksBuilder._TransactionsControllerMock;
-//    }
+    public GetTransactionByIdTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new GetTransactionByIdOperation(_testBuilder.ApplicationContextMock!, string.Empty);
 
-//    [Theory]
-//    [InlineData("Permanent_Transaction_01")]
-//    [InlineData("Permanent_Transaction_02")]
-//    [InlineData("Permanent_Transaction_03")]
-//    public void ShouldBe_Success(string id)
-//    {
-//        Setup();
+        databaseTransactionsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseTransactionsProvider>()!;
+    }
 
-//        var result = (ObjectResult)_transactionsController.GetTransactionById(id).Result!;
+    [Theory]
+    [InlineData("Permanent_Transaction_01")]
+    [InlineData("Permanent_Transaction_02")]
+    [InlineData("Permanent_Transaction_03")]
+    public async Task ShouldBe_Success(string id)
+    {
+        var response = await SimulateOperationToTestCall(new GetTransactionByIdInput
+        {
+            Id = id,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (GetTransactionByIdOutput)result.Value!;
+        Assert.True(response.Transaction != null);
+    }
 
-//        Assert.True(response.Transaction != null);
-//    }
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new GetTransactionByIdInput
+        {
+            Id = "invalid_id",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_transactionsController.GetTransactionById("invalid_id").Result!;
-
-//        var response = (GetTransactionByIdOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

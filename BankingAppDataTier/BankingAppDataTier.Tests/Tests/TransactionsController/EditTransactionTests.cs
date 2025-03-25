@@ -1,61 +1,56 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Transactions;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
 
-//namespace BankingAppDataTier.Tests.Transactions;
+namespace BankingAppDataTier.Tests.Transactions;
 
-//public class EditTransactionTests
-//{
-//    private TransactionsController _transactionsController;
+public class EditTransactionTests : OperationTest<EditTransactionOperation, EditTransactionInput, VoidOperationOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
+    private IDatabaseTransactionsProvider databaseTransactionsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _transactionsController = TestMocksBuilder._TransactionsControllerMock;
-//    }
+    public EditTransactionTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new EditTransactionOperation(_testBuilder.ApplicationContextMock!, string.Empty);
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        const string newDescription = "desc new";
-//        Setup();
+        databaseTransactionsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseTransactionsProvider>()!;
+    }
 
-//        var result = (ObjectResult)_transactionsController.EditTransaction(new EditTransactionInput
-//        {
-//            Id = "To_Edit_Transaction_01",
-//            Description = newDescription,
-//            DestinationName = "new destination"
-//        }).Result!;
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        const string newDescription = "desc new";
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var editResponse = await SimulateOperationToTestCall(new EditTransactionInput
+        {
+            Id = "To_Edit_Transaction_01",
+            Description = newDescription,
+            DestinationName = "new destination",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response.Error == null);
+        Assert.True(editResponse.Error == null);
 
-//        result = (ObjectResult)_transactionsController.GetTransactionById("To_Edit_Transaction_01").Result!;
+        var getByIdResult = databaseTransactionsProvider.GetById("To_Edit_Transaction_01");
 
-//        var response2 = (GetTransactionByIdOutput)result.Value!;
+        Assert.True(getByIdResult?.Description == newDescription);
+    }
 
-//        Assert.True(response2.Transaction?.Description == newDescription);
-//    }
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new EditTransactionInput
+        {
+            Id = "invalid_id",
+            Description = "new desc",
+            DestinationName = "new destination",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_transactionsController.EditTransaction(new EditTransactionInput
-//        {
-//            Id = "invalid_id",
-//            Description = "new desc",
-//            DestinationName = "new destination"
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}
