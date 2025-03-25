@@ -1,0 +1,6 @@
+@BankingAppBusinessTier_HostAddress = http://localhost:5236
+
+GET {{BankingAppBusinessTier_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
