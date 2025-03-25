@@ -1,10 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
 using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations.Clients;
 using BankingAppDataTier.Operations.LoanOffers;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Operations.Contracts;

@@ -1,34 +1,36 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
-//using BankingAppDataTier.Contracts.Enums;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Plastics;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Tests;
 
-//namespace BankingAppDataTier.Tests.Plastics;
+namespace BankingAppDataTier.Tests.Plastics;
 
-//public class GetPlasticsOfTypeTests
-//{
-//    private PlasticsController _plasticsController;
+public class GetPlasticsOfTypeTests : OperationTest<GetPlasticsOfTypeOperation, GetPlasticOfTypeInput, GetPlasticsOfTypeOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _plasticsController = TestMocksBuilder._PlasticsControllerMock;
-//    }
+    public GetPlasticsOfTypeTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new GetPlasticsOfTypeOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databasePlasticsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabasePlasticsProvider>()!;
+    }
 
-//    [Theory]
-//    [InlineData(CardType.Debit)]
-//    [InlineData(CardType.Credit)]
-//    [InlineData(CardType.PrePaid)]
-//    [InlineData(CardType.Meal)]
-//    public void ShouldBe_Success(CardType cardType)
-//    {
-//        Setup();
+    [Theory]
+    [InlineData(CardType.Debit)]
+    [InlineData(CardType.Credit)]
+    [InlineData(CardType.PrePaid)]
+    [InlineData(CardType.Meal)]
+    public async Task ShouldBe_Success(CardType cardType)
+    {
+        var response = await SimulateOperationToTestCall(new GetPlasticOfTypeInput
+        {
+            PlasticType = cardType,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_plasticsController.GetPlasticsOfType(cardType).Result!;
-
-//        var response = (GetPlasticsOfTypeOutput)result.Value!;
-
-//        Assert.True(response.Plastics.Count > 0);
-//    }
-//}
+        Assert.True(response.Plastics.Count > 0);
+    }
+}

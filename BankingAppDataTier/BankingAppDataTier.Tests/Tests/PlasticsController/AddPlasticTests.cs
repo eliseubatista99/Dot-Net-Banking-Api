@@ -1,74 +1,65 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Entitites;
-//using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Plastics;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
 
-//namespace BankingAppDataTier.Tests.Plastics;
+namespace BankingAppDataTier.Tests.Plastics;
 
-//public class AddPlasticTests
-//{
-//    private PlasticsController _plasticsController;
+public class AddPlasticTests : OperationTest<AddPlasticOperation, AddPlasticInput, VoidOperationOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _plasticsController = TestMocksBuilder._PlasticsControllerMock;
-//    }
+    public AddPlasticTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new AddPlasticOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databasePlasticsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabasePlasticsProvider>()!;
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var addResponse = await SimulateOperationToTestCall(new AddPlasticInput
+        {
+            Plastic = new PlasticDto
+            {
+                Id = "Test01",
+                CardType = Contracts.Enums.CardType.Debit,
+                Name = "DotNet Basic",
+                Cashback = 3,
+                Commission = 10,
+                IsActive = true,
+                Image = string.Empty,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_plasticsController.AddPlastic(new AddPlasticInput
-//        {
-//            Plastic = new PlasticDto
-//            {
-//                Id = "Test01",
-//                CardType = Contracts.Enums.CardType.Debit,
-//                Name = "DotNet Basic",
-//                Cashback = 3,
-//                Commission = 10,
-//                IsActive = true,
-//                Image = string.Empty,
-//            },
-//        }).Result!;
+        Assert.True(addResponse.Error == null);
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var getByIdResult = databasePlasticsProvider.GetById("Test01");
 
-//        Assert.True(response.Error == null);
+        Assert.True(getByIdResult != null);
+    }
 
-//        result = (ObjectResult)_plasticsController.GetPlasticById("Test01").Result!;
+    [Fact]
+    public async Task ShouldReturnError_IdAlreadyInUse()
+    {
+        var response = await SimulateOperationToTestCall(new AddPlasticInput
+        {
+            Plastic = new PlasticDto
+            {
+                Id = "Permanent_Debit_01",
+                CardType = Contracts.Enums.CardType.Debit,
+                Name = "DotNet Basic",
+                IsActive = true,
+                Image = string.Empty,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response2 = (GetPlasticByIdOutput)result.Value!;
-
-//        Assert.True(response2.Plastic != null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_IdAlreadyInUse()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_plasticsController.AddPlastic(new AddPlasticInput
-//        {
-//            Plastic = new PlasticDto
-//            {
-//                Id = "Permanent_Debit_01",
-//                CardType = Contracts.Enums.CardType.Debit,
-//                Name = "DotNet Basic",
-//                IsActive = true,
-//                Image = string.Empty,
-//            },
-//        }).Result!;
-
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
+    }
+}

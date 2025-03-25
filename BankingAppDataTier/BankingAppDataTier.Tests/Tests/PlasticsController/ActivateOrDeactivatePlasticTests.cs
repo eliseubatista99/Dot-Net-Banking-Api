@@ -1,72 +1,64 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Constants;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Plastics;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
 
-//namespace BankingAppDataTier.Tests.Plastics;
+namespace BankingAppDataTier.Tests.Plastics;
 
-//public class ActivateOrDeactivatePlasticTests
-//{
-//    private PlasticsController _plasticsController;
+public class ActivateOrDeactivatePlasticTests : OperationTest<ActivateOrDeactivatePlasticOperation, ActivateOrDeactivatePlasticInput, VoidOperationOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _plasticsController = TestMocksBuilder._PlasticsControllerMock;
-//    }
+    public ActivateOrDeactivatePlasticTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new ActivateOrDeactivatePlasticOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databasePlasticsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabasePlasticsProvider>()!;
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var activateResponse = await SimulateOperationToTestCall(new ActivateOrDeactivatePlasticInput
+        {
+            Id = "Permanent_Debit_01",
+            Active = false,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_plasticsController.ActivateOrDeactivatePlastic(new ActivateOrDeactivatePlasticInput
-//        {
-//            Id = "Permanent_Debit_01",
-//            Active = false,
-//        }).Result!;
+        Assert.True(activateResponse.Error == null);
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var getByTypeResult = databasePlasticsProvider.GetPlasticsOfCardType(BankingAppDataTierConstants.CARD_TYPE_DEBIT, true);
 
-//        Assert.True(response.Error == null);
+        Assert.True(getByTypeResult.Find(l => l.Id == "Permanent_Debit_01") == null);
 
-//        result = (ObjectResult)_plasticsController.GetPlasticsOfType(Contracts.Enums.CardType.Debit).Result!;
+        activateResponse = await SimulateOperationToTestCall(new ActivateOrDeactivatePlasticInput
+        {
+            Id = "Permanent_Debit_01",
+            Active = true,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response2 = (GetPlasticsOfTypeOutput)result.Value!;
+        Assert.True(activateResponse.Error == null);
 
-//        Assert.True(response2.Plastics.Find(l => l.Id == "Permanent_Debit_01") == null);
+        getByTypeResult = databasePlasticsProvider.GetPlasticsOfCardType(BankingAppDataTierConstants.CARD_TYPE_DEBIT, true);
 
-//        result = (ObjectResult)_plasticsController.ActivateOrDeactivatePlastic(new ActivateOrDeactivatePlasticInput
-//        {
-//            Id = "Permanent_Debit_01",
-//            Active = true,
-//        }).Result!;
+        Assert.True(getByTypeResult.Find(l => l.Id == "Permanent_Debit_01") != null);
+    }
 
-//        response = (VoidOperationOutput)result.Value!;
-//        Assert.True(response.Error == null);
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new ActivateOrDeactivatePlasticInput
+        {
+            Id = "invalidId",
+            Active = false,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        result = (ObjectResult)_plasticsController.GetPlasticsOfType(Contracts.Enums.CardType.Debit).Result!;
-//        response2 = (GetPlasticsOfTypeOutput)result.Value!;
-
-//        Assert.True(response2.Plastics.Find(l => l.Id == "Permanent_Debit_01") != null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_plasticsController.ActivateOrDeactivatePlastic(new ActivateOrDeactivatePlasticInput
-//        {
-//            Id = "invalidId",
-//            Active = false,
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

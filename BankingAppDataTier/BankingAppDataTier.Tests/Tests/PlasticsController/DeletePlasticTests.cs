@@ -1,64 +1,60 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Plastics;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
 
+namespace BankingAppDataTier.Tests.Plastics;
 
-//namespace BankingAppDataTier.Tests.Plastics;
+public class DeletePlasticTests : OperationTest<DeletePlasticOperation, DeletePlasticInput, VoidOperationOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
 
-//public class DeletePlasticTests
-//{
-//    private PlasticsController _plasticsController;
+    public DeletePlasticTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new DeletePlasticOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databasePlasticsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabasePlasticsProvider>()!;
+    }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _plasticsController = TestMocksBuilder._PlasticsControllerMock;
-//    }
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var delResponse = await SimulateOperationToTestCall(new DeletePlasticInput
+        {
+            Id = "To_Delete_Debit_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+        Assert.True(delResponse.Error == null);
 
-//        var result = (ObjectResult)_plasticsController.DeletePlastic("To_Delete_Debit_01").Result!;
+        var getByIdResult = databasePlasticsProvider.GetById("To_Delete_Debit_01");
 
-//        var response = (VoidOperationOutput)result.Value!;
+        Assert.True(getByIdResult == null);
+    }
 
-//        Assert.True(response.Error == null);
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new DeletePlasticInput
+        {
+            Id = "Invalid_id",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        result = (ObjectResult)_plasticsController.GetPlasticById("To_Delete_Debit_01").Result!;
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
 
-//        var response2 = (GetPlasticByIdOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_CantDeleteWithRelatedCards()
+    {
+        var response = await SimulateOperationToTestCall(new DeletePlasticInput
+        {
+            Id = "Permanent_Debit_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response2.Plastic == null);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_plasticsController.DeletePlastic("Invalid_id").Result!;
-
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_CantDeleteWithRelatedCards()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_plasticsController.DeletePlastic("Permanent_Debit_01").Result!;
-
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == PlasticsErrors.CantDeleteWithRelatedCards.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == PlasticsErrors.CantDeleteWithRelatedCards.Code);
+    }
+}

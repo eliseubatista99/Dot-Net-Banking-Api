@@ -1,62 +1,55 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Plastics;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
 
-//namespace BankingAppDataTier.Tests.Plastics;
+namespace BankingAppDataTier.Tests.Plastics;
 
-//public class EditPlasticTests
-//{
-//    private PlasticsController _plasticsController;
+public class EditPlasticTests : OperationTest<EditPlasticOperation, EditPlasticInput, VoidOperationOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _plasticsController = TestMocksBuilder._PlasticsControllerMock;
-//    }
+    public EditPlasticTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new EditPlasticOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databasePlasticsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabasePlasticsProvider>()!;
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        const string newName = "NewName";
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        const string newName = "NewName";
 
-//        var result = (ObjectResult)_plasticsController.EditPlastic(new EditPlasticInput
-//        {
-//            Id = "Permanent_Debit_01",
-//            Name = newName,
-//            Image = string.Empty,
-//            Cashback = 10,
-//            Commission = 20,
-//        }).Result!;
+        var editResponse = await SimulateOperationToTestCall(new EditPlasticInput
+        {
+            Id = "Permanent_Debit_01",
+            Name = newName,
+            Image = string.Empty,
+            Cashback = 10,
+            Commission = 20,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (VoidOperationOutput)result.Value!;
+        Assert.True(editResponse.Error == null);
 
-//        Assert.True(response.Error == null);
+        var getByIdResult = databasePlasticsProvider.GetById("Permanent_Debit_01");
 
-//        result = (ObjectResult)_plasticsController.GetPlasticById("Permanent_Debit_01").Result!;
+        Assert.True(getByIdResult?.Name == newName);
+    }
 
-//        var response2 = (GetPlasticByIdOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new EditPlasticInput
+        {
+            Id = "invalid_id",
+            Name = "new name",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response2.Plastic?.Name == newName);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_plasticsController.EditPlastic(new EditPlasticInput
-//        {
-//            Id = "invalid_id",
-//            Name = "new name",
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

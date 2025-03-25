@@ -1,17 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations.Clients;
-using BankingAppDataTier.Operations.LoanOffers;
 using BankingAppDataTier.Operations.Loans;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Operations.Contracts;
 using ElideusDotNetFramework.Tests;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BankingAppDataTier.Tests.Loans;
 
