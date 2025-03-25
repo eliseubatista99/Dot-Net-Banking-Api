@@ -1,62 +1,58 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
+using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Operations.LoanOffers;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.LoanOffers;
+namespace BankingAppDataTier.Tests.LoanOffers;
 
-//public class EditLoanOfferTests
-//{
-//    private LoanOffersController _loanOffersController;
+public class EditLoanOfferTests : OperationTest<EditLoanOfferOperation, EditLoanOfferInput, VoidOperationOutput>
+{
+    private IDatabaseLoanOfferProvider databaseLoanOfferProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _loanOffersController = TestMocksBuilder._LoanOffersControllerMock;
-//    }
+    public EditLoanOfferTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new EditLoanOfferOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseLoanOfferProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseLoanOfferProvider>()!;
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        const string newName = "NewName";
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        const string newName = "NewName";
 
-//        var result = (ObjectResult)_loanOffersController.EditLoanOffer(new EditLoanOfferInput
-//        {
-//            Id = "To_Edit_AU_01",
-//            Name = newName,
-//            Description = "new Desc",
-//            MaxEffort = 50,
-//            Interest = 12.0M,
-//        }).Result!;
+        var editResponse = await SimulateOperationToTestCall(new EditLoanOfferInput
+        {
+            Id = "To_Edit_AU_01",
+            Name = newName,
+            Description = "new Desc",
+            MaxEffort = 50,
+            Interest = 12.0M,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (VoidOperationOutput)result.Value!;
+        Assert.True(editResponse.Error == null);
 
-//        Assert.True(response.Error == null);
+        var getByIdResponse = databaseLoanOfferProvider.GetById("To_Edit_AU_01");
 
-//        result = (ObjectResult)_loanOffersController.GetLoanOfferById("To_Edit_AU_01").Result!;
+        Assert.True(getByIdResponse?.Name == newName);
+    }
 
-//        var response2 = (GetLoanOfferByIdOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new EditLoanOfferInput
+        {
+            Id = "invalid_id",
+            Description = "new Desc",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response2.LoanOffer?.Name == newName);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_loanOffersController.EditLoanOffer(new EditLoanOfferInput
-//        {
-//            Id = "invalid_id",
-//            Description = "new Desc",
-//        }).Result!;
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
+}

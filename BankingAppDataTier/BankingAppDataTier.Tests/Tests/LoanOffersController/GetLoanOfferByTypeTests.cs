@@ -1,33 +1,39 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
-//using BankingAppDataTier.Contracts.Enums;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
+using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
+using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Operations.LoanOffers;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.LoanOffers;
+namespace BankingAppDataTier.Tests.LoanOffers;
 
-//public class GetLoanOfferByTypeTests
-//{
-//    private LoanOffersController _loanOffersController;
+public class GetLoanOfferByTypeTests : OperationTest<GetLoanOfferByTypeOperation, GetLoanOfferByTypeInput, GetLoanOffersByTypeOutput>
+{
+    private IDatabaseLoanOfferProvider databaseLoanOfferProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _loanOffersController = TestMocksBuilder._LoanOffersControllerMock;
-//    }
+    public GetLoanOfferByTypeTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new GetLoanOfferByTypeOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseLoanOfferProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseLoanOfferProvider>()!;
+    }
 
-//    [Theory]
-//    [InlineData(LoanType.Personal)]
-//    [InlineData(LoanType.Auto)]
-//    [InlineData(LoanType.Mortgage)]
-//    public void ShouldBe_Success(LoanType loanType)
-//    {
-//        Setup();
+    [Theory]
+    [InlineData(LoanType.Personal)]
+    [InlineData(LoanType.Auto)]
+    [InlineData(LoanType.Mortgage)]
+    public async Task ShouldBe_Success(LoanType loanType)
+    {
+        var response = await SimulateOperationToTestCall(new GetLoanOfferByTypeInput
+        {
+            OfferType = loanType,
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_loanOffersController.GetLoanOfferByType(loanType).Result!;
-
-//        var response = (GetLoanOffersByTypeOutput)result.Value!;
-
-//        Assert.True(response.LoanOffers.Count > 0);
-//    }
-//}
+        Assert.True(response.LoanOffers.Count > 0);
+    }
+}

@@ -1,63 +1,62 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Clients;
+using BankingAppDataTier.Operations.LoanOffers;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.LoanOffers;
+namespace BankingAppDataTier.Tests.LoanOffers;
 
-//public class DeleteLoanOfferTests
-//{
-//    private LoanOffersController _loanOffersController;
+public class DeleteLoanOfferTests : OperationTest<DeleteLoanOfferOperation, DeleteLoanOfferInput, VoidOperationOutput>
+{
+    private IDatabaseLoanOfferProvider databaseLoanOfferProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _loanOffersController = TestMocksBuilder._LoanOffersControllerMock;
-//    }
+    public DeleteLoanOfferTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new DeleteLoanOfferOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        databaseLoanOfferProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseLoanOfferProvider>()!;
+    }
 
-//    [Fact]
-//    public void ShouldBe_Success()
-//    {
-//        Setup();
+    [Fact]
+    public async Task ShouldBe_Success()
+    {
+        var delResponse = await SimulateOperationToTestCall(new DeleteLoanOfferInput
+        {
+            Id = "To_Delete_AU_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var result = (ObjectResult)_loanOffersController.DeleteLoanOffer("To_Delete_AU_01").Result!;
+        Assert.True(delResponse.Error == null);
 
-//        var response = (VoidOperationOutput)result.Value!;
+        var getByIdResponse = databaseLoanOfferProvider.GetById("To_Delete_AU_01");
 
-//        Assert.True(response.Error == null);
+        Assert.True(getByIdResponse == null);
+    }
 
-//        result = (ObjectResult)_loanOffersController.GetLoanOfferById("To_Delete_AU_01").Result!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidId()
+    {
+        var response = await SimulateOperationToTestCall(new DeleteLoanOfferInput
+        {
+            Id = "Invalid_id",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response2 = (GetLoanOfferByIdOutput)result.Value!;
+        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
+    }
 
-//        Assert.True(response2.LoanOffer == null);
-//    }
+    [Fact]
+    public async Task ShouldReturnError_CantDeleteWithRelatedLoans()
+    {
+        var response = await SimulateOperationToTestCall(new DeleteLoanOfferInput
+        {
+            Id = "Permanent_AU_01",
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldReturnError_InvalidId()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_loanOffersController.DeleteLoanOffer("Invalid_id").Result!;
-
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.InvalidId.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_CantDeleteWithRelatedLoans()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_loanOffersController.DeleteLoanOffer("Permanent_AU_01").Result!;
-
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == LoanOffersErrors.CantDeleteWithRelatedLoans.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == LoanOffersErrors.CantDeleteWithRelatedLoans.Code);
+    }
+}
