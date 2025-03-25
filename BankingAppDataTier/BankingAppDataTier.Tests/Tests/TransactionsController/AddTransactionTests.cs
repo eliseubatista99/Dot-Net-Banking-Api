@@ -1,166 +1,150 @@
-﻿//using BankingAppDataTier.Contracts.Dtos.Entitites;
-//using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
-//using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
-//using BankingAppDataTier.Contracts.Errors;
-//using BankingAppDataTier.Controllers;
-//using BankingAppDataTier.Tests.Mocks;
-//using Microsoft.AspNetCore.Mvc;
-//using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
+using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
+using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Operations.Plastics;
+using BankingAppDataTier.Operations.Transactions;
+using BankingAppDataTier.Tests.Constants;
+using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Tests;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace BankingAppDataTier.Tests.Transactions;
+namespace BankingAppDataTier.Tests.Transactions;
 
-//public class AddTransactionTests
-//{
-//    private TransactionsController _transactionsController;
+public class AddTransactionTests : OperationTest<AddTransactionOperation, AddTransactionInput, VoidOperationOutput>
+{
+    private IDatabasePlasticsProvider databasePlasticsProvider { get; set; }
+    private IDatabaseTransactionsProvider databaseTransactionsProvider { get; set; }
 
-//    private void Setup()
-//    {
-//        TestMocksBuilder.Mock();
-//        _transactionsController = TestMocksBuilder._TransactionsControllerMock;
-//    }
+    public AddTransactionTests(BankingAppDataTierTestsBuilder _testBuilder) : base(_testBuilder)
+    {
+        OperationToTest = new AddTransactionOperation(_testBuilder.ApplicationContextMock!, string.Empty);
 
-//    [Fact]
-//    public void ShouldBe_Success_ForAccount()
-//    {
-//        Setup();
+        databaseTransactionsProvider = TestsBuilder.ApplicationContextMock!.GetDependency<IDatabaseTransactionsProvider>()!;
+    }
 
-//        var result = (ObjectResult)_transactionsController.AddTransaction(new AddTransactionInput
-//        {
-//            Transaction = new TransactionDto
-//            {
-//                Id = "Test01",
-//                TransactionDate = new DateTime(2025, 02, 10),
-//                Description = "Test transfer",
-//                Amount = 100.35M,
-//                Fees = 1.25M,
-//                Urgent = true,
-//                SourceAccount = "Permanent_Current_01",
-//                DestinationName = "Eletricity Company",
-//                Role = Contracts.Enums.TransactionRole.Receiver,
-//            },
-//        }).Result!;
+    [Fact]
+    public async Task ShouldBe_Success_ForAccount()
+    {
+        var addResponse = await SimulateOperationToTestCall(new AddTransactionInput
+        {
+            Transaction = new TransactionDto
+            {
+                Id = "Test01",
+                TransactionDate = new DateTime(2025, 02, 10),
+                Description = "Test transfer",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = true,
+                SourceAccount = "Permanent_Current_01",
+                DestinationName = "Eletricity Company",
+                Role = Contracts.Enums.TransactionRole.Receiver,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response = (VoidOperationOutput)result.Value!;
+        Assert.True(addResponse.Error == null);
 
-//        Assert.True(response.Error == null);
+        var getByIdResult = databaseTransactionsProvider.GetById("Test01");
 
-//        result = (ObjectResult)_transactionsController.GetTransactionById("Test01").Result!;
+        Assert.True(getByIdResult != null);
+    }
 
-//        var response2 = (GetTransactionByIdOutput)result.Value!;
+    [Fact]
+    public async Task ShouldBe_Success_ForCard()
+    {
+        var addResponse = await SimulateOperationToTestCall(new AddTransactionInput
+        {
+            Transaction = new TransactionDto
+            {
+                Id = "Test02",
+                TransactionDate = new DateTime(2025, 02, 10),
+                Description = "Test transfer",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = true,
+                SourceCard = "Permanent_Debit_01",
+                DestinationName = "Eletricity Company",
+                Role = Contracts.Enums.TransactionRole.Sender,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response2.Transaction != null);
-//    }
+        Assert.True(addResponse.Error == null);
 
-//    [Fact]
-//    public void ShouldBe_Success_ForCard()
-//    {
-//        Setup();
+        var getByIdResult = databaseTransactionsProvider.GetById("Test02");
 
-//        var result = (ObjectResult)_transactionsController.AddTransaction(new AddTransactionInput
-//        {
-//            Transaction = new TransactionDto
-//            {
-//                Id = "Test02",
-//                TransactionDate = new DateTime(2025, 02, 10),
-//                Description = "Test transfer",
-//                Amount = 100.35M,
-//                Fees = 1.25M,
-//                Urgent = true,
-//                SourceCard = "Permanent_Debit_01",
-//                DestinationName = "Eletricity Company",
-//                Role = Contracts.Enums.TransactionRole.Sender,
-//            },
-//        }).Result!;
+        Assert.True(getByIdResult != null);
+    }
 
-//        var response = (VoidOperationOutput)result.Value!;
+    [Fact]
+    public async Task ShouldReturnError_IdAlreadyInUse()
+    {
+        var response = await SimulateOperationToTestCall(new AddTransactionInput
+        {
+            Transaction = new TransactionDto
+            {
+                Id = "Permanent_Transaction_01",
+                TransactionDate = new DateTime(2025, 02, 10),
+                Description = "Test transfer",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = true,
+                SourceCard = "Permanent_Debit_01",
+                DestinationName = "Eletricity Company",
+                Role = Contracts.Enums.TransactionRole.Sender,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        Assert.True(response.Error == null);
+        Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
+    }
 
-//        result = (ObjectResult)_transactionsController.GetTransactionById("Test02").Result!;
+    [Fact]
+    public async Task ShouldReturnError_InvalidSourceAccount()
+    { 
+        var response = await SimulateOperationToTestCall(new AddTransactionInput
+        {
+            Transaction = new TransactionDto
+            {
+                Id = "Test03",
+                TransactionDate = new DateTime(2025, 02, 10),
+                Description = "Test transfer",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = true,
+                SourceAccount = "Invalid_Account",
+                DestinationName = "Eletricity Company",
+                Role = Contracts.Enums.TransactionRole.Sender,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//        var response2 = (GetTransactionByIdOutput)result.Value!;
+        Assert.True(response.Error?.Code == TransactionsErrors.InvalidSourceAccount.Code);
+    }
 
-//        Assert.True(response2.Transaction != null);
-//    }
+    [Fact]
+    public async Task ShouldReturnError_InvalidSourceCard()
+    {
+        var response = await SimulateOperationToTestCall(new AddTransactionInput
+        {
+            Transaction = new TransactionDto
+            {
+                Id = "Test03",
+                TransactionDate = new DateTime(2025, 02, 10),
+                Description = "Test transfer",
+                Amount = 100.35M,
+                Fees = 1.25M,
+                Urgent = true,
+                SourceCard = "Invalid_Card",
+                DestinationName = "Eletricity Company",
+                Role = Contracts.Enums.TransactionRole.Sender,
+            },
+            Metadata = TestsConstants.TestsMetadata,
+        });
 
-//    [Fact]
-//    public void ShouldReturnError_IdAlreadyInUse()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_transactionsController.AddTransaction(new AddTransactionInput
-//        {
-//            Transaction = new TransactionDto
-//            {
-//                Id = "Permanent_Transaction_01",
-//                TransactionDate = new DateTime(2025, 02, 10),
-//                Description = "Test transfer",
-//                Amount = 100.35M,
-//                Fees = 1.25M,
-//                Urgent = true,
-//                SourceCard = "Permanent_Debit_01",
-//                DestinationName = "Eletricity Company",
-//                Role = Contracts.Enums.TransactionRole.Sender,
-//            },
-//        }).Result!;
-
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == GenericErrors.IdAlreadyInUse.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidSourceAccount()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_transactionsController.AddTransaction(new AddTransactionInput
-//        {
-//            Transaction = new TransactionDto
-//            {
-//                Id = "Test03",
-//                TransactionDate = new DateTime(2025, 02, 10),
-//                Description = "Test transfer",
-//                Amount = 100.35M,
-//                Fees = 1.25M,
-//                Urgent = true,
-//                SourceAccount = "Invalid_Account",
-//                DestinationName = "Eletricity Company",
-//                Role = Contracts.Enums.TransactionRole.Sender,
-//            },
-//        }).Result!;
-
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == TransactionsErrors.InvalidSourceAccount.Code);
-//    }
-
-//    [Fact]
-//    public void ShouldReturnError_InvalidSourceCard()
-//    {
-//        Setup();
-
-//        var result = (ObjectResult)_transactionsController.AddTransaction(new AddTransactionInput
-//        {
-//            Transaction = new TransactionDto
-//            {
-//                Id = "Test03",
-//                TransactionDate = new DateTime(2025, 02, 10),
-//                Description = "Test transfer",
-//                Amount = 100.35M,
-//                Fees = 1.25M,
-//                Urgent = true,
-//                SourceCard = "Invalid_Card",
-//                DestinationName = "Eletricity Company",
-//                Role = Contracts.Enums.TransactionRole.Sender,
-//            },
-//        }).Result!;
-
-
-//        var response = (VoidOperationOutput)result.Value!;
-
-//        Assert.True(response.Error?.Code == TransactionsErrors.InvalidSourceCard.Code);
-//    }
-//}
+        Assert.True(response.Error?.Code == TransactionsErrors.InvalidSourceCard.Code);
+    }
+}
