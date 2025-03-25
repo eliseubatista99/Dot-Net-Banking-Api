@@ -3,7 +3,7 @@ using ElideusDotNetFramework.Operations.Contracts;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
 {
-    public class GetTransactionsOfClientInput: OperationInput
+    public class GetTransactionsOfClientInput : OperationInput
     {
         public required string Client { get; set; }
 

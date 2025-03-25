@@ -37,9 +37,9 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpGet("GetTransactionById/{id}")]
-        public ActionResult<GetTransactionByIdOutput> GetTransactionById(string id)
+        public ActionResult<GetTransactionByIdOutput> GetTransactionById([FromBody] GetTransactionByIdInput input)
         {
-            var itemInDb = databaseTransactionsProvider.GetById(id);
+            var itemInDb = databaseTransactionsProvider.GetById(input.Id);
 
             if (itemInDb == null)
             {
@@ -214,10 +214,10 @@ namespace BankingAppDataTier.Controllers
         }
 
         [HttpDelete("DeleteTransaction/{id}")]
-        public ActionResult<VoidOperationOutput> DeleteTransaction(string id)
+        public ActionResult<VoidOperationOutput> DeleteTransaction([FromBody] DeleteTransactionInput input)
         {
             var result = false;
-            var entryInDb = databaseTransactionsProvider.GetById(id);
+            var entryInDb = databaseTransactionsProvider.GetById(input.Id);
 
             if (entryInDb == null)
             {
@@ -228,7 +228,7 @@ namespace BankingAppDataTier.Controllers
             }
 
 
-            result = databaseTransactionsProvider.Delete(id);
+            result = databaseTransactionsProvider.Delete(input.Id);
 
             if (!result)
             {
