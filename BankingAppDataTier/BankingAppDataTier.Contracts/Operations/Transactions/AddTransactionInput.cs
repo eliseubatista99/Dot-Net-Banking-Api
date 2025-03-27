@@ -1,0 +1,13 @@
+﻿using BankingAppDataTier.Contracts.Dtos;
+using ElideusDotNetFramework.Core.Operations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace BankingAppDataTier.Contracts.Operations.Transactions
+{
+    [ExcludeFromCodeCoverage]
+
+    public class AddTransactionInput : OperationInput
+    {
+        public required TransactionDto Transaction { get; set; }
+    }
+}

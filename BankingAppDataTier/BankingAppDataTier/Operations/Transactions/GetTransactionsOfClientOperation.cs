@@ -2,8 +2,7 @@
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Inputs.Transactions;
-using BankingAppDataTier.Contracts.Operations.Outputs.Transactions;
+using BankingAppDataTier.Contracts.Operations.Transactions;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;

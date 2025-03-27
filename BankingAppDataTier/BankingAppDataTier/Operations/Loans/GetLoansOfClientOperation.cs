@@ -1,8 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Contracts.Operations.Inputs.Loans;
-using BankingAppDataTier.Contracts.Operations.Outputs.Loans;
+using BankingAppDataTier.Contracts.Operations.Loans;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 

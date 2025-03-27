@@ -3,7 +3,7 @@ using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppDataTier.Contracts.Operations.Inputs.Cards;
+using BankingAppDataTier.Contracts.Operations.Cards;
 
 namespace BankingAppDataTier.Operations.Cards
 {

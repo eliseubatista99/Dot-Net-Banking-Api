@@ -3,7 +3,7 @@ using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppDataTier.Contracts.Operations.Inputs.Loans;
+using BankingAppDataTier.Contracts.Operations.Loans;
 
 namespace BankingAppDataTier.Operations.Loans
 {

@@ -1,8 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Operations.Outputs.Accounts;
+using BankingAppDataTier.Contracts.Operations.Accounts;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Diagnostics.CodeAnalysis;

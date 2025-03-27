@@ -4,7 +4,7 @@ using ElideusDotNetFramework.Core.Operations;
 using System.Net;
 using ElideusDotNetFramework.Core;
 using System.Diagnostics.CodeAnalysis;
-using BankingAppDataTier.Contracts.Operations.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Operations.Accounts;
 
 namespace BankingAppDataTier.Operations.Accounts
 {

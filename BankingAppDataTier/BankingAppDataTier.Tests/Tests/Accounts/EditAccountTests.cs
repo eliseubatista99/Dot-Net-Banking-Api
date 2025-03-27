@@ -4,7 +4,7 @@ using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Tests;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Contracts.Operations.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Operations.Accounts;
 
 namespace BankingAppDataTier.Tests.Accounts;
 

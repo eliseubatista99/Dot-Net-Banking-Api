@@ -2,7 +2,7 @@
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppDataTier.Contracts.Operations.Outputs.Authentication;
+using BankingAppDataTier.Contracts.Operations.Authentication;
 
 namespace BankingAppDataTier.Operations.Authentication
 {

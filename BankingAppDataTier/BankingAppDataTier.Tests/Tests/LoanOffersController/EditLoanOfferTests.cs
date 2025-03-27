@@ -1,5 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Inputs.LoanOffers;
+using BankingAppDataTier.Contracts.Operations.LoanOffers;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.LoanOffers;
 using BankingAppDataTier.Tests.Constants;

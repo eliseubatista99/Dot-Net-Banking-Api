@@ -1,6 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Operations.Plastics;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.Plastics;
 using BankingAppDataTier.Tests.Constants;
