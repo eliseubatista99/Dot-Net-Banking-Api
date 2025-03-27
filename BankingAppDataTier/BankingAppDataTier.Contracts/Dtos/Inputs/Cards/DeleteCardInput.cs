@@ -1,7 +1,10 @@
 ﻿using ElideusDotNetFramework.Core.Operations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Cards
 {
+    [ExcludeFromCodeCoverage]
+
     public class DeleteCardInput : OperationInput
     {
         /// <summary>

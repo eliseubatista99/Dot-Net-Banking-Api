@@ -1,7 +1,9 @@
 ﻿using ElideusDotNetFramework.Core.Errors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Contracts.Errors
 {
+    [ExcludeFromCodeCoverage]
     public static class CardsErrors
     {
         public static Error InvalidAccount = new Error { Code = "InvalidAccount", Message = "No accoount was found for the specified plastic id" };

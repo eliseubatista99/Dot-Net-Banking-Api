@@ -6,6 +6,7 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using System.Net;
 using ElideusDotNetFramework.Core;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Operations.Accounts
 {

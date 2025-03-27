@@ -4,12 +4,14 @@ using ElideusDotNetFramework.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace BankingAppDataTier.Providers
 {
+    [ExcludeFromCodeCoverage]
     public class AuthenticationProvider : IAuthenticationProvider
     {
         private IConfiguration Configuration;

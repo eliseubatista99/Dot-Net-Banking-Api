@@ -1,5 +1,9 @@
-﻿namespace BankingAppDataTier.Contracts.Dtos.Entitites
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BankingAppDataTier.Contracts.Dtos.Entitites
 {
+    [ExcludeFromCodeCoverage]
+
     public class ClientDto
     {
         /// <summary>

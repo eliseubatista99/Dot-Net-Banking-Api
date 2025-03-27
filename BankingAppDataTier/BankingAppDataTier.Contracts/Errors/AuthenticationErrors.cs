@@ -1,8 +1,11 @@
 ﻿
 using ElideusDotNetFramework.Core.Errors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Contracts.Errors
 {
+    [ExcludeFromCodeCoverage]
+
     public static class AuthenticationErrors
     {
         public static Error InvalidClient = new Error { Code = "InvalidClient", Message = "The specified client is invalid." };

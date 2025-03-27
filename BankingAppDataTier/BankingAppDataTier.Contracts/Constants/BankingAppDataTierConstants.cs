@@ -1,5 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Constants
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BankingAppDataTier.Contracts.Constants
 {
+    [ExcludeFromCodeCoverage]
     public static class BankingAppDataTierConstants
     {
         public const string ACCOUNT_TYPE_CURRENT = "CU";

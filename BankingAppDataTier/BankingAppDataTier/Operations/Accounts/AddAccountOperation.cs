@@ -8,6 +8,7 @@ using ElideusDotNetFramework.Core.Errors;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Operations.Accounts
 {

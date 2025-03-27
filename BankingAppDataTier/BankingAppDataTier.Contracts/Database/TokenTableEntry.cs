@@ -1,5 +1,9 @@
-﻿namespace BankingAppDataTier.Contracts.Database
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BankingAppDataTier.Contracts.Database
 {
+    [ExcludeFromCodeCoverage]
+
     public class TokenTableEntry
     {
         /// <summary>

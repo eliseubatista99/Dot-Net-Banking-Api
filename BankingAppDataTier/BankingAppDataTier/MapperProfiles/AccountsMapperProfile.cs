@@ -6,10 +6,11 @@ using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Enums;
 using ElideusDotNetFramework.PostgreSql;
 using Npgsql;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     public class AccountsMapperProfile : Profile
     {
 

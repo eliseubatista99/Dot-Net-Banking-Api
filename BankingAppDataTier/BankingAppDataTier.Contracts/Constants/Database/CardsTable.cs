@@ -1,5 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Constants.Database
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BankingAppDataTier.Contracts.Constants.Database
 {
+    [ExcludeFromCodeCoverage]
     public static class CardsTable
     {
         public static string TABLE_NAME = "CARDS";

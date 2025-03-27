@@ -4,10 +4,11 @@ using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using ElideusDotNetFramework.PostgreSql;
 using Npgsql;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     public class ClientsMapperProfile : Profile
     {
 

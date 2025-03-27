@@ -1,7 +1,10 @@
 ﻿using ElideusDotNetFramework.Core.Errors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Contracts.Errors
 {
+    [ExcludeFromCodeCoverage]
+
     public static class AccountsErrors
     {
         public static Error InvalidOwnerId = new Error { Code = "InvalidOwnerId", Message = "Invalid Owner Id" };

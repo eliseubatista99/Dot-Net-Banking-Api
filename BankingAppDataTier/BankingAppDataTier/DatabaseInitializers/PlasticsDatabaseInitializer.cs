@@ -1,9 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Constants;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.DatabaseInitializers
 {
+    [ExcludeFromCodeCoverage]
     public static class PlasticsDatabaseInitializer
     {
         public static void DefaultMock(IDatabasePlasticsProvider dbProvider)

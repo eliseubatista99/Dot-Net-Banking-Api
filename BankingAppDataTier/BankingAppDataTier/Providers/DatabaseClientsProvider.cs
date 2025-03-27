@@ -4,9 +4,11 @@ using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using ElideusDotNetFramework.PostgreSql;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Providers
 {
+    [ExcludeFromCodeCoverage]
     public class DatabaseClientsProvider : NpgsqlDatabaseProvider<ClientsTableEntry>, IDatabaseClientsProvider
     {
         public DatabaseClientsProvider(IApplicationContext applicationContext) : base(applicationContext)

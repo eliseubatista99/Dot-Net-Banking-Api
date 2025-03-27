@@ -1,7 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Contracts.Dtos.Entitites
 {
+    [ExcludeFromCodeCoverage]
+
     public class LoanDto
     {
         /// <summary>

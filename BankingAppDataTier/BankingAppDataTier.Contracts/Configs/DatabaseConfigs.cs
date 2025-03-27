@@ -1,5 +1,8 @@
-﻿namespace BankingAppDataTier.Contracts.Configs
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BankingAppDataTier.Contracts.Configs
 {
+    [ExcludeFromCodeCoverage]
     public static class DatabaseConfigs
     {
         public static string DatabaseSection = "Database";

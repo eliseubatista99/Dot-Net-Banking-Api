@@ -1,7 +1,9 @@
 ﻿using ElideusDotNetFramework.Core.Errors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Contracts.Errors
 {
+    [ExcludeFromCodeCoverage]
     public static class GenericErrors
     {
         public static Error Unauthorized = new Error { Code = "Unauthorized", Message = "Unauthorized" };

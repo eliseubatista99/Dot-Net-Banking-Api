@@ -1,8 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.DatabaseInitializers
 {
+    [ExcludeFromCodeCoverage]
     public static class CardsDatabaseInitializer
     {
         public static void DefaultMock(IDatabaseCardsProvider dbProvider)

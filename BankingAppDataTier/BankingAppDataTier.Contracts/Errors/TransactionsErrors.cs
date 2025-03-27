@@ -1,7 +1,9 @@
 ﻿using ElideusDotNetFramework.Core.Errors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Contracts.Errors
 {
+    [ExcludeFromCodeCoverage]
     public static class TransactionsErrors
     {
         public static Error InvalidClientId = new Error { Code = "InvalidClientId", Message = "The specified client id is invalid." };

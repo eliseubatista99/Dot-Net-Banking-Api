@@ -1,7 +1,9 @@
 ﻿using ElideusDotNetFramework.Core.Errors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Contracts.Errors
 {
+    [ExcludeFromCodeCoverage]
     public static class LoansErrors
     {
         public static Error InvalidRelatedOffer = new Error { Code = "InvalidRelatedOffer", Message = "Invalid Related Loan Offer" };
