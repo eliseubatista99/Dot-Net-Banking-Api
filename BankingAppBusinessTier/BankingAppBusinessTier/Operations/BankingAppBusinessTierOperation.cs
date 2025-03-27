@@ -3,7 +3,7 @@ using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppBusinessTierOperation.Operations
+namespace BankingAppBusinessTier.Operations
 {
     public class BankingAppDataTierOperation<TIn, TOut>(IApplicationContext context, string endpoint) :
         BaseOperation<TIn, TOut>(context, endpoint) where TIn : OperationInput where TOut : OperationOutput

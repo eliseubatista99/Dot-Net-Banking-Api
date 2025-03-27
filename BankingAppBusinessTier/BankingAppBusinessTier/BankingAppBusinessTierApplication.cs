@@ -1,30 +1,11 @@
 ﻿using ElideusDotNetFramework.Core;
 using ElideusDotNetFramework.Core.Operations;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BankingAppBusinessTier
 {
     public class BankingAppBusinessTierApplication : ElideusDotNetFrameworkApplication
     {
         protected override OperationsBuilder OperationsBuilder { get; set; } = new BankingAppBusinessTierOperationsBuilder();
-
-        protected override void AddAuthorizationToSwagger(ref WebApplicationBuilder builder, ref SwaggerGenOptions options)
-        {
-            base.AddAuthorizationToSwagger(ref builder, ref options);
-
-            //var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
-
-            //authProvider!.AddAuthorizationToSwaggerGen(ref builder);
-        }
-
-        protected override void ConfigureAuthentication(ref WebApplicationBuilder builder)
-        {
-            base.ConfigureAuthentication(ref builder);
-
-            //var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
-
-            //authProvider!.AddAuthenticationToApplicationBuilder(ref builder);
-        }
 
         protected override void InjectDependencies(ref WebApplicationBuilder builder)
         {
