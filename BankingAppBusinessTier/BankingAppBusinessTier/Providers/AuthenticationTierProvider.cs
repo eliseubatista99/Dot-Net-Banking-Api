@@ -1,16 +1,10 @@
 ﻿using BankingAppAuthenticationTier.Contracts.Operations;
-using BankingAppDataTier.Library.Configs;
-using BankingAppDataTier.Library.Providers;
+using BankingAppBusinessTier.Library.Configs;
+using BankingAppBusinessTier.Library.Providers;
 using ElideusDotNetFramework.Core;
-using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.ExternalServices;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 
-namespace BankingAppDataTier.Providers
+namespace BankingAppBusinessTier.Providers
 {
     public class AuthenticationTierProvider : ExternalServiceProvider, IAuthenticationTierProvider
     {

@@ -1,51 +1,42 @@
-﻿using ElideusDotNetFramework.Core.Errors;
+﻿using BankingAppBusinessTier.Library.Errors;
+using BankingAppBusinessTier.Library.Providers;
+using ElideusDotNetFramework.Core.Errors;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
 namespace BankingAppBusinessTier.Operations
 {
-    public class BankingAppDataTierOperation<TIn, TOut>(IApplicationContext context, string endpoint) :
+    public class BankingAppBusinessTierOperation<TIn, TOut>(IApplicationContext context, string endpoint) :
         BaseOperation<TIn, TOut>(context, endpoint) where TIn : OperationInput where TOut : OperationOutput
     {
         protected virtual bool UseAuthentication { get; set; } = true;
 
         protected IMapperProvider mapperProvider;
+        protected IAuthenticationTierProvider authTierProvider;
 
         protected override async Task InitAsync()
         {
             await base.InitAsync();
 
             mapperProvider = executionContext.GetDependency<IMapperProvider>()!;
+            authTierProvider = executionContext.GetDependency<IAuthenticationTierProvider>()!;
         }
 
-        protected virtual (string? token, Error? error) ValidateToken(string token)
+        protected virtual async Task<Error?> ValidateToken(TIn input)
         {
-            //var isValidResult = authProvider.IsValidToken(token);
+            var isValidResult = await authTierProvider.IsValidToken(new BankingAppAuthenticationTier.Contracts.Operations.IsValidTokenInput
+            {
+                Token = input.Metadata!.Token!,
+                Metadata = input.Metadata,
+            });
 
-            //if (!isValidResult.isValid)
-            //{
-            //    return (null, AuthenticationErrors.InvalidToken);
-            //}
+            if (!isValidResult.IsValid)
+            {
+                return AuthenticationErrors.InvalidToken;
+            }
 
-            //var tokenInDb = databaseTokensProvider.GetById(token);
-
-            //if (tokenInDb == null)
-            //{
-            //    return (null, AuthenticationErrors.InvalidToken);
-            //}
-
-            //var today = DateTime.Now;
-
-            //if (tokenInDb.ExpirationDate.Ticks <= today.Ticks)
-            //{
-            //    return (tokenInDb, AuthenticationErrors.TokenExpired);
-            //}
-
-            //return (tokenInDb, null);
-
-            //Call keep alive here
-            return (string.Empty, null);
+            return null;
         }
 
 
@@ -59,7 +50,7 @@ namespace BankingAppBusinessTier.Operations
                     return (HttpStatusCode.BadRequest, invalidInputError);
                 }
 
-                var (_, validationError) = ValidateToken(input.Metadata.Token);
+                var validationError = await ValidateToken(input);
 
                 if (validationError != null)
                 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BankingAppBusinessTier.Contracts.Configs;
+using BankingAppBusinessTier.Library.Configs;
 using BankingAppBusinessTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;
 
@@ -9,7 +9,8 @@ namespace BankingAppBusinessTier.Tests.Mocks
     {
         protected override Dictionary<string, string?> Configurations { get; set; } = new Dictionary<string, string?>
         {
-            {$"{DataTierConfigs.Section}:{DataTierConfigs.Url}", TestsConstants.DataTierUrl},
+            {$"{AuthenticationTierConfigs.Section}:{AuthenticationTierConfigs.Url}", TestsConstants.AuthenticationTierUrl},
+            {$"{DataTierConfigs.Section}:{DataTierConfigs.Url}", TestsConstants.AuthenticationTierUrl},  
         };
 
         protected override List<Profile> MapperProfiles { get; set; } = new List<Profile>

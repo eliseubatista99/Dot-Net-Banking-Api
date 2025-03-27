@@ -1,4 +1,5 @@
 ﻿using BankingAppBusinessTier.Tests.Mocks;
+using BankingAppBusinessTier.Tests.Mocks.Providers;
 using BankingAppDataTier.Tests;
 using ElideusDotNetFramework.Tests;
 using TechTalk.SpecFlow.xUnit.SpecFlowPlugin;
@@ -23,15 +24,8 @@ namespace BankingAppDataTier.Tests
 
         protected void MockDependencies()
         {
-            //ApplicationContextMock!.AddTestDependency(new AuthenticationProvider(ApplicationContextMock));
-            //ApplicationContextMock!.AddTestDependency(new DatabaseAccountsProvider(ApplicationContextMock));
-            //ApplicationContextMock!.AddTestDependency(new DatabaseCardsProvider(ApplicationContextMock));
-            //ApplicationContextMock!.AddTestDependency(new DatabaseClientsProvider(ApplicationContextMock));
-            //ApplicationContextMock!.AddTestDependency(new DatabaseLoanOffersProvider(ApplicationContextMock));
-            //ApplicationContextMock!.AddTestDependency(new DatabaseLoanProvider(ApplicationContextMock));
-            //ApplicationContextMock!.AddTestDependency(new DatabasePlasticsProvider(ApplicationContextMock));
-            //ApplicationContextMock!.AddTestDependency(new DatabaseTokenProvider(ApplicationContextMock));
-            //ApplicationContextMock!.AddTestDependency(new DatabaseTransactionsProvider(ApplicationContextMock));
+            ApplicationContextMock!.AddTestDependency(new AuthenticationTierProviderMock());
+            ApplicationContextMock!.AddTestDependency(new DataTierProviderMock());
         }
     }
 }

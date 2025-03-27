@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingAppBusinessTier.Cont
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingAppBusinessTier.Tests", "BankingAppBusinessTier.Tests\BankingAppBusinessTier.Tests.csproj", "{9BF7D28F-D96E-4405-8FB4-E6BFBA19DB17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalApplications.DataTier", "ExternalApplications.DataTier\ExternalApplications.DataTier.csproj", "{4663AF5A-18FF-49DA-A2D7-733898A858A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingAppBusinessTier.Library", "BankingAppBusinessTier.Library\BankingAppBusinessTier.Library.csproj", "{42EA9E3A-9433-41AA-A2BF-B3CC21AFB286}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{9BF7D28F-D96E-4405-8FB4-E6BFBA19DB17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BF7D28F-D96E-4405-8FB4-E6BFBA19DB17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BF7D28F-D96E-4405-8FB4-E6BFBA19DB17}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4663AF5A-18FF-49DA-A2D7-733898A858A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4663AF5A-18FF-49DA-A2D7-733898A858A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4663AF5A-18FF-49DA-A2D7-733898A858A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4663AF5A-18FF-49DA-A2D7-733898A858A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42EA9E3A-9433-41AA-A2BF-B3CC21AFB286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42EA9E3A-9433-41AA-A2BF-B3CC21AFB286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42EA9E3A-9433-41AA-A2BF-B3CC21AFB286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42EA9E3A-9433-41AA-A2BF-B3CC21AFB286}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

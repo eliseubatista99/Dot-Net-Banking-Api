@@ -3,14 +3,13 @@ using ElideusDotNetFramework.Core;
 using System.Net;
 using BankingAppBusinessTier.Contracts.Enums;
 using BankingAppBusinessTier.Contracts.Operations.Cards;
-using ExternalApplications.DataTier.Providers;
-using BankingAppDataTierOperations = BankingAppDataTier.Contracts.Operations;
-using BankingAppDataTierEnums = BankingAppDataTier.Contracts.Enums;
+using BankingAppBusinessTier.Library.Providers;
+using DataTier = BankingAppDataTier.Contracts;
 
 namespace BankingAppBusinessTier.Operations.Cards
 {
     public class GetEligiblePlasticsOperation(IApplicationContext context, string endpoint)
-        : BankingAppDataTierOperation<GetEligiblePlasticsInput, GetEligiblePlasticsOutput>(context, endpoint)
+        : BankingAppBusinessTierOperation<GetEligiblePlasticsInput, GetEligiblePlasticsOutput>(context, endpoint)
     {
         private IDataTierProvider dataTierProvider;
         //private IDatabaseAccountsProvider databaseAccountsProvider;
@@ -44,9 +43,9 @@ namespace BankingAppBusinessTier.Operations.Cards
 
         protected override async Task<GetEligiblePlasticsOutput> ExecuteAsync(GetEligiblePlasticsInput input)
         {
-            var plasticType = mapperProvider.Map<CardType, BankingAppDataTierEnums.CardType>(input.PlasticType);
+            var plasticType = mapperProvider.Map<CardType, DataTier.Enums.CardType>(input.PlasticType);
 
-            var getPlasticOfTypeAwaiter = dataTierProvider.GetPlasticOfType(new BankingAppDataTierOperations.GetPlasticOfTypeInput
+            var getPlasticOfTypeAwaiter = dataTierProvider.GetPlasticsOfType(new DataTier.Operations.GetPlasticOfTypeInput
             {
                 PlasticType = plasticType,
                 Metadata = input.Metadata,

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="elideus-dot-net-banking-authentication-tier-contracts" Version="1.0.0" />
+		<PackageReference Include="elideus-dot-net-banking-data-tier-contracts" Version="1.0.0" />
+		<PackageReference Include="elideus-dot-net-framework-external-services" Version="1.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BankingAppBusinessTier.Contracts\BankingAppBusinessTier.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>
