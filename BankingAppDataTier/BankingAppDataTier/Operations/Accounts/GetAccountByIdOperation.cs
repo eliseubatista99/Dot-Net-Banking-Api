@@ -3,11 +3,10 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using System.Net;
 using ElideusDotNetFramework.Core;
-using System.Diagnostics.CodeAnalysis;
 using BankingAppDataTier.Contracts.Dtos;
-using BankingAppDataTier.Contracts.Operations.Accounts;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Accounts
+namespace BankingAppDataTier.Operations
 {
     public class GetAccountByIdOperation(IApplicationContext context, string endpoint)
             : BankingAppDataTierOperation<GetAccountByIdInput, GetAccountByIdOutput>(context, endpoint)

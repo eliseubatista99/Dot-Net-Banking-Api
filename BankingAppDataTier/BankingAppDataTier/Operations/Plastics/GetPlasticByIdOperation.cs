@@ -1,12 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Plastics;
+using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.Plastics
+namespace BankingAppDataTier.Operations
 {
     public class GetPlasticByIdOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetPlasticByIdInput, GetPlasticByIdOutput>(context, endpoint)

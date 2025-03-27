@@ -7,7 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="elideus-dot-net-framework-core" Version="1.0.1" />
+		<PackageReference Include="elideus-dot-net-framework-core" Version="1.0.4" />
 	</ItemGroup>
-
 </Project>

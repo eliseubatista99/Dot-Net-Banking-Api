@@ -1,6 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Accounts;
-using BankingAppDataTier.Operations.Accounts;
+using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Operations;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;
 

@@ -6,11 +6,10 @@ using ElideusDotNetFramework.Core.Errors;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using System.Diagnostics.CodeAnalysis;
 using BankingAppDataTier.Contracts.Dtos;
-using BankingAppDataTier.Contracts.Operations.Accounts;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Accounts
+namespace BankingAppDataTier.Operations
 {
     public class AddAccountOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<AddAccountInput, VoidOperationOutput>(context, endpoint)

@@ -1,11 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Contracts.Operations.Loans;
+using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 
-namespace BankingAppDataTier.Operations.Loans
+namespace BankingAppDataTier.Operations
 {
     public class GetLoansOfAccountOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetLoansOfAccountInput, GetLoansOfAccountOutput>(context, endpoint)

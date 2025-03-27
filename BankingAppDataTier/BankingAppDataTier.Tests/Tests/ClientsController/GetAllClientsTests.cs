@@ -1,5 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Operations.Clients;
-using BankingAppDataTier.Operations.Clients;
+﻿using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Operations;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Tests;

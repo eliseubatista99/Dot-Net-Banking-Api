@@ -5,9 +5,9 @@ using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
 using BankingAppDataTier.Contracts.Dtos;
-using BankingAppDataTier.Contracts.Operations.LoanOffers;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.LoanOffers
+namespace BankingAppDataTier.Operations
 {
     public class AddLoanOfferOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<AddLoanOfferInput, VoidOperationOutput>(context, endpoint)

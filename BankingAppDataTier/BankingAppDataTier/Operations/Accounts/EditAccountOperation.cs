@@ -4,10 +4,9 @@ using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using System.Diagnostics.CodeAnalysis;
-using BankingAppDataTier.Contracts.Operations.Accounts;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Accounts
+namespace BankingAppDataTier.Operations
 {
     public class EditAccountOperation(IApplicationContext context, string endpoint)
             : BankingAppDataTierOperation<EditAccountInput, VoidOperationOutput>(context, endpoint)

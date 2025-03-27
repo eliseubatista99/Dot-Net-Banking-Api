@@ -1,12 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Clients;
+using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.Clients
+namespace BankingAppDataTier.Operations
 {
     public class GetClientByIdOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetClientByIdInput, GetClientByIdOutput>(context, endpoint)

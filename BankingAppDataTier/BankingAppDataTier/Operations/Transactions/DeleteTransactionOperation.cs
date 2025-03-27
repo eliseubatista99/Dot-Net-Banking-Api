@@ -3,9 +3,9 @@ using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppDataTier.Contracts.Operations.Transactions;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Transactions
+namespace BankingAppDataTier.Operations
 {
     public class DeleteTransactionOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<DeleteTransactionInput, VoidOperationOutput>(context, endpoint)

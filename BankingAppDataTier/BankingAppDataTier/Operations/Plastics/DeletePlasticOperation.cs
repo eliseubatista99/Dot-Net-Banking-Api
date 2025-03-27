@@ -3,9 +3,9 @@ using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppDataTier.Contracts.Operations.Plastics;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Plastics
+namespace BankingAppDataTier.Operations
 {
     public class DeletePlasticOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<DeletePlasticInput, VoidOperationOutput>(context, endpoint)

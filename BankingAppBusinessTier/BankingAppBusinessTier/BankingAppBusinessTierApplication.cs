@@ -1,5 +1,7 @@
 ﻿using ElideusDotNetFramework.Core;
 using ElideusDotNetFramework.Core.Operations;
+using ExternalApplications.DataTier.MapperProfiles;
+using ExternalApplications.DataTier.Providers;
 
 namespace BankingAppBusinessTier
 {
@@ -11,7 +13,7 @@ namespace BankingAppBusinessTier
         {
             base.InjectDependencies(ref builder);
 
-            //ApplicationContext?.AddDependency<IAuthenticationProvider, AuthenticationProvider>(ref builder);
+            ApplicationContext?.AddDependency<IDataTierProvider, DataTierProvider>(ref builder);
             //ApplicationContext?.AddDependency<IDatabaseClientsProvider, DatabaseClientsProvider>(ref builder);
             //ApplicationContext?.AddDependency<IDatabaseTokenProvider, DatabaseTokenProvider>(ref builder);
             //ApplicationContext?.AddDependency<IDatabaseAccountsProvider, DatabaseAccountsProvider>(ref builder);
@@ -31,7 +33,7 @@ namespace BankingAppBusinessTier
             mapper.CreateMapper(
                 new List<AutoMapper.Profile>
                 {
-                    //new TokensMapperProfile(),
+                    new DataTierMapperProfile(),
                     //new ClientsMapperProfile(),
                     //new AccountsMapperProfile(),
                     //new PlasticsMapperProfile(),

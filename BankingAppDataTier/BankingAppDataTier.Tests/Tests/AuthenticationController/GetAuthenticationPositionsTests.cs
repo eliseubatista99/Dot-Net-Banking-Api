@@ -1,9 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;
-using BankingAppDataTier.Operations.Authentication;
+using BankingAppDataTier.Operations;
 using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Operations.Authentication;
+using BankingAppDataTier.Contracts.Operations;
 
 namespace BankingAppDataTier.Tests.Authentication;
 

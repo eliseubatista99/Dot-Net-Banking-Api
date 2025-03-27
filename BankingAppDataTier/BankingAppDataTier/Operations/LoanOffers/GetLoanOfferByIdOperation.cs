@@ -1,12 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.LoanOffers;
+using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.LoanOffers
+namespace BankingAppDataTier.Operations
 {
     public class GetLoanOfferByIdOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetLoanOfferByIdInput, GetLoanOfferByIdOutput>(context, endpoint)

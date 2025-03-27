@@ -7,12 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Helpers\**" />
-    <Content Remove="Helpers\**" />
-    <EmbeddedResource Remove="Helpers\**" />
-    <None Remove="Helpers\**" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
   </ItemGroup>
-
+	
   <ItemGroup>
     <ProjectReference Include="..\BankingAppDataTier.Contracts\BankingAppDataTier.Contracts.csproj" />
   </ItemGroup>

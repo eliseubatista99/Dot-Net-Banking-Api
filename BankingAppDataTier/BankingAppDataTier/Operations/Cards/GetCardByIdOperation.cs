@@ -2,12 +2,12 @@
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Cards;
+using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.Cards
+namespace BankingAppDataTier.Operations
 {
     public class GetCardByIdOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetCardByIdInput, GetCardByIdOutput>(context, endpoint)

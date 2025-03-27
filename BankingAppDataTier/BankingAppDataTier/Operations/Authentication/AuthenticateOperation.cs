@@ -1,12 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Authentication;
+using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.Authentication
+namespace BankingAppDataTier.Operations
 {
     public class AuthenticateOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<AuthenticateInput, AuthenticateOutput>(context, endpoint)

@@ -1,19 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Operations.Accounts;
-using BankingAppDataTier.Contracts.Operations.Authentication;
-using BankingAppDataTier.Contracts.Operations.Cards;
-using BankingAppDataTier.Contracts.Operations.Clients;
-using BankingAppDataTier.Contracts.Operations.LoanOffers;
-using BankingAppDataTier.Contracts.Operations.Loans;
-using BankingAppDataTier.Contracts.Operations.Plastics;
-using BankingAppDataTier.Contracts.Operations.Transactions;
-using BankingAppDataTier.Operations.Accounts;
-using BankingAppDataTier.Operations.Authentication;
-using BankingAppDataTier.Operations.Cards;
-using BankingAppDataTier.Operations.Clients;
-using BankingAppDataTier.Operations.LoanOffers;
-using BankingAppDataTier.Operations.Loans;
-using BankingAppDataTier.Operations.Plastics;
-using BankingAppDataTier.Operations.Transactions;
+﻿using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Operations;
 using ElideusDotNetFramework.Core;
 using ElideusDotNetFramework.Core.Operations;
 

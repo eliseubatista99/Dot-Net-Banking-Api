@@ -2,9 +2,9 @@
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppDataTier.Contracts.Operations.Authentication;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Authentication
+namespace BankingAppDataTier.Operations
 {
     public class KeepAliveOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<VoidOperationInput, KeepAliveOutput>(context, endpoint)

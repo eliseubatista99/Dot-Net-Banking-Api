@@ -1,11 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Contracts.Operations.Plastics;
+using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 
-namespace BankingAppDataTier.Operations.Plastics
+namespace BankingAppDataTier.Operations
 {
     public class GetPlasticsOfTypeOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetPlasticOfTypeInput, GetPlasticsOfTypeOutput>(context, endpoint)

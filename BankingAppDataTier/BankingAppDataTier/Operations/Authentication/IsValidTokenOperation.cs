@@ -1,7 +1,7 @@
-﻿using BankingAppDataTier.Contracts.Operations.Authentication;
+﻿using BankingAppDataTier.Contracts.Operations;
 using ElideusDotNetFramework.Core;
 
-namespace BankingAppDataTier.Operations.Authentication
+namespace BankingAppDataTier.Operations
 {
     public class IsValidTokenOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<IsValidTokenInput, IsValidTokenOutput>(context, endpoint)

@@ -3,9 +3,9 @@ using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppDataTier.Contracts.Operations.LoanOffers;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.LoanOffers
+namespace BankingAppDataTier.Operations
 {
     public class ActivateOrDeactivateLoanOfferOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<ActivateOrDeactivateLoanOfferInput, VoidOperationOutput>(context, endpoint)

@@ -7,7 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BankingAppBusinessTier.Contracts\BankingAppBusinessTier.Contracts.csproj" />
+	  <ProjectReference Include="..\BankingAppBusinessTier.Contracts\BankingAppBusinessTier.Contracts.csproj" />
+	  <ProjectReference Include="..\ExternalApplications.DataTier\ExternalApplications.DataTier.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Providers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BankingAppDataTier.Contracts">
+      <HintPath>..\..\BankingAppDataTier\BankingAppDataTier.Contracts\bin\Release\net9.0\BankingAppDataTier.Contracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

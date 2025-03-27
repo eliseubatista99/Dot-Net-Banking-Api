@@ -1,7 +1,7 @@
 ﻿using ElideusDotNetFramework.Core.Operations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace BankingAppDataTier.Contracts.Operations.Loans
+namespace BankingAppDataTier.Contracts.Operations
 {
     [ExcludeFromCodeCoverage]
 

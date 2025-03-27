@@ -2,12 +2,12 @@
 using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Operations.Transactions;
+using BankingAppDataTier.Contracts.Operations;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.Transactions
+namespace BankingAppDataTier.Operations
 {
     public class GetTransactionsOfClientOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetTransactionsOfClientInput, GetTransactionsOfClientOutput>(context, endpoint)

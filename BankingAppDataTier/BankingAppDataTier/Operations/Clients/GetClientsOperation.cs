@@ -3,9 +3,9 @@ using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using BankingAppDataTier.Contracts.Dtos;
-using BankingAppDataTier.Contracts.Operations.Clients;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Clients
+namespace BankingAppDataTier.Operations
 {
     public class GetClientsOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<VoidOperationInput, GetClientsOutput>(context, endpoint)

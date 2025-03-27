@@ -5,9 +5,9 @@ using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
 using BankingAppDataTier.Contracts.Dtos;
-using BankingAppDataTier.Contracts.Operations.Plastics;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Plastics
+namespace BankingAppDataTier.Operations
 {
     public class AddPlasticOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<AddPlasticInput, VoidOperationOutput>(context, endpoint)

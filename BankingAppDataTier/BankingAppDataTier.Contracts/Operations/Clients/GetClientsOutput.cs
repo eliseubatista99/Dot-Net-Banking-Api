@@ -2,7 +2,7 @@
 using ElideusDotNetFramework.Core.Operations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace BankingAppDataTier.Contracts.Operations.Clients
+namespace BankingAppDataTier.Contracts.Operations
 {
     [ExcludeFromCodeCoverage]
 
