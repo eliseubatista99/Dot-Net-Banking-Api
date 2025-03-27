@@ -1,4 +1,5 @@
-﻿using ElideusDotNetFramework.Operations;
+﻿
+using ElideusDotNetFramework.Core.Operations;
 
 namespace BankingAppBusinessTier.Tests.Constants
 {

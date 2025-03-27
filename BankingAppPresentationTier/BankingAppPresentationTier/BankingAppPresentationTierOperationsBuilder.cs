@@ -1,6 +1,5 @@
-﻿
-using ElideusDotNetFramework.Application;
-using ElideusDotNetFramework.Operations;
+﻿using ElideusDotNetFramework.Core;
+using ElideusDotNetFramework.Core.Operations;
 
 namespace BankingAppPresentationTier
 {
