@@ -1,8 +1,8 @@
-﻿using BankingAppAuthenticationTier.Contracts.Database;
-using BankingAppAuthenticationTier.Contracts.Dtos;
-using BankingAppAuthenticationTier.Contracts.Errors;
+﻿using BankingAppAuthenticationTier.Contracts.Dtos;
 using BankingAppAuthenticationTier.Contracts.Operations;
-using BankingAppAuthenticationTier.Contracts.Providers;
+using BankingAppAuthenticationTier.Library.Database;
+using BankingAppAuthenticationTier.Library.Errors;
+using BankingAppAuthenticationTier.Library.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;
 

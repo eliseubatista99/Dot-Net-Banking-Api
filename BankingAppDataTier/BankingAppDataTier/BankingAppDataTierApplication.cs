@@ -1,10 +1,9 @@
-﻿using BankingAppDataTier.Contracts.Providers;
+﻿using BankingAppDataTier.Library.Providers;
 using BankingAppDataTier.DatabaseInitializers;
 using BankingAppDataTier.MapperProfiles;
 using BankingAppDataTier.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BankingAppDataTier
 {
@@ -18,7 +17,6 @@ namespace BankingAppDataTier
             base.InitializeDatabase(ref builder);
 
             ClientsDatabaseInitializer.DefaultMock(ApplicationContext!.GetDependency<IDatabaseClientsProvider>()!);
-            TokenDatabaseInitializer.InitializeDatabase(ApplicationContext!.GetDependency<IDatabaseTokenProvider>()!);
             AccountsDatabaseInitializer.DefaultMock(ApplicationContext!.GetDependency<IDatabaseAccountsProvider>()!);
             PlasticsDatabaseInitializer.DefaultMock(ApplicationContext!.GetDependency<IDatabasePlasticsProvider>()!);
             CardsDatabaseInitializer.DefaultMock(ApplicationContext!.GetDependency<IDatabaseCardsProvider>()!);
@@ -32,9 +30,8 @@ namespace BankingAppDataTier
         {
             base.InjectDependencies(ref builder);
 
-            ApplicationContext?.AddDependency<IAuthenticationProvider, AuthenticationProvider>(ref builder);
+            ApplicationContext?.AddDependency<IAuthenticationTierProvider, AuthenticationTierProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabaseClientsProvider, DatabaseClientsProvider>(ref builder);
-            ApplicationContext?.AddDependency<IDatabaseTokenProvider, DatabaseTokenProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabaseAccountsProvider, DatabaseAccountsProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabasePlasticsProvider, DatabasePlasticsProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabaseCardsProvider, DatabaseCardsProvider>(ref builder);

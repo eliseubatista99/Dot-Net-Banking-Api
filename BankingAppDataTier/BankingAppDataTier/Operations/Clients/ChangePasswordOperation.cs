@@ -1,5 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
+﻿using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Library.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;

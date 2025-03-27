@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BankingAppAuthenticationTier.Contracts.Configs;
+using BankingAppAuthenticationTier.Library.Configs;
 using BankingAppAuthenticationTier.MapperProfiles;
 using BankingAppAuthenticationTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;

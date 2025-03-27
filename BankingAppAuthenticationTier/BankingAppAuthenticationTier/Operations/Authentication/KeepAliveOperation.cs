@@ -1,8 +1,8 @@
-﻿using BankingAppAuthenticationTier.Contracts.Errors;
-using ElideusDotNetFramework.Core.Operations;
+﻿using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
 using BankingAppAuthenticationTier.Contracts.Operations;
+using BankingAppAuthenticationTier.Library.Errors;
 
 namespace BankingAppAuthenticationTier.Operations
 {

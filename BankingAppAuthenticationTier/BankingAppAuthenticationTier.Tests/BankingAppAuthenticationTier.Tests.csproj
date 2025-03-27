@@ -9,12 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\BankingAppAuthenticationTier.Contracts\BankingAppAuthenticationTier.Contracts.csproj" />
+		<ProjectReference Include="..\BankingAppAuthenticationTier.Library\BankingAppAuthenticationTier.Library.csproj" />
 		<ProjectReference Include="..\BankingAppAuthenticationTier\BankingAppAuthenticationTier.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="elideus-dot-net-framework-tests" Version="1.0.2" />
+		<PackageReference Include="elideus-dot-net-framework-tests" Version="1.0.3" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
 		<PackageReference Include="xunit" Version="2.9.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />

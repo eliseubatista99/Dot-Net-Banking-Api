@@ -1,6 +1,6 @@
-﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
+﻿using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Library.Providers;
 using ElideusDotNetFramework.Core.Errors;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
@@ -14,42 +14,30 @@ namespace BankingAppDataTier.Operations
         protected virtual bool UseAuthentication { get; set; } = true;
 
         protected IMapperProvider mapperProvider;
-        protected IAuthenticationProvider authProvider;
-        protected IDatabaseTokenProvider databaseTokensProvider;
+        protected IAuthenticationTierProvider authTierProvider;
 
         protected override async Task InitAsync()
         {
             await base.InitAsync();
 
             mapperProvider = executionContext.GetDependency<IMapperProvider>()!;
-            authProvider = executionContext.GetDependency<IAuthenticationProvider>()!;
-            databaseTokensProvider = executionContext.GetDependency<IDatabaseTokenProvider>()!;
+            authTierProvider = executionContext.GetDependency<IAuthenticationTierProvider>()!;
         }
 
-        protected virtual (TokenTableEntry? token, Error? error) ValidateToken(string token)
+        protected virtual async Task<Error?> ValidateToken(TIn input)
         {
-            var isValidResult = authProvider.IsValidToken(token);
-
-            if (!isValidResult.isValid)
+            var isValidResult = await authTierProvider.IsValidToken(new BankingAppAuthenticationTier.Contracts.Operations.IsValidTokenInput
             {
-                return (null, AuthenticationErrors.InvalidToken);
+                Token = input.Metadata.Token!,
+                Metadata = input.Metadata,
+            });
+
+            if (!isValidResult.IsValid)
+            {
+                return AuthenticationErrors.InvalidToken;
             }
 
-            var tokenInDb = databaseTokensProvider.GetById(token);
-
-            if (tokenInDb == null)
-            {
-                return (null, AuthenticationErrors.InvalidToken);
-            }
-
-            var today = DateTime.Now;
-
-            if (tokenInDb.ExpirationDate.Ticks <= today.Ticks)
-            {
-                return (tokenInDb, AuthenticationErrors.TokenExpired);
-            }
-
-            return (tokenInDb, null);
+            return null;
         } 
 
 
@@ -63,7 +51,7 @@ namespace BankingAppDataTier.Operations
                     return (HttpStatusCode.BadRequest, invalidInputError);
                 }
 
-                var (_, validationError) = ValidateToken(input.Metadata.Token);
+                var validationError = await ValidateToken(input);
 
                 if (validationError != null)
                 {

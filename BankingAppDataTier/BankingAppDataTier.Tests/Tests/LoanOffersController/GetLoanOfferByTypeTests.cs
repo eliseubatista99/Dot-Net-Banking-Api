@@ -1,6 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Operations;
-using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Library.Providers;
 using BankingAppDataTier.Operations;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;

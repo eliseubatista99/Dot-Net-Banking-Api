@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BankingAppAuthenticationTier.Contracts.Constants.Database;
-using BankingAppAuthenticationTier.Contracts.Database;
+using BankingAppAuthenticationTier.Library.Constants.Database;
+using BankingAppAuthenticationTier.Library.Database;
 using ElideusDotNetFramework.PostgreSql;
 using Npgsql;
 using System.Diagnostics.CodeAnalysis;

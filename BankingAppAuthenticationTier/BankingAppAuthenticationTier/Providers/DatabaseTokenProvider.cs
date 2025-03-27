@@ -1,7 +1,7 @@
-﻿using BankingAppAuthenticationTier.Contracts.Configs;
-using BankingAppAuthenticationTier.Contracts.Constants.Database;
-using BankingAppAuthenticationTier.Contracts.Database;
-using BankingAppAuthenticationTier.Contracts.Providers;
+﻿using BankingAppAuthenticationTier.Library.Configs;
+using BankingAppAuthenticationTier.Library.Constants.Database;
+using BankingAppAuthenticationTier.Library.Database;
+using BankingAppAuthenticationTier.Library.Providers;
 using ElideusDotNetFramework.Core;
 using ElideusDotNetFramework.PostgreSql;
 using System.Diagnostics.CodeAnalysis;
@@ -24,8 +24,7 @@ namespace BankingAppAuthenticationTier.Providers
                         $"{TokensTable.COLUMN_TOKEN} VARCHAR NOT NULL," +
                         $"{TokensTable.COLUMN_CLIENT_ID} VARCHAR(64) NOT NULL," +
                         $"{TokensTable.COLUMN_EXPIRATION_DATE} VARCHAR(20) NOT NULL," +
-                        $"PRIMARY KEY ({TokensTable.COLUMN_TOKEN} )," +
-                        $"FOREIGN KEY ({TokensTable.COLUMN_CLIENT_ID}) REFERENCES {ClientsTable.TABLE_NAME}({ClientsTable.COLUMN_ID})" +
+                        $"PRIMARY KEY ({TokensTable.COLUMN_TOKEN} )" +
                         $")";
 
             return ExecuteWrite(connectionString, command);

@@ -2,9 +2,10 @@
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppAuthenticationTier.Contracts.Providers;
-using BankingAppAuthenticationTier.Contracts.Database;
-using BankingAppAuthenticationTier.Contracts.Errors;
+using BankingAppAuthenticationTier.Library.Providers;
+using BankingAppAuthenticationTier.Library.Database;
+using BankingAppAuthenticationTier.Library.Errors;
+using ElideusDotNetFramework.Authentication;
 
 namespace BankingAppAuthenticationTier.Operations
 {

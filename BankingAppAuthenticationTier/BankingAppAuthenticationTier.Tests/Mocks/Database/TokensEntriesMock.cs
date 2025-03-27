@@ -1,6 +1,5 @@
-﻿
-using BankingAppAuthenticationTier.Contracts.Database;
-using BankingAppAuthenticationTier.Contracts.Providers;
+﻿using BankingAppAuthenticationTier.Library.Database;
+using BankingAppAuthenticationTier.Library.Providers;
 using BankingAppAuthenticationTier.Tests.Constants;
 
 namespace BankingAppAuthenticationTier.Tests.Mocks.Database

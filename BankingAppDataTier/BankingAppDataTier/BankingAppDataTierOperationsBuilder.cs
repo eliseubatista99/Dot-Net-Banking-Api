@@ -7,17 +7,6 @@ namespace BankingAppDataTier
 {
     public class BankingAppDataTierOperationsBuilder : OperationsBuilder
     {
-        private void MapAuthenticationOperations(ref WebApplication app, IApplicationContext context)
-        {
-            MapPostOperation<AuthenticateOperation, AuthenticateInput, AuthenticateOutput>(ref app, context, new AuthenticateOperation(context, "/Authenticate"));
-
-            MapPostOperation<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(ref app, context, new GetAuthenticationPositionsOperation(context, "/GetAuthenticationPositions"));
-
-            MapPostOperation<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(ref app, context, new IsValidTokenOperation(context, "/IsValidToken"));
-
-            MapPostOperation<KeepAliveOperation, VoidOperationInput, KeepAliveOutput>(ref app, context, new KeepAliveOperation(context, "/KeepAlive"));
-        }
-
         private void MapAccountsOperations(ref WebApplication app, IApplicationContext context)
         {
             MapPostOperation<AddAccountOperation, AddAccountInput, VoidOperationOutput>(ref app, context, new AddAccountOperation(context, "/AddAccount"));
@@ -124,7 +113,6 @@ namespace BankingAppDataTier
         {
             base.MapOperations(ref app, context);
 
-            MapAuthenticationOperations(ref app, context);
             MapAccountsOperations(ref app, context);
             MapCardsOperations(ref app, context);
             MapClientsOperations(ref app, context);

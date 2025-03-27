@@ -1,7 +1,7 @@
-﻿using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Constants.Database;
-using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Providers;
+﻿using BankingAppDataTier.Library.Configs;
+using BankingAppDataTier.Library.Constants.Database;
+using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Library.Providers;
 using ElideusDotNetFramework.Core;
 using ElideusDotNetFramework.PostgreSql;
 using System.Diagnostics.CodeAnalysis;

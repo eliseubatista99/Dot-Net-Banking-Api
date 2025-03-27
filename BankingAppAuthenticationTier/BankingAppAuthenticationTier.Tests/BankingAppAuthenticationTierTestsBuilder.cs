@@ -1,8 +1,9 @@
-﻿using BankingAppAuthenticationTier.Contracts.Providers;
+﻿using BankingAppAuthenticationTier.Library.Providers;
 using BankingAppAuthenticationTier.Providers;
 using BankingAppAuthenticationTier.Tests;
 using BankingAppAuthenticationTier.Tests.Mocks;
 using BankingAppAuthenticationTier.Tests.Mocks.Database;
+using ElideusDotNetFramework.Authentication;
 using ElideusDotNetFramework.Tests;
 using TechTalk.SpecFlow.xUnit.SpecFlowPlugin;
 
@@ -27,8 +28,8 @@ namespace BankingAppAuthenticationTier.Tests
 
         protected void MockDependencies()
         {
-            ApplicationContextMock!.AddTestDependency(new AuthenticationProvider(ApplicationContextMock));
-            ApplicationContextMock!.AddTestDependency(new DatabaseClientsProvider(ApplicationContextMock));
+            ApplicationContextMock!.AddTestDependency(new BankingAppAuthenticationProvider(ApplicationContextMock));
+            ApplicationContextMock!.AddTestDependency(new DatabaseClientsProviderMock());
             ApplicationContextMock!.AddTestDependency(new DatabaseTokenProvider(ApplicationContextMock));
         }
 
@@ -39,12 +40,10 @@ namespace BankingAppAuthenticationTier.Tests
             var _DatabaseTokensProviderMock = ApplicationContextMock!.GetDependency<IDatabaseTokenProvider>();
 
             // Create databases if not exists
-            _DatabaseClientsProviderMock!.CreateTableIfNotExists();
             _DatabaseTokensProviderMock!.CreateTableIfNotExists();
 
             // Clean database values
             _DatabaseTokensProviderMock.DeleteAll();
-            _DatabaseClientsProviderMock.DeleteAll();
 
             // Mock database values
             TokensEntriesMock.Mock(_DatabaseTokensProviderMock);

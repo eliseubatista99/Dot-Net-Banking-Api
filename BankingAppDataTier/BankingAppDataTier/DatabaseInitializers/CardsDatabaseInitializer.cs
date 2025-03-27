@@ -1,5 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Providers;
+﻿using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Library.Providers;
 using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.DatabaseInitializers

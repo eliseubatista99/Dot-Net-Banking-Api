@@ -1,10 +1,11 @@
-﻿using BankingAppAuthenticationTier.Contracts.Providers;
-using BankingAppAuthenticationTier.DatabaseInitializers;
+﻿using BankingAppAuthenticationTier.DatabaseInitializers;
 using BankingAppAuthenticationTier.MapperProfiles;
 using BankingAppAuthenticationTier.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using BankingAppAuthenticationTier.Library.Providers;
+using ElideusDotNetFramework.Authentication;
 
 namespace BankingAppAuthenticationTier
 {
@@ -43,7 +44,7 @@ namespace BankingAppAuthenticationTier
         {
             base.InjectDependencies(ref builder);
 
-            ApplicationContext?.AddDependency<IAuthenticationProvider, AuthenticationProvider>(ref builder);
+            ApplicationContext?.AddDependency<IAuthenticationProvider, BankingAppAuthenticationProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabaseClientsProvider, DatabaseClientsProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabaseTokenProvider, DatabaseTokenProvider>(ref builder);
         }

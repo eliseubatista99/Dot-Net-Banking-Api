@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BankingAppDataTier.Contracts.Configs;
+using BankingAppDataTier.Library.Configs;
 using BankingAppDataTier.MapperProfiles;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;
@@ -11,9 +11,7 @@ namespace BankingAppDataTier.Tests.Mocks
         protected override Dictionary<string, string?> Configurations { get; set; } = new Dictionary<string, string?>
         {
             {$"{DatabaseConfigs.DatabaseSection}:{DatabaseConfigs.DatabaseConnection}", TestsConstants.ConnectionString},
-            {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Issuer}", TestsConstants.AuthenticationIssuer},
-            {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Audience}", TestsConstants.AuthenticationAudience},
-            {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Key}", TestsConstants.AuthenticationKey},
+            {$"{AuthenticationTierConfigs.Section}:{AuthenticationTierConfigs.Url}", TestsConstants.AuthenticationTierUrl},
         };
 
         protected override List<Profile> MapperProfiles { get; set; } = new List<Profile>

@@ -1,5 +1,5 @@
-﻿using BankingAppAuthenticationTier.Contracts.Database;
-using BankingAppAuthenticationTier.Contracts.Providers;
+﻿using BankingAppAuthenticationTier.Library.Database;
+using BankingAppAuthenticationTier.Library.Providers;
 using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppAuthenticationTier.DatabaseInitializers

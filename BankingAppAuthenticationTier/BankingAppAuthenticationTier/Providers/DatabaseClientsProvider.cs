@@ -1,7 +1,7 @@
-﻿using BankingAppAuthenticationTier.Contracts.Configs;
-using BankingAppAuthenticationTier.Contracts.Constants.Database;
-using BankingAppAuthenticationTier.Contracts.Database;
-using BankingAppAuthenticationTier.Contracts.Providers;
+﻿using BankingAppAuthenticationTier.Library.Configs;
+using BankingAppAuthenticationTier.Library.Constants.Database;
+using BankingAppAuthenticationTier.Library.Database;
+using BankingAppAuthenticationTier.Library.Providers;
 using ElideusDotNetFramework.Core;
 using ElideusDotNetFramework.PostgreSql;
 using System.Diagnostics.CodeAnalysis;

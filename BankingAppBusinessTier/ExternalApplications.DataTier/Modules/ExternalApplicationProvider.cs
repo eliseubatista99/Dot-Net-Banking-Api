@@ -24,22 +24,6 @@ namespace ExternalApplications.DataTier.Modules
 
         protected virtual async Task<TOut> CallExternalPostOperation<TIn, TOut>(string endpoint, TIn input) where TIn : OperationInput where TOut : OperationOutput
         {
-            //using StringContent jsonInput = new(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
-            //var requestUrl = $"{externalServiceUrl}/{endpoint}";
-
-            //var httpRequestMessage = new HttpRequestMessage
-            //{
-            //    Method = HttpMethod.Post,
-            //    RequestUri = new Uri(requestUrl),
-            //    Headers = {
-            //        { HttpRequestHeader.ContentType.ToString(), "application/json;odata=verbose" },
-            //        { HttpRequestHeader.Accept.ToString(), "application/json" },
-            //    },
-            //    Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(input))
-            //};
-
-
-
             httpClient.BaseAddress = new Uri(externalServiceUrl);
             httpClient.DefaultRequestHeaders
                   .Accept
@@ -59,7 +43,7 @@ namespace ExternalApplications.DataTier.Modules
             var tau = await response.Content.ReadAsStringAsync();
             var operationHttpResult = await response.Content.ReadFromJsonAsync<TOut>();
 
-            return operationHttpResult;
+            return operationHttpResult!;
         }
     }
 }

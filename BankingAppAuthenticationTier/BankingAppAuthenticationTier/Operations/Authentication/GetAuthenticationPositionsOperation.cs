@@ -1,7 +1,7 @@
-﻿using BankingAppAuthenticationTier.Contracts.Constants;
-using BankingAppAuthenticationTier.Contracts.Errors;
-using BankingAppAuthenticationTier.Contracts.Operations;
-using BankingAppAuthenticationTier.Contracts.Providers;
+﻿using BankingAppAuthenticationTier.Contracts.Operations;
+using BankingAppAuthenticationTier.Library.Constants;
+using BankingAppAuthenticationTier.Library.Errors;
+using BankingAppAuthenticationTier.Library.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;
 
