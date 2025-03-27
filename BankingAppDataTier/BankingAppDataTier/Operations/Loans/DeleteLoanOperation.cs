@@ -1,9 +1,9 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
-using BankingAppDataTier.Contracts.Errors;
+﻿using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
+using BankingAppDataTier.Contracts.Operations.Inputs.Loans;
 
 namespace BankingAppDataTier.Operations.Loans
 {

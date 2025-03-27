@@ -1,5 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
+﻿using BankingAppDataTier.Contracts.Operations.Inputs.Authentication;
+using BankingAppDataTier.Contracts.Operations.Outputs.Authentication;
 using ElideusDotNetFramework.Core;
 
 namespace BankingAppDataTier.Operations.Authentication

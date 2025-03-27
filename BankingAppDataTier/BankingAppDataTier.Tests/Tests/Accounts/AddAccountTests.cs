@@ -1,6 +1,6 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
+﻿using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Operations.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.Accounts;
 using BankingAppDataTier.Tests.Constants;

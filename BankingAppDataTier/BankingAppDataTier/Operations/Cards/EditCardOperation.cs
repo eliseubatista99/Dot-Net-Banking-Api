@@ -1,12 +1,12 @@
 ﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
+using BankingAppDataTier.Contracts.Operations.Inputs.Cards;
+using BankingAppDataTier.Contracts.Dtos;
 
 namespace BankingAppDataTier.Operations.Cards
 {

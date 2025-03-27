@@ -1,8 +1,8 @@
 ﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
+using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Operations.Inputs.Plastics;
+using BankingAppDataTier.Contracts.Operations.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;

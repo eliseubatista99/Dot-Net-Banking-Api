@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Contracts.Dtos;
 using ElideusDotNetFramework.PostgreSql;
 using Npgsql;
 using System.Diagnostics.CodeAnalysis;

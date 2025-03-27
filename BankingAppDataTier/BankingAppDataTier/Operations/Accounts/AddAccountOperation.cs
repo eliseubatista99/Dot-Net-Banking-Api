@@ -1,6 +1,4 @@
 ﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
@@ -9,6 +7,8 @@ using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
 using System.Diagnostics.CodeAnalysis;
+using BankingAppDataTier.Contracts.Operations.Inputs.Accounts;
+using BankingAppDataTier.Contracts.Dtos;
 
 namespace BankingAppDataTier.Operations.Accounts
 {

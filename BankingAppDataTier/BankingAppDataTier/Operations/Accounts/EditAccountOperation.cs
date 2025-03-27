@@ -1,11 +1,11 @@
 ﻿using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
 using System.Diagnostics.CodeAnalysis;
+using BankingAppDataTier.Contracts.Operations.Inputs.Accounts;
 
 namespace BankingAppDataTier.Operations.Accounts
 {

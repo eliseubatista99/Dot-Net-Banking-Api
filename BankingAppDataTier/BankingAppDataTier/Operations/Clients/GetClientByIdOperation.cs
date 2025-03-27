@@ -1,8 +1,8 @@
 ﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
+using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Operations.Inputs.Clients;
+using BankingAppDataTier.Contracts.Operations.Outputs.Clients;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core;
 using System.Net;

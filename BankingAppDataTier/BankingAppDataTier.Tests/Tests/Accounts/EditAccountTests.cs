@@ -1,10 +1,10 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Errors;
+﻿using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Operations.Accounts;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Tests;
 using BankingAppDataTier.Contracts.Providers;
+using BankingAppDataTier.Contracts.Operations.Inputs.Accounts;
 
 namespace BankingAppDataTier.Tests.Accounts;
 

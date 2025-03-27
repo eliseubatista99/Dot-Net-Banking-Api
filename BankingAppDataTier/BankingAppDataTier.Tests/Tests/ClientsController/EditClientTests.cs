@@ -1,5 +1,5 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Errors;
+﻿using BankingAppDataTier.Contracts.Errors;
+using BankingAppDataTier.Contracts.Operations.Inputs.Clients;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.Clients;
 using BankingAppDataTier.Tests.Constants;

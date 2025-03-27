@@ -1,9 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
 using BankingAppDataTier.Contracts.Providers;
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
+using BankingAppDataTier.Contracts.Operations.Outputs.Clients;
+using BankingAppDataTier.Contracts.Dtos;
 
 namespace BankingAppDataTier.Operations.Clients
 {

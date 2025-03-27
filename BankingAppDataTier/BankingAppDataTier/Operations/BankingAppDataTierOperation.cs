@@ -59,7 +59,7 @@ namespace BankingAppDataTier.Operations
             {
                 if (input.Metadata?.Token == null || input.Metadata.Token == String.Empty)
                 {
-                    var invalidInputError = GenericErrors.InvalidInputError(nameof(input.Metadata.Token));
+                    var invalidInputError = InputErrors.InvalidInputField(nameof(input.Metadata.Token));
                     return (HttpStatusCode.BadRequest, invalidInputError);
                 }
 

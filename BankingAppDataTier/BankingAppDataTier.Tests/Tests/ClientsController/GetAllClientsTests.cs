@@ -1,4 +1,4 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
+﻿using BankingAppDataTier.Contracts.Operations.Outputs.Clients;
 using BankingAppDataTier.Operations.Clients;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Core.Operations;

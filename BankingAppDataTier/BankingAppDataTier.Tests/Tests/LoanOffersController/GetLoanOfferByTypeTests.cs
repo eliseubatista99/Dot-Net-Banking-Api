@@ -1,6 +1,6 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
-using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
-using BankingAppDataTier.Contracts.Enums;
+﻿using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Contracts.Operations.Inputs.LoanOffers;
+using BankingAppDataTier.Contracts.Operations.Outputs.LoanOffers;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.LoanOffers;
 using BankingAppDataTier.Tests.Constants;
