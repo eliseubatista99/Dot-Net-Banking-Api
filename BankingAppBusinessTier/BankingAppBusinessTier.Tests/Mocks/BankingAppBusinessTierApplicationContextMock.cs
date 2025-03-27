@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BankingAppBusinessTier.Contracts.Configs;
 using BankingAppBusinessTier.Tests.Constants;
-using ElideusDotNetFramework.Tests.Mocks;
+using ElideusDotNetFramework.Tests;
 
 namespace BankingAppBusinessTier.Tests.Mocks
 {

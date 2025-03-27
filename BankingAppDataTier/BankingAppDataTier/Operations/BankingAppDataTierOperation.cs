@@ -1,9 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Errors;
-using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Core.Errors;
+using ElideusDotNetFramework.Core.Operations;
+using ElideusDotNetFramework.Core;
 using System.Net;
 
 namespace BankingAppDataTier.Operations

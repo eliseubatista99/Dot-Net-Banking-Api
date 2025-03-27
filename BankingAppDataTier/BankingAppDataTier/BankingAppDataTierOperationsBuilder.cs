@@ -22,8 +22,8 @@ using BankingAppDataTier.Operations.LoanOffers;
 using BankingAppDataTier.Operations.Loans;
 using BankingAppDataTier.Operations.Plastics;
 using BankingAppDataTier.Operations.Transactions;
-using ElideusDotNetFramework.Application;
-using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Core;
+using ElideusDotNetFramework.Core.Operations;
 
 namespace BankingAppDataTier
 {

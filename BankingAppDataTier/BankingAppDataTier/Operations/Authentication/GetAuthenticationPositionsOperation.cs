@@ -3,7 +3,7 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Core;
 using System.Net;
 
 namespace BankingAppDataTier.Operations.Authentication

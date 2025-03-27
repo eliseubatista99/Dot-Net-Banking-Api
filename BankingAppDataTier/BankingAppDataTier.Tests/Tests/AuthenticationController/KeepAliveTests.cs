@@ -4,7 +4,7 @@ using ElideusDotNetFramework.Tests;
 using BankingAppDataTier.Operations.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
-using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Core.Operations;
 
 namespace BankingAppDataTier.Tests.Authentication;
 

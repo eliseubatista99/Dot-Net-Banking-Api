@@ -1,6 +1,6 @@
 ﻿using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;

@@ -3,8 +3,8 @@ using BankingAppDataTier.DatabaseInitializers;
 using BankingAppDataTier.MapperProfiles;
 using BankingAppDataTier.Providers;
 using ElideusDotNetFramework;
-using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Core.Operations;
+using ElideusDotNetFramework.Core;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BankingAppDataTier

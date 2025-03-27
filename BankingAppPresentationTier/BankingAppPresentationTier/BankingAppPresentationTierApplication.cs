@@ -1,6 +1,6 @@
 ﻿using ElideusDotNetFramework;
+using ElideusDotNetFramework.Application;
 using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Providers.Contracts;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BankingAppPresentationTier

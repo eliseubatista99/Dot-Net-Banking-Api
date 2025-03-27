@@ -1,6 +1,6 @@
 ﻿
+using ElideusDotNetFramework.Application;
 using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Providers.Contracts;
 
 namespace BankingAppBusinessTier
 {

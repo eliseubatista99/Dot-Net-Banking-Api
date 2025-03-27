@@ -1,5 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Database;
-using ElideusDotNetFramework.Database;
+using ElideusDotNetFramework.PostgreSql;
 
 namespace BankingAppDataTier.Contracts.Providers
 {

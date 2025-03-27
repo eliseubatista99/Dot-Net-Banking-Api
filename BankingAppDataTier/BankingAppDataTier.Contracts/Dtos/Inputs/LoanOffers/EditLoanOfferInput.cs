@@ -1,4 +1,4 @@
-﻿using ElideusDotNetFramework.Operations;
+﻿using ElideusDotNetFramework.Core.Operations;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer
 {

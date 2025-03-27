@@ -5,7 +5,7 @@ using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using System.Net;
-using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Core;
 
 namespace BankingAppDataTier.Operations.Accounts
 {

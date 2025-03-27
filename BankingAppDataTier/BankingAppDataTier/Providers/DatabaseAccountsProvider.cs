@@ -3,8 +3,8 @@ using BankingAppDataTier.Contracts.Constants;
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Application;
-using ElideusDotNetFramework.Database;
+using ElideusDotNetFramework.Core;
+using ElideusDotNetFramework.PostgreSql;
 
 namespace BankingAppDataTier.Providers
 {

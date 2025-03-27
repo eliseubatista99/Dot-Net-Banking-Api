@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
-using ElideusDotNetFramework.Database;
+using ElideusDotNetFramework.PostgreSql;
 using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles

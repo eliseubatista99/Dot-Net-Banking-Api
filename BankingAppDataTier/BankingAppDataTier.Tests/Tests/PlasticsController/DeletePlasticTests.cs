@@ -3,7 +3,7 @@ using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
 using BankingAppDataTier.Operations.Plastics;
 using BankingAppDataTier.Tests.Constants;
-using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Tests;
 
 namespace BankingAppDataTier.Tests.Plastics;

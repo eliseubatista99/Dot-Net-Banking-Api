@@ -4,7 +4,7 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Core;
 
 namespace BankingAppDataTier.Operations.Loans
 {

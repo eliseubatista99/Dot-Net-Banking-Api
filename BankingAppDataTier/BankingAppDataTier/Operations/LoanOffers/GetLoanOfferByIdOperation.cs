@@ -4,7 +4,7 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
 using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Core;
 using System.Net;
 
 namespace BankingAppDataTier.Operations.LoanOffers

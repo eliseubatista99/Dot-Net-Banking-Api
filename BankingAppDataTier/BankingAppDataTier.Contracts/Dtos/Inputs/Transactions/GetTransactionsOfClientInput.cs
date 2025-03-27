@@ -1,5 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Enums;
-using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Core.Operations;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Transactions
 {
