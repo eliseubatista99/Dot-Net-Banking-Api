@@ -1,4 +1,4 @@
-﻿using ElideusDotNetFramework.Errors.Contracts;
+﻿using ElideusDotNetFramework.Errors;
 
 namespace BankingAppDataTier.Contracts.Errors
 {

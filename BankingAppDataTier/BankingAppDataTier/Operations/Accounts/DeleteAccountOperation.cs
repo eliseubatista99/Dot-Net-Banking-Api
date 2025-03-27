@@ -1,9 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Operations;
 using System.Net;
-using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Application;
 
 namespace BankingAppDataTier.Operations.Accounts
 {

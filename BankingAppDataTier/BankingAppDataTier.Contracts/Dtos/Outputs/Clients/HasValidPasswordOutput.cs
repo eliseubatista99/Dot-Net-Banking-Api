@@ -1,4 +1,4 @@
-﻿using ElideusDotNetFramework.Operations.Contracts;
+﻿using ElideusDotNetFramework.Operations;
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs.Clients
 {

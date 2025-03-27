@@ -1,5 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Enums;
-using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Operations;
 
 namespace BankingAppDataTier.Contracts.Dtos.Inputs.Plastics
 {

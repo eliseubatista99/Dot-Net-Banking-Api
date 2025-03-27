@@ -2,39 +2,22 @@
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
-using ElideusDotNetFramework.Providers.Contracts;
-using Npgsql;
+using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Providers
 {
-    public class DatabaseClientsProvider : IDatabaseClientsProvider
+    public class DatabaseClientsProvider : NpgsqlDatabaseProvider<ClientsTableEntry>, IDatabaseClientsProvider
     {
-
-        private IConfiguration Configuration;
-        private IMapperProvider mapperProvider;
-
-        private string connectionString;
-
-        public DatabaseClientsProvider(IApplicationContext applicationContext)
+        public DatabaseClientsProvider(IApplicationContext applicationContext) : base(applicationContext)
         {
-            this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
-            this.mapperProvider = applicationContext.GetDependency<IMapperProvider>()!;
-
-            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
+            var configuration = applicationContext.GetDependency<IConfiguration>()!;
+            connectionString = configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
         }
 
-        public bool CreateTableIfNotExists()
+        public override bool CreateTableIfNotExists()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {ClientsTable.TABLE_NAME}" +
+            var command = $"CREATE TABLE IF NOT EXISTS {ClientsTable.TABLE_NAME}" +
                         $"(" +
                         $"{ClientsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{ClientsTable.COLUMN_PASSWORD} VARCHAR(64) NOT NULL," +
@@ -47,127 +30,37 @@ namespace BankingAppDataTier.Providers
                         $"PRIMARY KEY ({ClientsTable.COLUMN_ID} )" +
                         $")";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public List<ClientsTableEntry> GetAll()
+        public override List<ClientsTableEntry> GetAll()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                List<ClientsTableEntry> result = new List<ClientsTableEntry>();
+            var command = $"SELECT * FROM {ClientsTable.TABLE_NAME}";
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {ClientsTable.TABLE_NAME}";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    while (sqlReader!.Read())
-                    {
-                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, ClientsTableEntry>(sqlReader);
-
-                        result.Add(dataEntry);
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteReadMultiple(connectionString, command);
         }
 
-        public ClientsTableEntry? GetById(string id)
+        public override ClientsTableEntry? GetById(string id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                ClientsTableEntry? result = null;
+            var command = $"SELECT * FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    if (sqlReader.HasRows)
-                    {
-                        sqlReader.Read();
-                        result = mapperProvider.Map<NpgsqlDataReader, ClientsTableEntry>(sqlReader);
-
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteRead(connectionString, command);
         }
 
-        public bool Add(ClientsTableEntry entry)
+        public override bool Add(ClientsTableEntry entry)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"INSERT INTO {ClientsTable.TABLE_NAME} " +
+            var command = $"INSERT INTO {ClientsTable.TABLE_NAME} " +
                         $"({ClientsTable.COLUMN_ID}, {ClientsTable.COLUMN_PASSWORD}, {ClientsTable.COLUMN_NAME}, {ClientsTable.COLUMN_SURNAME}, {ClientsTable.COLUMN_BIRTH_DATE}, " +
                         $"{ClientsTable.COLUMN_VAT_NUMBER}, {ClientsTable.COLUMN_PHONE_NUMBER}, {ClientsTable.COLUMN_EMAIL}) " +
                         $"VALUES " +
                         $"('{entry.Id}', '{entry.Password}', '{entry.Name}', '{entry.Surname}', '{entry.BirthDate.ToString("yyyy-MM-dd")}', '{entry.VATNumber}', '{entry.PhoneNumber}', '{entry.Email}');";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public bool Edit(ClientsTableEntry entry)
+        public override bool Edit(ClientsTableEntry entry)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"UPDATE {ClientsTable.TABLE_NAME} " +
+            var command = $"UPDATE {ClientsTable.TABLE_NAME} " +
                     $"SET {ClientsTable.COLUMN_ID} = '{entry.Id}', " +
                     $"{ClientsTable.COLUMN_NAME} = '{entry.Name}', " +
                     $"{ClientsTable.COLUMN_SURNAME} = '{entry.Surname}', " +
@@ -177,102 +70,30 @@ namespace BankingAppDataTier.Providers
                     $"{ClientsTable.COLUMN_EMAIL} = '{entry.Email}' " +
                     $"WHERE {ClientsTable.COLUMN_ID} = '{entry.Id}';";
 
-                    command.ExecuteNonQuery();
+            return ExecuteWrite(connectionString, command);
+        }
 
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
+        public override bool Delete(string id)
+        {
+            var command = $"DELETE FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
 
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
+        }
+
+        public override bool DeleteAll()
+        {
+            var command = $"DELETE FROM {ClientsTable.TABLE_NAME} WHERE 1=1";
+
+            return ExecuteWrite(connectionString, command);
         }
 
         public bool ChangePassword(string id, string password)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"UPDATE {ClientsTable.TABLE_NAME} " +
+            var command = $"UPDATE {ClientsTable.TABLE_NAME} " +
                     $"SET {ClientsTable.COLUMN_PASSWORD} = '{password}' " +
                     $"WHERE {ClientsTable.COLUMN_ID} = '{id}';";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
-
-        public bool Delete(string id)
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {ClientsTable.TABLE_NAME} WHERE {ClientsTable.COLUMN_ID} = '{id}'";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
-
-        public bool DeleteAll()
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {ClientsTable.TABLE_NAME} WHERE 1=1";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
     }
 }

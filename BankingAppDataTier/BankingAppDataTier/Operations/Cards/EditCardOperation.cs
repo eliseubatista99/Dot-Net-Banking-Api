@@ -4,8 +4,8 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Application;
 using System.Net;
 
 namespace BankingAppDataTier.Operations.Cards

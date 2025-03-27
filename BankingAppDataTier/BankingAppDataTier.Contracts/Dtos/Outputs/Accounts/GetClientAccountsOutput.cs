@@ -1,5 +1,5 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Entitites;
-using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Operations;
 
 namespace BankingAppDataTier.Contracts.Dtos.Outputs.Accounts
 {

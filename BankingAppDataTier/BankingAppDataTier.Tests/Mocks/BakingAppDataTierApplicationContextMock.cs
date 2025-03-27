@@ -2,7 +2,7 @@
 using BankingAppDataTier.Contracts.Configs;
 using BankingAppDataTier.MapperProfiles;
 using BankingAppDataTier.Tests.Constants;
-using ElideusDotNetFramework.Tests.Mocks;
+using ElideusDotNetFramework.Tests;
 
 namespace BankingAppDataTier.Tests.Mocks
 {

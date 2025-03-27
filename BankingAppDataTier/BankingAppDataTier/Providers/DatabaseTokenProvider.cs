@@ -2,39 +2,22 @@
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
-using ElideusDotNetFramework.Providers.Contracts;
-using Npgsql;
+using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Providers
 {
-    public class DatabaseTokenProvider : IDatabaseTokenProvider
+    public class DatabaseTokenProvider : NpgsqlDatabaseProvider<TokenTableEntry>, IDatabaseTokenProvider
     {
-
-        private IConfiguration Configuration;
-        private IMapperProvider mapperProvider;
-
-        private string connectionString;
-
-        public DatabaseTokenProvider(IApplicationContext applicationContext)
+        public DatabaseTokenProvider(IApplicationContext applicationContext) : base(applicationContext)
         {
-            this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
-            this.mapperProvider = applicationContext.GetDependency<IMapperProvider>()!;
-
-            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
+            var configuration = applicationContext.GetDependency<IConfiguration>()!;
+            connectionString = configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
         }
 
-        public bool CreateTableIfNotExists()
+        public override bool CreateTableIfNotExists()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {TokensTable.TABLE_NAME}" +
+            var command = $"CREATE TABLE IF NOT EXISTS {TokensTable.TABLE_NAME}" +
                         $"(" +
                         $"{TokensTable.COLUMN_TOKEN} VARCHAR NOT NULL," +
                         $"{TokensTable.COLUMN_CLIENT_ID} VARCHAR(64) NOT NULL," +
@@ -43,223 +26,73 @@ namespace BankingAppDataTier.Providers
                         $"FOREIGN KEY ({TokensTable.COLUMN_CLIENT_ID}) REFERENCES {ClientsTable.TABLE_NAME}({ClientsTable.COLUMN_ID})" +
                         $")";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-
+            return ExecuteWrite(connectionString, command);
         }
 
-        public bool Add(TokenTableEntry entry)
+        public override List<TokenTableEntry> GetAll()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
+            var command = $"SELECT * FROM {TokensTable.TABLE_NAME}";
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
+            return ExecuteReadMultiple(connectionString, command);
+        }
 
-                try
-                {
-                    command.CommandText = $"INSERT INTO {TokensTable.TABLE_NAME} " +
+        public override TokenTableEntry? GetById(string id)
+        {
+            var command = $"SELECT * FROM {TokensTable.TABLE_NAME} WHERE {TokensTable.COLUMN_TOKEN} = '{id}'";
+
+            return ExecuteRead(connectionString, command);
+        }
+
+        public override bool Add(TokenTableEntry entry)
+        {
+            var command = $"INSERT INTO {TokensTable.TABLE_NAME} " +
                                             $"({TokensTable.COLUMN_TOKEN}, {TokensTable.COLUMN_CLIENT_ID}, {TokensTable.COLUMN_EXPIRATION_DATE}) " +
                                             $"VALUES " +
-                                            $"('{entry.Token}', '{entry.ClientId}', '{SqlDatabaseHelper.FormatDateWithTime(entry.ExpirationDate)}');";
+                                            $"('{entry.Token}', '{entry.ClientId}', '{NpgsqlDatabaseHelper.FormatDateWithTime(entry.ExpirationDate)}');";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
-        
-        public bool Delete(string token)
+
+        public override bool Edit(TokenTableEntry entry)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
+            var command = $"UPDATE {TokensTable.TABLE_NAME} " +
+                $"SET {TokensTable.COLUMN_EXPIRATION_DATE} = '{NpgsqlDatabaseHelper.FormatDateWithTime(entry.ExpirationDate)}' " +
+                $"WHERE {TokensTable.COLUMN_TOKEN} = '{entry.Token}';";
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {TokensTable.TABLE_NAME} WHERE {TokensTable.COLUMN_TOKEN} = '{token}'";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public bool SetExpirationDateTime(string token, DateTime expiration)
+        public override bool Delete(string id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
+            var command = $"DELETE FROM {TokensTable.TABLE_NAME} WHERE {TokensTable.COLUMN_TOKEN} = '{id}'";
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"UPDATE {TokensTable.TABLE_NAME} " +
-                    $"SET {TokensTable.COLUMN_EXPIRATION_DATE} = '{SqlDatabaseHelper.FormatDateWithTime(expiration)}' " +
-                    $"WHERE {TokensTable.COLUMN_TOKEN} = '{token}';";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public TokenTableEntry? GetToken(string token)
+        public override bool DeleteAll()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                TokenTableEntry? result = null;
+            var command = $"DELETE FROM {TokensTable.TABLE_NAME} WHERE 1=1";
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {TokensTable.TABLE_NAME} WHERE {TokensTable.COLUMN_TOKEN} = '{token}'";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    if (sqlReader.HasRows)
-                    {
-                        sqlReader.Read();
-                        result = mapperProvider.Map<NpgsqlDataReader, TokenTableEntry>(sqlReader);
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
+
 
         public bool DeleteAllExpired()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                DateTime today = DateTime.Now;
-                connection.Open();
+            DateTime today = DateTime.Now;
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {TokensTable.TABLE_NAME} " +
+            var command = $"DELETE FROM {TokensTable.TABLE_NAME} " +
                         $"WHERE {TokensTable.COLUMN_EXPIRATION_DATE}<'{today.ToString("yyyy-MM-dd")}'";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
         public bool DeleteTokensOfClient(string clientId)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                DateTime today = DateTime.Now;
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {TokensTable.TABLE_NAME} " +
+            var command = $"DELETE FROM {TokensTable.TABLE_NAME} " +
                         $"WHERE {TokensTable.COLUMN_CLIENT_ID}='{clientId}'";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
-
-        public bool DeleteAll()
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {TokensTable.TABLE_NAME} WHERE 1=1";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
-
     }
 }

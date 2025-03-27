@@ -2,7 +2,7 @@
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Operations.Accounts;
 using BankingAppDataTier.Tests.Constants;
-using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Operations;
 using ElideusDotNetFramework.Tests;
 using BankingAppDataTier.Contracts.Providers;
 

@@ -2,38 +2,22 @@
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
-using ElideusDotNetFramework.Providers.Contracts;
-using Npgsql;
+using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Providers
 {
-    public class DatabaseLoanOffersProvider : IDatabaseLoanOfferProvider
+    public class DatabaseLoanOffersProvider : NpgsqlDatabaseProvider<LoanOfferTableEntry>, IDatabaseLoanOfferProvider
     {
-        private IConfiguration Configuration;
-        private IMapperProvider mapperProvider;
-
-        private string connectionString;
-
-        public DatabaseLoanOffersProvider(IApplicationContext applicationContext)
+        public DatabaseLoanOffersProvider(IApplicationContext applicationContext) : base(applicationContext)
         {
-            this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
-            this.mapperProvider = applicationContext.GetDependency<IMapperProvider>()!;
-
-            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
+            var configuration = applicationContext.GetDependency<IConfiguration>()!;
+            connectionString = configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
         }
 
-        public bool CreateTableIfNotExists()
+        public override bool CreateTableIfNotExists()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {LoanOffersTable.TABLE_NAME}" +
+            var command = $"CREATE TABLE IF NOT EXISTS {LoanOffersTable.TABLE_NAME}" +
                         $"(" +
                         $"{LoanOffersTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{LoanOffersTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
@@ -45,90 +29,37 @@ namespace BankingAppDataTier.Providers
                         $"PRIMARY KEY ({LoanOffersTable.COLUMN_ID} )" +
                         $")";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public bool Add(LoanOfferTableEntry entry)
+        public override List<LoanOfferTableEntry> GetAll()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
+            var command = $"SELECT * FROM {LoanOffersTable.TABLE_NAME}";
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
+            return ExecuteReadMultiple(connectionString, command);
+        }
 
-                try
-                {
-                    command.CommandText = $"INSERT INTO {LoanOffersTable.TABLE_NAME} " +
+        public override LoanOfferTableEntry? GetById(string id)
+        {
+            var command = $"SELECT * FROM {LoanOffersTable.TABLE_NAME} WHERE {LoanOffersTable.COLUMN_ID} = '{id}'";
+
+            return ExecuteRead(connectionString, command);
+        }
+
+        public override bool Add(LoanOfferTableEntry entry)
+        {
+            var command = $"INSERT INTO {LoanOffersTable.TABLE_NAME} " +
                         $"({LoanOffersTable.COLUMN_ID}, {LoanOffersTable.COLUMN_NAME}, {LoanOffersTable.COLUMN_DESCRIPTION}, {LoanOffersTable.COLUMN_TYPE}," +
                         $" {LoanOffersTable.COLUMN_MAX_EFFORT}, {LoanOffersTable.COLUMN_INTEREST}, {LoanOffersTable.COLUMN_IS_ACTIVE}) " +
                         $"VALUES " +
                         $"('{entry.Id}', '{entry.Name}', '{entry.Description}','{entry.LoanType}', '{entry.MaxEffort}', '{entry.Interest}', '{entry.IsActive}');";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public bool Delete(string id)
+        public override bool Edit(LoanOfferTableEntry entry)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {LoanOffersTable.TABLE_NAME} WHERE {LoanOffersTable.COLUMN_ID} = '{id}'";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
-
-        public bool Edit(LoanOfferTableEntry entry)
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"UPDATE {LoanOffersTable.TABLE_NAME} " +
+            var command = $"UPDATE {LoanOffersTable.TABLE_NAME} " +
                     $"SET {LoanOffersTable.COLUMN_TYPE} = '{entry.LoanType}', " +
                     $"{LoanOffersTable.COLUMN_NAME} = '{entry.Name}', " +
                     $"{LoanOffersTable.COLUMN_DESCRIPTION} = '{entry.Description}', " +
@@ -137,149 +68,34 @@ namespace BankingAppDataTier.Providers
                     $"{LoanOffersTable.COLUMN_IS_ACTIVE} = '{entry.IsActive}' " +
                     $"WHERE {LoanOffersTable.COLUMN_ID} = '{entry.Id}';";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public List<LoanOfferTableEntry> GetAll()
+        public override bool Delete(string id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                List<LoanOfferTableEntry> result = new List<LoanOfferTableEntry>();
+            var command = $"DELETE FROM {LoanOffersTable.TABLE_NAME} WHERE {LoanOffersTable.COLUMN_ID} = '{id}'";
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {LoanOffersTable.TABLE_NAME}";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    while (sqlReader!.Read())
-                    {
-                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, LoanOfferTableEntry>(sqlReader);
-
-                        result.Add(dataEntry);
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public LoanOfferTableEntry? GetById(string id)
+        public override bool DeleteAll()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                LoanOfferTableEntry? result = null;
+            var command = $"DELETE FROM {LoanOffersTable.TABLE_NAME} WHERE 1=1";
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {LoanOffersTable.TABLE_NAME} WHERE {LoanOffersTable.COLUMN_ID} = '{id}'";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    if (sqlReader.HasRows)
-                    {
-                        sqlReader.Read();
-                        result = mapperProvider.Map<NpgsqlDataReader, LoanOfferTableEntry>(sqlReader);
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
+
 
         public List<LoanOfferTableEntry> GetByType(string loanType, bool onlyActive = false)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            var command = $"SELECT * FROM {LoanOffersTable.TABLE_NAME} WHERE {LoanOffersTable.COLUMN_TYPE} = '{loanType}'";
+
+            if (onlyActive == true)
             {
-                List<LoanOfferTableEntry> result = new List<LoanOfferTableEntry>();
-
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    var accountIdsOfClient = new List<string>();
-
-                    command.CommandText = $"SELECT * FROM {LoanOffersTable.TABLE_NAME} WHERE {LoanOffersTable.COLUMN_TYPE} = '{loanType}'";
-
-                    if(onlyActive == true)
-                    {
-                        command.CommandText += $"AND {LoanOffersTable.COLUMN_IS_ACTIVE} = 'TRUE'";
-                    }
-
-                    using (var sqlReader = command.ExecuteReader())
-                    {
-                        while (sqlReader!.Read())
-                        {
-                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, LoanOfferTableEntry>(sqlReader);
-
-                            result.Add(dataEntry);
-                        }
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                command += $"AND {LoanOffersTable.COLUMN_IS_ACTIVE} = 'TRUE'";
             }
-        }
 
-        public bool DeleteAll()
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {LoanOffersTable.TABLE_NAME} WHERE 1=1";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteReadMultiple(connectionString, command);
         }
     }
 }

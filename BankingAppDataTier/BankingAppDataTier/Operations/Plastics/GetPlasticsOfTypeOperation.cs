@@ -4,7 +4,7 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
 using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Application;
 
 namespace BankingAppDataTier.Operations.Plastics
 {

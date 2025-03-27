@@ -1,10 +1,9 @@
 ﻿using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Errors.Contracts;
+using ElideusDotNetFramework.Errors;
 using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Application;
 using System.Net;
 
 namespace BankingAppDataTier.Operations
@@ -36,7 +35,7 @@ namespace BankingAppDataTier.Operations
                 return (null, AuthenticationErrors.InvalidToken);
             }
 
-            var tokenInDb = databaseTokensProvider.GetToken(token);
+            var tokenInDb = databaseTokensProvider.GetById(token);
 
             if (tokenInDb == null)
             {

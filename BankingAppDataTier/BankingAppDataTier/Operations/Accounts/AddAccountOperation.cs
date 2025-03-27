@@ -4,9 +4,9 @@ using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
 using BankingAppDataTier.Contracts.Enums;
 using BankingAppDataTier.Contracts.Errors;
 using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Errors.Contracts;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Errors;
+using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Application;
 using System.Net;
 
 namespace BankingAppDataTier.Operations.Accounts

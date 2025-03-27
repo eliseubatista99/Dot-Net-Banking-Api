@@ -1,7 +1,7 @@
 ﻿using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
 using BankingAppDataTier.Contracts.Errors;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Operations;
+using ElideusDotNetFramework.Application;
 using System.Net;
 
 namespace BankingAppDataTier.Operations.Authentication
@@ -11,11 +11,14 @@ namespace BankingAppDataTier.Operations.Authentication
     {
         protected override async Task<KeepAliveOutput> ExecuteAsync(VoidOperationInput input)
         {
+            var (token, tokenValidationError) = ValidateToken(input.Metadata!.Token!);
+
             var lifeTime = authProvider.GetTokenLifeTime();
 
             var newExpirationTime = DateTime.Now.AddMinutes(lifeTime);
+            token!.ExpirationDate = newExpirationTime;
 
-            var result = databaseTokensProvider.SetExpirationDateTime(input.Metadata!.Token!, newExpirationTime);
+            var result = databaseTokensProvider.Edit(token);
 
             if (!result)
             {

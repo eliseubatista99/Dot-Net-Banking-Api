@@ -1,23 +1,10 @@
 ﻿using BankingAppDataTier.Contracts.Database;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Contracts.Providers
 {
-    public interface IDatabaseAccountsProvider
+    public interface IDatabaseAccountsProvider : INpgsqlDatabaseProvider<AccountsTableEntry>
     {
-        public bool CreateTableIfNotExists();
-
-        public List<AccountsTableEntry> GetAll();
-
         public List<AccountsTableEntry> GetAccountsOfClient(string clientId);
-
-        public AccountsTableEntry? GetById(string id);
-
-        public bool Add(AccountsTableEntry entry);
-
-        public bool Edit(AccountsTableEntry entry);
-
-        public bool Delete(string id);
-
-        public bool DeleteAll();
     }
 }

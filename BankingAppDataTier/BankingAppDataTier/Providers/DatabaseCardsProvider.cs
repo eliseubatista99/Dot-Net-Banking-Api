@@ -2,38 +2,22 @@
 using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
-using ElideusDotNetFramework.Providers.Contracts;
-using Npgsql;
+using ElideusDotNetFramework.Application;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Providers
 {
-    public class DatabaseCardsProvider : IDatabaseCardsProvider
+    public class DatabaseCardsProvider : NpgsqlDatabaseProvider<CardsTableEntry>, IDatabaseCardsProvider
     {
-        private IConfiguration Configuration;
-        private IMapperProvider mapperProvider;
-
-        private string connectionString;
-
-        public DatabaseCardsProvider(IApplicationContext applicationContext)
+        public DatabaseCardsProvider(IApplicationContext applicationContext) : base(applicationContext)
         {
-            this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
-            this.mapperProvider = applicationContext.GetDependency<IMapperProvider>()!;
-
-            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
+            var configuration = applicationContext.GetDependency<IConfiguration>()!;
+            connectionString = configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
         }
 
-        public bool CreateTableIfNotExists()
+        public override bool CreateTableIfNotExists()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {CardsTable.TABLE_NAME}" +
+            var command = $"CREATE TABLE IF NOT EXISTS {CardsTable.TABLE_NAME}" +
                         $"(" +
                         $"{CardsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{CardsTable.COLUMN_NAME} VARCHAR(64) NOT NULL," +
@@ -49,263 +33,63 @@ namespace BankingAppDataTier.Providers
                         $"FOREIGN KEY ({CardsTable.COLUMN_PLASTIC_ID}) REFERENCES {PlasticsTable.TABLE_NAME}({PlasticsTable.COLUMN_ID})" +
                         $")";
 
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-
+            return ExecuteWrite(connectionString, command);
         }
 
-
-        public bool Add(CardsTableEntry entry)
+        public override List<CardsTableEntry> GetAll()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
+            var command = $"SELECT * FROM {CardsTable.TABLE_NAME}";
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = this.BuildAddCommand(entry);
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteReadMultiple(connectionString, command);
         }
 
-
-        public bool Delete(string id)
+        public override CardsTableEntry? GetById(string id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
+            var command = $"SELECT * FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_ID} = '{id}'";
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_ID} = '{id}'";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteRead(connectionString, command);
         }
 
-        public bool Edit(CardsTableEntry entry)
+        public override bool Add(CardsTableEntry entry)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
+            var command = this.BuildAddCommand(entry);
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = this.BuildEditCommand(entry);
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public List<CardsTableEntry> GetAll()
+        public override bool Edit(CardsTableEntry entry)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                List<CardsTableEntry> result = new List<CardsTableEntry>();
+            var command = this.BuildEditCommand(entry);
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {CardsTable.TABLE_NAME}";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    while (sqlReader!.Read())
-                    {
-                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, CardsTableEntry>(sqlReader);
-
-                        result.Add(dataEntry);
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
-        public CardsTableEntry? GetById(string id)
+        public override bool Delete(string id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                CardsTableEntry? result = null;
+            var command = $"DELETE FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_ID} = '{id}'";
 
-                connection.Open();
+            return ExecuteWrite(connectionString, command);
+        }
 
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
+        public override bool DeleteAll()
+        {
+            var command = $"DELETE FROM {CardsTable.TABLE_NAME} WHERE 1=1";
 
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_ID} = '{id}'";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    if (sqlReader.HasRows)
-                    {
-                        sqlReader.Read();
-                        result = mapperProvider.Map<NpgsqlDataReader, CardsTableEntry>(sqlReader);
-
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteWrite(connectionString, command);
         }
 
         public List<CardsTableEntry> GetCardsOfAccount(string accountId)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                List<CardsTableEntry> result = new List<CardsTableEntry>();
+            var command = $"SELECT * FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_RELATED_ACCOUNT_ID} = '{accountId}'";
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    var cardIdsOfAccount = new List<string>();
-
-                    command.CommandText = $"SELECT * FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_RELATED_ACCOUNT_ID} = '{accountId}'";
-
-                    using (var sqlReader = command.ExecuteReader())
-                    {
-                        while (sqlReader!.Read())
-                        {
-                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, CardsTableEntry>(sqlReader);
-
-                            result.Add(dataEntry);
-                        }
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteReadMultiple(connectionString, command);
         }
 
         public List<CardsTableEntry> GetCardsWithPlastic(string plasticId)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                List<CardsTableEntry> result = new List<CardsTableEntry>();
+            var command = $"SELECT * FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_PLASTIC_ID} = '{plasticId}'";
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    var cardIdsOfAccount = new List<string>();
-
-                    command.CommandText = $"SELECT * FROM {CardsTable.TABLE_NAME} WHERE {CardsTable.COLUMN_PLASTIC_ID} = '{plasticId}'";
-
-                    using (var sqlReader = command.ExecuteReader())
-                    {
-                        while (sqlReader!.Read())
-                        {
-                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, CardsTableEntry>(sqlReader);
-
-                            result.Add(dataEntry);
-                        }
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
-        public bool DeleteAll()
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {CardsTable.TABLE_NAME} WHERE 1=1";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteReadMultiple(connectionString, command);
         }
 
         private string BuildAddCommand(CardsTableEntry entry)

@@ -3,7 +3,7 @@ using BankingAppDataTier.Contracts.Constants.Database;
 using BankingAppDataTier.Contracts.Database;
 using BankingAppDataTier.Contracts.Dtos.Entitites;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Database;
+using ElideusDotNetFramework.Database;
 using Npgsql;
 
 namespace BankingAppDataTier.MapperProfiles
@@ -28,15 +28,15 @@ namespace BankingAppDataTier.MapperProfiles
             this.CreateMap<CardDto, CardsTableEntry>();
 
             this.CreateMap<NpgsqlDataReader, CardsTableEntry>()
-             .ForMember(d => d.Id, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_ID)))
-             .ForMember(d => d.RelatedAccountID, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_RELATED_ACCOUNT_ID)))
-             .ForMember(d => d.Name, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_NAME)))
-             .ForMember(d => d.PlasticId, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_PLASTIC_ID)))
-             .ForMember(d => d.RequestDate, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_REQUEST_DATE)))
-             .ForMember(d => d.ActivationDate, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_ACTIVATION_DATE)))
-             .ForMember(d => d.ExpirationDate, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_EXPIRATION_DATE)))
-             .ForMember(d => d.Balance, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_BALANCE)))
-             .ForMember(d => d.PaymentDay, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_PAYMENT_DAY)));
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_ID)))
+             .ForMember(d => d.RelatedAccountID, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_RELATED_ACCOUNT_ID)))
+             .ForMember(d => d.Name, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_NAME)))
+             .ForMember(d => d.PlasticId, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_PLASTIC_ID)))
+             .ForMember(d => d.RequestDate, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_REQUEST_DATE)))
+             .ForMember(d => d.ActivationDate, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_ACTIVATION_DATE)))
+             .ForMember(d => d.ExpirationDate, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_EXPIRATION_DATE)))
+             .ForMember(d => d.Balance, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_BALANCE)))
+             .ForMember(d => d.PaymentDay, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, CardsTable.COLUMN_PAYMENT_DAY)));
         }
 
     }

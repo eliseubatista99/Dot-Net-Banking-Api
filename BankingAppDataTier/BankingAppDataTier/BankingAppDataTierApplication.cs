@@ -4,7 +4,7 @@ using BankingAppDataTier.MapperProfiles;
 using BankingAppDataTier.Providers;
 using ElideusDotNetFramework;
 using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Application;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BankingAppDataTier
