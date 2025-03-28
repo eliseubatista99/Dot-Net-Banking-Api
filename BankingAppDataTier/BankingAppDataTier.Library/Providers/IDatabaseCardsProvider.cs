@@ -1,9 +1,9 @@
 ﻿using BankingAppDataTier.Library.Database;
-using ElideusDotNetFramework.PostgreSql;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Library.Providers
 {
-    public interface IDatabaseCardsProvider : INpgsqlDatabaseProvider<CardsTableEntry>
+    public interface IDatabaseCardsProvider : IDatabaseProvider<CardsTableEntry>
     {
         public List<CardsTableEntry> GetCardsOfAccount(string accountId);
 

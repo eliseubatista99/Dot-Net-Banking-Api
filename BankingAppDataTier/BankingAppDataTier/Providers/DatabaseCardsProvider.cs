@@ -3,7 +3,7 @@ using BankingAppDataTier.Library.Constants.Database;
 using BankingAppDataTier.Library.Database;
 using BankingAppDataTier.Library.Providers;
 using ElideusDotNetFramework.Core;
-using ElideusDotNetFramework.PostgreSql;
+using ElideusDotNetFramework.Database.PostgreSql;
 using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Providers

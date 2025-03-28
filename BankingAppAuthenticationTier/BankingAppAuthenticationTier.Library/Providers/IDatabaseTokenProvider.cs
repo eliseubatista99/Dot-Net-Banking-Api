@@ -1,9 +1,9 @@
 ﻿using BankingAppAuthenticationTier.Library.Database;
-using ElideusDotNetFramework.PostgreSql;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppAuthenticationTier.Library.Providers
 {
-    public interface IDatabaseTokenProvider : INpgsqlDatabaseProvider<TokenTableEntry>
+    public interface IDatabaseTokenProvider : IDatabaseProvider<TokenTableEntry>
     {
         public bool DeleteAllExpired();
 

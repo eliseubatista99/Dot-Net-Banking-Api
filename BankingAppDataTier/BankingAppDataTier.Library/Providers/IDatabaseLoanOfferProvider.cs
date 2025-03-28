@@ -1,9 +1,9 @@
 ﻿using BankingAppDataTier.Library.Database;
-using ElideusDotNetFramework.PostgreSql;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Library.Providers
 {
-    public interface IDatabaseLoanOfferProvider : INpgsqlDatabaseProvider<LoanOfferTableEntry>
+    public interface IDatabaseLoanOfferProvider : IDatabaseProvider<LoanOfferTableEntry>
     {
         public List<LoanOfferTableEntry> GetByType(string loanType, bool onlyActive = false);
     }

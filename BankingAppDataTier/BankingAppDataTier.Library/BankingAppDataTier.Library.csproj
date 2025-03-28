@@ -9,6 +9,8 @@
 
 	<ItemGroup>
 	  <PackageReference Include="elideus-dot-net-banking-authentication-tier-contracts" Version="1.0.0" />
+	  <PackageReference Include="elideus-dot-net-framework-database" Version="1.0.0" />
+	  <PackageReference Include="elideus-dot-net-framework-database-postgresql" Version="1.0.0" />
 	  <PackageReference Include="elideus-dot-net-framework-external-services" Version="1.0.2" />
 	</ItemGroup>
 

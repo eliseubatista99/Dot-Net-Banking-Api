@@ -1,9 +1,9 @@
 ﻿using BankingAppAuthenticationTier.Library.Database;
-using ElideusDotNetFramework.PostgreSql;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppAuthenticationTier.Library.Providers
 {
-    public interface IDatabaseClientsProvider : INpgsqlDatabaseProvider<ClientsTableEntry>
+    public interface IDatabaseClientsProvider : IDatabaseProvider<ClientsTableEntry>
     {
     }
 }

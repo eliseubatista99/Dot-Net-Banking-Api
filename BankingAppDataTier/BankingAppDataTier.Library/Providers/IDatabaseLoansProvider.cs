@@ -1,9 +1,9 @@
 ﻿using BankingAppDataTier.Library.Database;
-using ElideusDotNetFramework.PostgreSql;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Library.Providers
 {
-    public interface IDatabaseLoansProvider : INpgsqlDatabaseProvider<LoanTableEntry>
+    public interface IDatabaseLoansProvider : IDatabaseProvider<LoanTableEntry>
     {
         public List<LoanTableEntry> GetByAccount(string relatedAccount);
 

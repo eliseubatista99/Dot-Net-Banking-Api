@@ -1,9 +1,9 @@
 ﻿using BankingAppDataTier.Library.Database;
-using ElideusDotNetFramework.PostgreSql;
+using ElideusDotNetFramework.Database;
 
 namespace BankingAppDataTier.Library.Providers
 {
-    public interface IDatabaseClientsProvider : INpgsqlDatabaseProvider<ClientsTableEntry>
+    public interface IDatabaseClientsProvider : IDatabaseProvider<ClientsTableEntry>
     {
         public bool ChangePassword(string id, string password);
     }

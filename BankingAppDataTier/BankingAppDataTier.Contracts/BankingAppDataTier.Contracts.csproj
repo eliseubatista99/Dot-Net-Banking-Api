@@ -13,7 +13,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="elideus-dot-net-framework-core" Version="2.0.0" />
-		<PackageReference Include="elideus-dot-net-framework-postgresql" Version="2.0.0" />
 		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 </Project>
