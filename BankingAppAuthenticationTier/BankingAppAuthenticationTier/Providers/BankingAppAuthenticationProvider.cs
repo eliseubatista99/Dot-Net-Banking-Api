@@ -22,7 +22,7 @@ namespace BankingAppAuthenticationTier.Providers
             this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
         }
 
-        protected override (SymmetricSecurityKey key, string issuer, string audience, DateTime expireDateTime, int lifeTime) GetConfiguration()
+        protected override (SymmetricSecurityKey key, string issuer, string audience, DateTime expireDateTime, int lifeTime) GetTokenConfiguration()
         {
             var authConfigs = this.Configuration.GetSection(AuthenticationConfigs.AuthenticationSection);
 
@@ -35,6 +35,17 @@ namespace BankingAppAuthenticationTier.Providers
             DateTime expireDateTime = DateTime.UtcNow.AddMinutes(lifetime);
 
             return (key, issuer, audience, expireDateTime, lifetime);
+        }
+
+        protected override (List<Claim> claims, string securityAlgorithm) GetGenerationConfigs(string id)
+        {
+            var claims = new List<Claim>
+                {
+                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new(JwtRegisteredClaimNames.Name, id),
+                };
+
+            return (claims, SecurityAlgorithms.HmacSha256);
         }
     }
 }

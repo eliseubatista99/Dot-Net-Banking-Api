@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="elideus-dot-net-framework-authentication" Version="1.0.0" />
+	  <PackageReference Include="elideus-dot-net-framework-authentication" Version="1.0.1" />
 	  <PackageReference Include="elideus-dot-net-framework-database" Version="1.0.0" />
 	  <PackageReference Include="elideus-dot-net-framework-database-postgresql" Version="1.0.0" />
 	</ItemGroup>

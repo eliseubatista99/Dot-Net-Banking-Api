@@ -54,17 +54,18 @@ namespace BankingAppAuthenticationTier.Operations
         } 
 
 
-        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(TIn input)
+        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(HttpRequest request, TIn input)
         {
             if (UseAuthentication)
             {
-                if (input.Metadata?.Token == null || input.Metadata.Token == String.Empty)
+                var token = request.Headers.Authorization.FirstOrDefault();
+
+                if (token == null)
                 {
-                    var invalidInputError = InputErrors.InvalidInputField(nameof(input.Metadata.Token));
-                    return (HttpStatusCode.BadRequest, invalidInputError);
+                    return (HttpStatusCode.Unauthorized, AuthenticationErrors.InvalidToken);
                 }
 
-                var (_, validationError) = ValidateToken(input.Metadata.Token);
+                var (_, validationError) = ValidateToken(token);
 
                 if (validationError != null)
                 {
@@ -72,7 +73,7 @@ namespace BankingAppAuthenticationTier.Operations
                 }
             }
 
-            return await base.ValidateInput(input);
+            return await base.ValidateInput(request, input);
         }
     }
 }
