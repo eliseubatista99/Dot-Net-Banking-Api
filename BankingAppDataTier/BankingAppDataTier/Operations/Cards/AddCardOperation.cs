@@ -25,9 +25,9 @@ namespace BankingAppDataTier.Operations
             databasePlasticsProvider = executionContext.GetDependency<IDatabasePlasticsProvider>()!;
         }
 
-        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(AddCardInput input)
+        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(HttpRequest request, AddCardInput input)
         {
-            var baseValidation = await base.ValidateInput(input);
+            var baseValidation = await base.ValidateInput(request, input);
 
             if (baseValidation.Error == null)
             {

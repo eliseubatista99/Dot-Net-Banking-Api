@@ -27,6 +27,11 @@ namespace BankingAppDataTier.Providers
             return configuration.GetSection(AuthenticationTierConfigs.Section).GetValue<string>(AuthenticationTierConfigs.Url)!;
         }
 
+        protected override string GetToken()
+        {
+            return "tokenzinho";
+        }
+
         public Task<IsValidTokenOutput> IsValidToken(IsValidTokenInput input)
         {
             return CallExternalPostOperation<IsValidTokenInput, IsValidTokenOutput>("IsValidToken", input);

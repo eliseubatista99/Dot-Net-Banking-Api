@@ -10,7 +10,7 @@ namespace BankingAppDataTier
     public class BankingAppDataTierApplication : ElideusDotNetFrameworkApplication
     {
         protected override OperationsBuilder OperationsBuilder { get; set; } = new BankingAppDataTierOperationsBuilder();
-        protected override bool UseAuthentication { get; set; } = false;
+        protected override bool UseAuthentication { get; set; } = true;
 
         protected override void InitializeDatabase(ref WebApplicationBuilder builder)
         {

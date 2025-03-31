@@ -25,9 +25,9 @@ namespace BankingAppDataTier.Operations
             databaseAccountsProvider = executionContext.GetDependency<IDatabaseAccountsProvider>()!;
         }
 
-        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(AddAccountInput input)
+        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(HttpRequest request, AddAccountInput input)
         {
-            var baseValidation = await base.ValidateInput(input);
+            var baseValidation = await base.ValidateInput(request, input);
 
             if(baseValidation.Error == null)
             {

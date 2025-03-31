@@ -24,12 +24,11 @@ namespace BankingAppDataTier.Operations
             authTierProvider = executionContext.GetDependency<IAuthenticationTierProvider>()!;
         }
 
-        protected virtual async Task<Error?> ValidateToken(TIn input)
+        protected virtual async Task<Error?> ValidateToken(string token)
         {
             var isValidResult = await authTierProvider.IsValidToken(new BankingAppAuthenticationTier.Contracts.Operations.IsValidTokenInput
             {
-                Token = input.Metadata.Token!,
-                Metadata = input.Metadata,
+                Token = token!,
             });
 
             if (!isValidResult.IsValid)
@@ -41,17 +40,19 @@ namespace BankingAppDataTier.Operations
         } 
 
 
-        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(TIn input)
+        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(HttpRequest request, TIn input)
         {
             if (UseAuthentication)
             {
-                if (input.Metadata?.Token == null || input.Metadata.Token == String.Empty)
-                {
-                    var invalidInputError = InputErrors.InvalidInputField(nameof(input.Metadata.Token));
-                    return (HttpStatusCode.BadRequest, invalidInputError);
-                }
+                var token = request.Headers.Authorization.FirstOrDefault();
 
-                var validationError = await ValidateToken(input);
+                //if (token == null)
+                //{
+                //    var invalidInputError = InputErrors.InvalidInputField(nameof(token));
+                //    return (HttpStatusCode.Unauthorized, invalidInputError);
+                //}
+
+                var validationError = await ValidateToken(token);
 
                 if (validationError != null)
                 {
@@ -59,7 +60,7 @@ namespace BankingAppDataTier.Operations
                 }
             }
 
-            return await base.ValidateInput(input);
+            return await base.ValidateInput(request, input);
         }
     }
 }
