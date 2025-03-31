@@ -10,22 +10,11 @@ namespace BankingAppAuthenticationTier.Operations
 
         protected override async Task<IsValidTokenOutput> ExecuteAsync(IsValidTokenInput input)
         {
-            var (token, tokenValidationError) = ValidateToken(input.Token);
-
-            if(tokenValidationError != null)
-            {
-                return new IsValidTokenOutput()
-                {
-                    ExpirationDateTime = token?.ExpirationDate,
-                    IsValid = false,
-                    Reason = tokenValidationError.Code,
-                };
-            }
+            var (isValid, _, _) = authProvider.IsValidToken(input.Token);
 
             return new IsValidTokenOutput()
             {
-                ExpirationDateTime = token?.ExpirationDate,
-                IsValid = true,
+                IsValid = isValid,
             };
         }
     }

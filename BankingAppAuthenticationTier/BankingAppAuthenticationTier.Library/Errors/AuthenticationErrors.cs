@@ -11,6 +11,8 @@ namespace BankingAppAuthenticationTier.Library.Errors
 
         public static Error InvalidToken = new Error { Code = "InvalidToken", Message = "The provided token is invalid." };
 
+        public static Error InvalidRefreshToken = new Error { Code = "InvalidRefreshToken", Message = "The provided refresh token is invalid." };
+
         public static Error TokenExpired = new Error { Code = "TokenExpired", Message = "The provided token is expired." };
 
         public static Error WrongCode = new Error { Code = "WrongCode", Message = "The provided code is invalid." };

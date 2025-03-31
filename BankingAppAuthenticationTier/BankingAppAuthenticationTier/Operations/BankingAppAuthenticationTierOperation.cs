@@ -2,10 +2,7 @@
 using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Core;
 using System.Net;
-using BankingAppAuthenticationTier.Library.Providers;
-using BankingAppAuthenticationTier.Library.Database;
 using BankingAppAuthenticationTier.Library.Errors;
-using ElideusDotNetFramework.Authentication;
 
 namespace BankingAppAuthenticationTier.Operations
 {
@@ -16,7 +13,6 @@ namespace BankingAppAuthenticationTier.Operations
 
         protected IMapperProvider mapperProvider;
         protected IAuthenticationProvider authProvider;
-        protected IDatabaseTokenProvider databaseTokensProvider;
 
         protected override async Task InitAsync()
         {
@@ -24,33 +20,18 @@ namespace BankingAppAuthenticationTier.Operations
 
             mapperProvider = executionContext.GetDependency<IMapperProvider>()!;
             authProvider = executionContext.GetDependency<IAuthenticationProvider>()!;
-            databaseTokensProvider = executionContext.GetDependency<IDatabaseTokenProvider>()!;
         }
 
-        protected virtual (TokenTableEntry? token, Error? error) ValidateToken(string token)
+        protected virtual Error? ValidateToken(string token)
         {
             var isValidResult = authProvider.IsValidToken(token);
 
             if (!isValidResult.isValid)
             {
-                return (null, AuthenticationErrors.InvalidToken);
+                return AuthenticationErrors.InvalidToken;
             }
 
-            var tokenInDb = databaseTokensProvider.GetById(token);
-
-            if (tokenInDb == null)
-            {
-                return (null, AuthenticationErrors.InvalidToken);
-            }
-
-            var today = DateTime.Now;
-
-            if (tokenInDb.ExpirationDate.Ticks <= today.Ticks)
-            {
-                return (tokenInDb, AuthenticationErrors.TokenExpired);
-            }
-
-            return (tokenInDb, null);
+            return null;
         } 
 
 
@@ -65,7 +46,7 @@ namespace BankingAppAuthenticationTier.Operations
                     return (HttpStatusCode.Unauthorized, AuthenticationErrors.InvalidToken);
                 }
 
-                var (_, validationError) = ValidateToken(token);
+                var validationError = ValidateToken(token);
 
                 if (validationError != null)
                 {

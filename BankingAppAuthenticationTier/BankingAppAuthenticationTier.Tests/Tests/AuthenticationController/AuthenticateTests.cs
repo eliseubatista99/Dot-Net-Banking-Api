@@ -42,8 +42,8 @@ public class AuthenticateTests : OperationTest<AuthenticateOperation, Authentica
         });
 
         Assert.True(response.Error == null);
-        Assert.True(response.Token != string.Empty);
-        Assert.True(response.ExpirationDateTime.GetValueOrDefault().Ticks > DateTime.Now.Ticks);
+        Assert.True(response.Token != null);
+        Assert.True(response.Token.ExpirationDateTime.Ticks > DateTime.Now.Ticks);
     }
 
     [Fact]

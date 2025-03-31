@@ -6,10 +6,11 @@ namespace BankingAppAuthenticationTier.Contracts.Operations
 {
     [ExcludeFromCodeCoverage]
 
-    public class AuthenticateOutput : OperationOutput
+    public class RefreshTokenOutput : OperationOutput
     {
         public TokenData? Token { get; set; }
 
         public TokenData? RefreshToken { get; set; }
+
     }
 }

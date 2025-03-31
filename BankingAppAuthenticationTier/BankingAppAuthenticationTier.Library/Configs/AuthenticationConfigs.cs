@@ -9,7 +9,7 @@ namespace BankingAppAuthenticationTier.Library.Configs
         public static string Issuer = "Issuer";
         public static string Audience = "Audience";
         public static string Key = "Key";
-
-        public static readonly int TokenLifetime = 30;
+        public static string TokenLifeTime = "TokenLifeTime";
+        public static string RefreshTokenLifeTime = "RefreshTokenLifeTime";
     }
 }

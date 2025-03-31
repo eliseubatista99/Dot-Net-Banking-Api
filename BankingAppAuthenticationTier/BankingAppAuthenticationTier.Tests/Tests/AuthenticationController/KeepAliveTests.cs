@@ -1,30 +1,24 @@
 ﻿using BankingAppAuthenticationTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;
 using BankingAppAuthenticationTier.Operations;
-using ElideusDotNetFramework.Core.Operations;
 using BankingAppAuthenticationTier.Contracts.Operations;
 using BankingAppAuthenticationTier.Library.Errors;
 
 namespace BankingAppAuthenticationTier.Tests.Authentication;
 
-public class KeepAliveTests : OperationTest<KeepAliveOperation, VoidOperationInput, KeepAliveOutput>
+public class KeepAliveTests : OperationTest<RefreshTokenOperation, RefreshTokenInput, RefreshTokenOutput>
 {
     private IsValidTokenOperation isValidTokenOperation { get; set; }
 
     public KeepAliveTests(BankingAppAuthenticationTierTestsBuilder _testBuilder) : base(_testBuilder)
     {
-        OperationToTest = new KeepAliveOperation(_testBuilder.ApplicationContextMock!, string.Empty);
+        OperationToTest = new RefreshTokenOperation(_testBuilder.ApplicationContextMock!, string.Empty);
         isValidTokenOperation = new IsValidTokenOperation(_testBuilder.ApplicationContextMock!, string.Empty);
     }
 
     [Fact]
     public async Task ShouldBe_Success()
     {
-        var metadata = new InputMetadata
-        {
-            Token = TestsConstants.PermanentToken,
-        };
-
         var isValidResponse = await TestsHelper.SimulateCall<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(isValidTokenOperation!, new IsValidTokenInput
         {
             Token = TestsConstants.PermanentToken,
@@ -33,24 +27,22 @@ public class KeepAliveTests : OperationTest<KeepAliveOperation, VoidOperationInp
 
         var originalExpirationTime = isValidResponse.ExpirationDateTime.GetValueOrDefault();
 
-        var keepAliveResponse = await SimulateOperationToTestCall(new VoidOperationInput
+        var keepAliveResponse = await SimulateOperationToTestCall(new RefreshTokenInput
         {
-            Metadata = metadata,
+            RefreshToken = TestsConstants.PermanentToken,
+            Metadata = TestsConstants.TestsMetadata,
         });
 
         Assert.True(keepAliveResponse.Error == null);
-        Assert.True(keepAliveResponse.ExpirationDateTime.GetValueOrDefault().Ticks > originalExpirationTime.Ticks);
+        Assert.True(keepAliveResponse.Token.ExpirationDateTime.Ticks > originalExpirationTime.Ticks);
     }
 
     [Fact]
     public async Task ShouldBeError_InvalidToken()
     {
-        var response = await SimulateOperationToTestCall(new VoidOperationInput
+        var response = await SimulateOperationToTestCall(new RefreshTokenInput
         {
-            Metadata = new InputMetadata
-            {
-                Token = "invalid-token",
-            },
+            RefreshToken = "invalid-token",
         });
 
         Assert.True(response.Error?.Code == AuthenticationErrors.InvalidToken.Code);
@@ -59,12 +51,10 @@ public class KeepAliveTests : OperationTest<KeepAliveOperation, VoidOperationInp
     [Fact]
     public async Task ShouldBeError_TokenExpired()
     {
-        var response = await SimulateOperationToTestCall(new VoidOperationInput
+        var response = await SimulateOperationToTestCall(new RefreshTokenInput
         {
-            Metadata = new InputMetadata
-            {
-                Token = TestsConstants.ExpiredToken,
-            },
+            RefreshToken = TestsConstants.ExpiredToken,
+
         });
 
         Assert.True(response.Error?.Code == AuthenticationErrors.TokenExpired.Code);

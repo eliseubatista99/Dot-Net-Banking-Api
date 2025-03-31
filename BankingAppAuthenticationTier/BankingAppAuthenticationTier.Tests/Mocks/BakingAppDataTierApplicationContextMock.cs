@@ -13,12 +13,12 @@ namespace BankingAppAuthenticationTier.Tests.Mocks
             {$"{DatabaseConfigs.DatabaseSection}:{DatabaseConfigs.DatabaseConnection}", TestsConstants.ConnectionString},
             {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Issuer}", TestsConstants.AuthenticationIssuer},
             {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Audience}", TestsConstants.AuthenticationAudience},
-            {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.Key}", TestsConstants.AuthenticationKey},
+            {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.TokenLifeTime}", TestsConstants.TokenLifeTime},
+            {$"{AuthenticationConfigs.AuthenticationSection}:{AuthenticationConfigs.RefreshTokenLifeTime}", TestsConstants.RefreshTokenLifeTime},
         };
 
         protected override List<Profile> MapperProfiles { get; set; } = new List<Profile>
         {
-            new TokensMapperProfile(),
             new ClientsMapperProfile(),
         };
     }

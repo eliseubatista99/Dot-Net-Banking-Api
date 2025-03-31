@@ -5,8 +5,9 @@ namespace BankingAppAuthenticationTier.Contracts.Operations
 {
     [ExcludeFromCodeCoverage]
 
-    public class KeepAliveOutput : OperationOutput
+    public class RefreshTokenInput : OperationInput
     {
-        public DateTime? ExpirationDateTime { get; set; }
+        public required string RefreshToken { get; set; }
+
     }
 }

@@ -30,7 +30,6 @@ namespace BankingAppAuthenticationTier.Operations
             {
                 return new AuthenticateOutput
                 {
-                    Token = string.Empty,
                     Error = AuthenticationErrors.InvalidClient,
                     StatusCode = HttpStatusCode.NotFound,
                 };
@@ -40,38 +39,17 @@ namespace BankingAppAuthenticationTier.Operations
             {
                 return new AuthenticateOutput
                 {
-                    Token = string.Empty,
                     Error = AuthenticationErrors.WrongCode,
                     StatusCode = HttpStatusCode.Unauthorized,
                 };
             }
+           
+            var (token, refreshToken) = authProvider.GenerateTokens(input.ClientId);
 
-            var deleteResult = databaseTokensProvider.DeleteTokensOfClient(input.ClientId);
-
-            if (!deleteResult)
+            if (token == null || refreshToken == null)
             {
                 return new AuthenticateOutput
                 {
-                    Token = string.Empty,
-                    Error = AuthenticationErrors.FailedToGenerateToken,
-                    StatusCode = HttpStatusCode.InternalServerError,
-                };
-            }
-
-            var (token, expirationDateTime) = authProvider.GenerateToken(input.ClientId);
-
-            var insertResult = databaseTokensProvider.Add(new TokenTableEntry
-            {
-                Token = token,
-                ClientId = input.ClientId,
-                ExpirationDate = expirationDateTime,
-            });
-
-            if (!insertResult)
-            {
-                return new AuthenticateOutput
-                {
-                    Token = string.Empty,
                     Error = AuthenticationErrors.FailedToGenerateToken,
                     StatusCode = HttpStatusCode.InternalServerError,
                 };
@@ -79,8 +57,8 @@ namespace BankingAppAuthenticationTier.Operations
 
             return new AuthenticateOutput
             {
-                ExpirationDateTime = expirationDateTime,
                 Token = token,
+                RefreshToken = refreshToken,
             };
         }
 

@@ -1,12 +1,8 @@
 ﻿using BankingAppAuthenticationTier.Library.Configs;
-using BankingAppAuthenticationTier.Library.Providers;
-using ElideusDotNetFramework.Authentication;
 using ElideusDotNetFramework.Core;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 
@@ -22,19 +18,30 @@ namespace BankingAppAuthenticationTier.Providers
             this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
         }
 
-        protected override (SymmetricSecurityKey key, string issuer, string audience, DateTime expireDateTime, int lifeTime) GetTokenConfiguration()
+        protected override TokenConfiguration GetTokenConfiguration()
         {
             var authConfigs = this.Configuration.GetSection(AuthenticationConfigs.AuthenticationSection);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            return new TokenConfiguration
+            {
+                Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfigs[AuthenticationConfigs.Key]!)),
+                Audience = authConfigs.GetSection(AuthenticationConfigs.Audience).Value!,
+                Issuer = authConfigs.GetSection(AuthenticationConfigs.Issuer).Value!,
+                LifeTime = Convert.ToInt16(authConfigs.GetSection(AuthenticationConfigs.TokenLifeTime).Value)!,
+            };
+        }
 
-            var issuer = authConfigs.GetSection(AuthenticationConfigs.Issuer).Value!;
-            var audience = authConfigs.GetSection(AuthenticationConfigs.Audience).Value!;
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfigs[AuthenticationConfigs.Key]!));
-            var lifetime = AuthenticationConfigs.TokenLifetime;
-            DateTime expireDateTime = DateTime.UtcNow.AddMinutes(lifetime);
+        protected override TokenConfiguration GetRefreshTokenConfiguration()
+        {
+            var authConfigs = this.Configuration.GetSection(AuthenticationConfigs.AuthenticationSection);
 
-            return (key, issuer, audience, expireDateTime, lifetime);
+            return new TokenConfiguration
+            {
+                Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfigs[AuthenticationConfigs.Key]!)),
+                Audience = authConfigs.GetSection(AuthenticationConfigs.Audience).Value!,
+                Issuer = authConfigs.GetSection(AuthenticationConfigs.Issuer).Value!,
+                LifeTime = Convert.ToInt16(authConfigs.GetSection(AuthenticationConfigs.RefreshTokenLifeTime).Value)!,
+            };
         }
 
         protected override (List<Claim> claims, string securityAlgorithm) GetGenerationConfigs(string id)
