@@ -10,7 +10,7 @@ namespace BankingAppDataTier.Tests.Constants
 
         public static InputMetadata TestsMetadata = new InputMetadata
         {
-            Token = "token",
+            Language = ElideusDotNetFramework.Core.Enums.Language.English, 
         };
     }
 }
