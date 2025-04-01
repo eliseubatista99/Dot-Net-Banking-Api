@@ -2,11 +2,17 @@
 using BankingAppDataTier.Operations;
 using ElideusDotNetFramework.Core;
 using ElideusDotNetFramework.Core.Operations;
+using AuthenticationTier = BankingAppAuthenticationTier.Contracts.Operations;
 
 namespace BankingAppDataTier
 {
     public class BankingAppDataTierOperationsBuilder : OperationsBuilder
     {
+        private void MapAuthenticationOperations(ref WebApplication app, IApplicationContext context) 
+        { 
+            MapPostOperation<AuthenticateOperation, AuthenticationTier.AuthenticateInput, AuthenticationTier.AuthenticateOutput>(ref app, context, new AuthenticateOperation(context, "/Authenticate"));
+        }
+
         private void MapAccountsOperations(ref WebApplication app, IApplicationContext context)
         {
             MapPostOperation<AddAccountOperation, AddAccountInput, VoidOperationOutput>(ref app, context, new AddAccountOperation(context, "/AddAccount"));
@@ -113,6 +119,7 @@ namespace BankingAppDataTier
         {
             base.MapOperations(ref app, context);
 
+            MapAuthenticationOperations(ref app, context);
             MapAccountsOperations(ref app, context);
             MapCardsOperations(ref app, context);
             MapClientsOperations(ref app, context);

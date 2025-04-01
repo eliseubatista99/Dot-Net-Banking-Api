@@ -32,6 +32,11 @@ namespace BankingAppDataTier.Providers
             return "tokenzinho";
         }
 
+        public Task<AuthenticateOutput> Authenticate(AuthenticateInput input)
+        {
+            return CallExternalPostOperation<AuthenticateInput, AuthenticateOutput>("Authenticate", input);
+        }
+
         public Task<IsValidTokenOutput> IsValidToken(IsValidTokenInput input)
         {
             return CallExternalPostOperation<IsValidTokenInput, IsValidTokenOutput>("IsValidToken", input);
