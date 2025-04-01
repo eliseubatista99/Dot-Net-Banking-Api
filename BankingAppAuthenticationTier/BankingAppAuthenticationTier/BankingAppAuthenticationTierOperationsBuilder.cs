@@ -15,7 +15,7 @@ namespace BankingAppAuthenticationTier
 
             MapPostOperation<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(ref app, context, new IsValidTokenOperation(context, "/IsValidToken"));
 
-            MapPostOperation<RefreshTokenOperation, RefreshTokenInput, RefreshTokenOutput>(ref app, context, new RefreshTokenOperation(context, "/KeepAlive"));
+            MapPostOperation<RefreshTokenOperation, RefreshTokenInput, RefreshTokenOutput>(ref app, context, new RefreshTokenOperation(context, "/RefreshToken"));
         }
 
         public override void MapOperations(ref WebApplication app, IApplicationContext context)
