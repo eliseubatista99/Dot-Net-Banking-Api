@@ -24,6 +24,11 @@ namespace BankingAppAuthenticationTier.Operations
 
         protected virtual Error? ValidateToken(string token)
         {
+            if (token == null)
+            {
+                return AuthenticationErrors.InvalidToken;
+            }
+
             var isValidResult = authProvider.IsValidToken(token);
 
             if (!isValidResult.isValid)

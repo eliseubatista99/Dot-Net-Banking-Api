@@ -15,7 +15,7 @@ namespace BankingAppDataTier.Providers
     public class AuthenticationTierProvider : ExternalServiceProvider, IAuthenticationTierProvider
     {
         protected IConfiguration configuration;
-
+        
         public AuthenticationTierProvider(IApplicationContext _applicationContext) : base(_applicationContext)
         {
             this.configuration = applicationContext.GetDependency<IConfiguration>()!;
