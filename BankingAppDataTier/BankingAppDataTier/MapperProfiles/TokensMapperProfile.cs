@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using BankingAppDataTier.Contracts.Constants.Database;
-using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Database;
+using BankingAppDataTier.Library.Constants.Database;
+using BankingAppDataTier.Library.Database;
+using ElideusDotNetFramework.PostgreSql;
 using Npgsql;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     public class TokensMapperProfile : Profile
     {
 
@@ -21,9 +22,9 @@ namespace BankingAppDataTier.MapperProfiles
         private void CreateMapOfEntities()
         {
             this.CreateMap<NpgsqlDataReader, TokenTableEntry>()
-             .ForMember(d => d.ClientId, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TokensTable.COLUMN_CLIENT_ID)))
-             .ForMember(d => d.Token, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, TokensTable.COLUMN_TOKEN)))
-             .ForMember(d => d.ExpirationDate, opt => opt.MapFrom(s => DateTime.Parse(SqlDatabaseHelper.ReadColumnValue(s, TokensTable.COLUMN_EXPIRATION_DATE)!)));
+             .ForMember(d => d.ClientId, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, TokensTable.COLUMN_CLIENT_ID)))
+             .ForMember(d => d.Token, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, TokensTable.COLUMN_TOKEN)))
+             .ForMember(d => d.ExpirationDate, opt => opt.MapFrom(s => DateTime.Parse(NpgsqlDatabaseHelper.ReadColumnValue(s, TokensTable.COLUMN_EXPIRATION_DATE)!)));
         }
     }
 }

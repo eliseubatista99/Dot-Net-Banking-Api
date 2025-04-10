@@ -1,13 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
+	<PropertyGroup>
+		<Version>1.0.0</Version>
+		<IsPackable>true</IsPackable>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>elideus-dot-net-banking-business-tier-contracts</PackageId>
+		<Title>Dot Net Banking - Business Tier Contracts</Title>
+		<Authors>eliseubatista99</Authors>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="elideus-dot-net-framework" Version="1.0.29" />
+		<PackageReference Include="elideus-dot-net-framework-core" Version="2.0.0" />
+		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
-
 </Project>

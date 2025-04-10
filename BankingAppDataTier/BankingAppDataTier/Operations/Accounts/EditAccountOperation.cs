@@ -1,12 +1,12 @@
-﻿using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+﻿using BankingAppDataTier.Library.Constants;
+using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core.Operations;
+using ElideusDotNetFramework.Core;
 using System.Net;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Accounts
+namespace BankingAppDataTier.Operations
 {
     public class EditAccountOperation(IApplicationContext context, string endpoint)
             : BankingAppDataTierOperation<EditAccountInput, VoidOperationOutput>(context, endpoint)

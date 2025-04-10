@@ -1,11 +1,9 @@
-﻿using BankingAppDataTier.Contracts.Providers;
+﻿using BankingAppDataTier.Library.Providers;
 using BankingAppDataTier.DatabaseInitializers;
 using BankingAppDataTier.MapperProfiles;
 using BankingAppDataTier.Providers;
-using ElideusDotNetFramework;
-using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Providers.Contracts;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using ElideusDotNetFramework.Core.Operations;
+using ElideusDotNetFramework.Core;
 
 namespace BankingAppDataTier
 {
@@ -14,30 +12,11 @@ namespace BankingAppDataTier
         protected override OperationsBuilder OperationsBuilder { get; set; } = new BankingAppDataTierOperationsBuilder();
         protected override bool UseAuthentication { get; set; } = false;
 
-        protected override void AddAuthorizationToSwagger(ref WebApplicationBuilder builder, ref SwaggerGenOptions options)
-        {
-            base.AddAuthorizationToSwagger(ref builder, ref options);
-
-            //var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
-
-            //authProvider!.AddAuthorizationToSwaggerGen(ref builder);
-        }
-
-        protected override void ConfigureAuthentication(ref WebApplicationBuilder builder)
-        {
-            base.ConfigureAuthentication(ref builder);
-
-            //var authProvider = builder.Services.BuildServiceProvider().GetService<IAuthenticationProvider>()!;
-
-            //authProvider!.AddAuthenticationToApplicationBuilder(ref builder);
-        }
-
         protected override void InitializeDatabase(ref WebApplicationBuilder builder)
         {
             base.InitializeDatabase(ref builder);
 
             ClientsDatabaseInitializer.DefaultMock(ApplicationContext!.GetDependency<IDatabaseClientsProvider>()!);
-            TokenDatabaseInitializer.InitializeDatabase(ApplicationContext!.GetDependency<IDatabaseTokenProvider>()!);
             AccountsDatabaseInitializer.DefaultMock(ApplicationContext!.GetDependency<IDatabaseAccountsProvider>()!);
             PlasticsDatabaseInitializer.DefaultMock(ApplicationContext!.GetDependency<IDatabasePlasticsProvider>()!);
             CardsDatabaseInitializer.DefaultMock(ApplicationContext!.GetDependency<IDatabaseCardsProvider>()!);
@@ -51,9 +30,8 @@ namespace BankingAppDataTier
         {
             base.InjectDependencies(ref builder);
 
-            ApplicationContext?.AddDependency<IAuthenticationProvider, AuthenticationProvider>(ref builder);
+            ApplicationContext?.AddDependency<IAuthenticationTierProvider, AuthenticationTierProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabaseClientsProvider, DatabaseClientsProvider>(ref builder);
-            ApplicationContext?.AddDependency<IDatabaseTokenProvider, DatabaseTokenProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabaseAccountsProvider, DatabaseAccountsProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabasePlasticsProvider, DatabasePlasticsProvider>(ref builder);
             ApplicationContext?.AddDependency<IDatabaseCardsProvider, DatabaseCardsProvider>(ref builder);

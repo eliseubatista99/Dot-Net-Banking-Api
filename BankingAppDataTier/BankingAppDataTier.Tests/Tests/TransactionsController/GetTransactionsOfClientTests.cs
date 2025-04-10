@@ -1,9 +1,8 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
-using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations.Transactions;
+﻿using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Library.Providers;
+using BankingAppDataTier.Operations;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;
 

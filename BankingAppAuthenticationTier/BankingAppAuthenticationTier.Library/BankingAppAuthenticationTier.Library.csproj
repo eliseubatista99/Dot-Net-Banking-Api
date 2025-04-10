@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="elideus-dot-net-framework-database" Version="1.0.0" />
+	  <PackageReference Include="elideus-dot-net-framework-database-postgresql" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\BankingAppAuthenticationTier.Contracts\BankingAppAuthenticationTier.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>

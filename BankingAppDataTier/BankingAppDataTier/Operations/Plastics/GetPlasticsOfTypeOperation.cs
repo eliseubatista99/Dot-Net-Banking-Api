@@ -1,12 +1,11 @@
-﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
+﻿using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Providers.Contracts;
+using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core;
 
-namespace BankingAppDataTier.Operations.Plastics
+namespace BankingAppDataTier.Operations
 {
     public class GetPlasticsOfTypeOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetPlasticOfTypeInput, GetPlasticsOfTypeOutput>(context, endpoint)

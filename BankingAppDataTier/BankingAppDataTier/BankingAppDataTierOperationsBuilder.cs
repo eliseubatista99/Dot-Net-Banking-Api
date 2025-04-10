@@ -1,44 +1,16 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Authentication;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Plastics;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Transactions;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Authentication;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Cards;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
-using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Plastics;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Transactions;
-using BankingAppDataTier.Operations.Accounts;
-using BankingAppDataTier.Operations.Authentication;
-using BankingAppDataTier.Operations.Cards;
-using BankingAppDataTier.Operations.Clients;
-using BankingAppDataTier.Operations.LoanOffers;
-using BankingAppDataTier.Operations.Loans;
-using BankingAppDataTier.Operations.Plastics;
-using BankingAppDataTier.Operations.Transactions;
-using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+﻿using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Operations;
+using ElideusDotNetFramework.Core;
+using ElideusDotNetFramework.Core.Operations;
+using AuthenticationTier = BankingAppAuthenticationTier.Contracts.Operations;
 
 namespace BankingAppDataTier
 {
     public class BankingAppDataTierOperationsBuilder : OperationsBuilder
     {
-        private void MapAuthenticationOperations(ref WebApplication app, IApplicationContext context)
-        {
-            MapPostOperation<AuthenticateOperation, AuthenticateInput, AuthenticateOutput>(ref app, context, new AuthenticateOperation(context, "/Authenticate"));
-
-            MapPostOperation<GetAuthenticationPositionsOperation, GetAuthenticationPositionsInput, GetAuthenticationPositionsOutput>(ref app, context, new GetAuthenticationPositionsOperation(context, "/GetAuthenticationPositions"));
-
-            MapPostOperation<IsValidTokenOperation, IsValidTokenInput, IsValidTokenOutput>(ref app, context, new IsValidTokenOperation(context, "/IsValidToken"));
-
-            MapPostOperation<KeepAliveOperation, VoidOperationInput, KeepAliveOutput>(ref app, context, new KeepAliveOperation(context, "/KeepAlive"));
+        private void MapAuthenticationOperations(ref WebApplication app, IApplicationContext context) 
+        { 
+            MapPostOperation<AuthenticateOperation, AuthenticationTier.AuthenticateInput, AuthenticationTier.AuthenticateOutput>(ref app, context, new AuthenticateOperation(context, "/Authenticate"));
         }
 
         private void MapAccountsOperations(ref WebApplication app, IApplicationContext context)

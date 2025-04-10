@@ -1,9 +1,9 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Clients;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations.Clients;
+﻿using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Library.Providers;
+using BankingAppDataTier.Operations;
 using BankingAppDataTier.Tests.Constants;
-using ElideusDotNetFramework.Operations.Contracts;
+using ElideusDotNetFramework.Core.Operations;
 using ElideusDotNetFramework.Tests;
 
 namespace BankingAppDataTier.Tests.Clients;

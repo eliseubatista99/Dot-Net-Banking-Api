@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
-using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Constants.Database;
-using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Library.Constants;
+using BankingAppDataTier.Library.Constants.Database;
+using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Database;
+using ElideusDotNetFramework.PostgreSql;
 using Npgsql;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     public class PlasticsMapperProfile : Profile
     {
 
@@ -60,13 +61,13 @@ namespace BankingAppDataTier.MapperProfiles
              .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.IsActive.GetValueOrDefault()));
 
             this.CreateMap<NpgsqlDataReader, PlasticTableEntry>()
-             .ForMember(d => d.Id, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_ID)))
-             .ForMember(d => d.CardType, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_TYPE)))
-             .ForMember(d => d.Name, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_NAME)))
-             .ForMember(d => d.Image, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_IMAGE)))
-             .ForMember(d => d.Cashback, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_CASHBACK)))
-             .ForMember(d => d.Commission, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_COMISSION)))
-             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_IS_ACTIVE)));
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_ID)))
+             .ForMember(d => d.CardType, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_TYPE)))
+             .ForMember(d => d.Name, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_NAME)))
+             .ForMember(d => d.Image, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_IMAGE)))
+             .ForMember(d => d.Cashback, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_CASHBACK)))
+             .ForMember(d => d.Commission, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_COMISSION)))
+             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, PlasticsTable.COLUMN_IS_ACTIVE)));
         }
     }
 }

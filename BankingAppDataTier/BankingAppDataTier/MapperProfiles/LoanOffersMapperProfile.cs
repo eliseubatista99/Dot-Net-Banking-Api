@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
-using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Constants.Database;
-using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
+using BankingAppDataTier.Library.Constants;
+using BankingAppDataTier.Library.Constants.Database;
+using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Database;
+using ElideusDotNetFramework.PostgreSql;
 using Npgsql;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.MapperProfiles
 {
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     public class LoanOffersMapperProfile : Profile
     {
 
@@ -58,13 +59,13 @@ namespace BankingAppDataTier.MapperProfiles
              .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.IsActive.GetValueOrDefault()));
 
             this.CreateMap<NpgsqlDataReader, LoanOfferTableEntry>()
-             .ForMember(d => d.Id, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_ID)))
-             .ForMember(d => d.Name, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_NAME)))
-             .ForMember(d => d.Description, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_DESCRIPTION)))
-             .ForMember(d => d.LoanType, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_TYPE)))
-             .ForMember(d => d.MaxEffort, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_MAX_EFFORT)))
-             .ForMember(d => d.Interest, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_INTEREST)))
-             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => SqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_IS_ACTIVE)));
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_ID)))
+             .ForMember(d => d.Name, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_NAME)))
+             .ForMember(d => d.Description, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_DESCRIPTION)))
+             .ForMember(d => d.LoanType, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_TYPE)))
+             .ForMember(d => d.MaxEffort, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_MAX_EFFORT)))
+             .ForMember(d => d.Interest, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_INTEREST)))
+             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => NpgsqlDatabaseHelper.ReadColumnValue(s, LoanOffersTable.COLUMN_IS_ACTIVE)));
         }
     }
 }

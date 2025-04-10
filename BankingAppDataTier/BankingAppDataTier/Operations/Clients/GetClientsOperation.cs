@@ -1,11 +1,11 @@
-﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Clients;
-using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+﻿using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core.Operations;
+using ElideusDotNetFramework.Core;
+using BankingAppDataTier.Contracts.Dtos;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Clients
+namespace BankingAppDataTier.Operations
 {
     public class GetClientsOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<VoidOperationInput, GetClientsOutput>(context, endpoint)

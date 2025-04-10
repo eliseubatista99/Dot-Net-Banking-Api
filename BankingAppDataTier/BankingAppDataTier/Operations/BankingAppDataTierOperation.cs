@@ -1,10 +1,9 @@
-﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Errors.Contracts;
-using ElideusDotNetFramework.Operations;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+﻿using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core.Errors;
+using ElideusDotNetFramework.Core.Operations;
+using ElideusDotNetFramework.Core;
 using System.Net;
 
 namespace BankingAppDataTier.Operations
@@ -15,56 +14,45 @@ namespace BankingAppDataTier.Operations
         protected virtual bool UseAuthentication { get; set; } = true;
 
         protected IMapperProvider mapperProvider;
-        protected IAuthenticationProvider authProvider;
-        protected IDatabaseTokenProvider databaseTokensProvider;
+        protected IAuthenticationTierProvider authTierProvider;
 
         protected override async Task InitAsync()
         {
             await base.InitAsync();
 
             mapperProvider = executionContext.GetDependency<IMapperProvider>()!;
-            authProvider = executionContext.GetDependency<IAuthenticationProvider>()!;
-            databaseTokensProvider = executionContext.GetDependency<IDatabaseTokenProvider>()!;
+            authTierProvider = executionContext.GetDependency<IAuthenticationTierProvider>()!;
         }
 
-        protected virtual (TokenTableEntry? token, Error? error) ValidateToken(string token)
+        protected virtual async Task<Error?> ValidateToken(string token)
         {
-            var isValidResult = authProvider.IsValidToken(token);
-
-            if (!isValidResult.isValid)
+            var isValidResult = await authTierProvider.IsValidToken(new BankingAppAuthenticationTier.Contracts.Operations.IsValidTokenInput
             {
-                return (null, AuthenticationErrors.InvalidToken);
+                Token = token!,
+            });
+
+            if (!isValidResult.IsValid)
+            {
+                return AuthenticationErrors.InvalidToken;
             }
 
-            var tokenInDb = databaseTokensProvider.GetToken(token);
-
-            if (tokenInDb == null)
-            {
-                return (null, AuthenticationErrors.InvalidToken);
-            }
-
-            var today = DateTime.Now;
-
-            if (tokenInDb.ExpirationDate.Ticks <= today.Ticks)
-            {
-                return (tokenInDb, AuthenticationErrors.TokenExpired);
-            }
-
-            return (tokenInDb, null);
+            return null;
         } 
 
 
-        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(TIn input)
+        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(HttpRequest request, TIn input)
         {
             if (UseAuthentication)
             {
-                if (input.Metadata?.Token == null || input.Metadata.Token == String.Empty)
-                {
-                    var invalidInputError = GenericErrors.InvalidInputError(nameof(input.Metadata.Token));
-                    return (HttpStatusCode.BadRequest, invalidInputError);
-                }
+                var token = request.Headers.Authorization.FirstOrDefault();
 
-                var (_, validationError) = ValidateToken(input.Metadata.Token);
+                //if (token == null)
+                //{
+                //    var invalidInputError = InputErrors.InvalidInputField(nameof(token));
+                //    return (HttpStatusCode.Unauthorized, invalidInputError);
+                //}
+
+                var validationError = await ValidateToken(token);
 
                 if (validationError != null)
                 {
@@ -72,7 +60,7 @@ namespace BankingAppDataTier.Operations
                 }
             }
 
-            return await base.ValidateInput(input);
+            return await base.ValidateInput(request, input);
         }
     }
 }

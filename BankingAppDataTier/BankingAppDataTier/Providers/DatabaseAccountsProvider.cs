@@ -1,41 +1,26 @@
-﻿using BankingAppDataTier.Contracts.Configs;
-using BankingAppDataTier.Contracts.Constants;
-using BankingAppDataTier.Contracts.Constants.Database;
-using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Database;
-using ElideusDotNetFramework.Providers.Contracts;
-using Npgsql;
+﻿using BankingAppDataTier.Library.Configs;
+using BankingAppDataTier.Library.Constants;
+using BankingAppDataTier.Library.Constants.Database;
+using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core;
+using ElideusDotNetFramework.PostgreSql;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BankingAppDataTier.Providers
 {
-    public class DatabaseAccountsProvider : IDatabaseAccountsProvider
+    [ExcludeFromCodeCoverage]
+    public class DatabaseAccountsProvider : NpgsqlDatabaseProvider<AccountsTableEntry>, IDatabaseAccountsProvider
     {
-
-        private IConfiguration Configuration;
-        private IMapperProvider mapperProvider;
-
-        private string connectionString;
-
-        public DatabaseAccountsProvider(IApplicationContext applicationContext)
+        public DatabaseAccountsProvider(IApplicationContext applicationContext): base (applicationContext)
         {
-            this.Configuration = applicationContext.GetDependency<IConfiguration>()!;
-            this.mapperProvider = applicationContext.GetDependency<IMapperProvider>()!;
-
-            connectionString = Configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
+            var configuration = applicationContext.GetDependency<IConfiguration>()!;
+            connectionString = configuration.GetSection(DatabaseConfigs.DatabaseSection).GetValue<string>(DatabaseConfigs.DatabaseConnection)!;
         }
 
-        public bool CreateTableIfNotExists()
+        public override bool CreateTableIfNotExists()
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var(transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-           
-                try
-                {
-                    command.CommandText = $"CREATE TABLE IF NOT EXISTS {AccountsTable.TABLE_NAME}" +
+            var command = $"CREATE TABLE IF NOT EXISTS {AccountsTable.TABLE_NAME}" +
                         $"(" +
                         $"{AccountsTable.COLUMN_ID} VARCHAR(64) NOT NULL," +
                         $"{AccountsTable.COLUMN_OWNER_CLIENT_ID} VARCHAR(64) NOT NULL," +
@@ -50,225 +35,58 @@ namespace BankingAppDataTier.Providers
                         $"FOREIGN KEY ({AccountsTable.COLUMN_OWNER_CLIENT_ID}) REFERENCES {ClientsTable.TABLE_NAME}({ClientsTable.COLUMN_ID})" +
                         $")";
 
-                    command.ExecuteNonQuery();
+            return ExecuteWrite(connectionString, command);
+        }
 
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
+        public override List<AccountsTableEntry> GetAll()
+        {
+            var command = $"SELECT * FROM {AccountsTable.TABLE_NAME}";
 
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return ExecuteReadMultiple(connectionString, command);
+        }
+
+        public override AccountsTableEntry? GetById(string id)
+        {
+            var command = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
+
+            return ExecuteRead(connectionString, command);
+        }
+
+        public override bool Add(AccountsTableEntry entry)
+        {
+            var command = this.BuildAddCommand(entry);
+
+            return ExecuteWrite(connectionString, command);
+        }
+
+        public override bool Edit(AccountsTableEntry entry)
+        {
+            var command = this.BuildEditCommand(entry);
+
+            return ExecuteWrite(connectionString, command);
+        }
+
+        public override bool Delete(string id)
+        {
+            var command = $"DELETE FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
+
+            return ExecuteWrite(connectionString, command);
+        }
+
+        public override bool DeleteAll()
+        {
+            var command = $"DELETE FROM {AccountsTable.TABLE_NAME} WHERE 1=1";
+
+            return ExecuteWrite(connectionString, command);
         }
 
         public List<AccountsTableEntry> GetAccountsOfClient(string clientId)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                List<AccountsTableEntry> result = new List<AccountsTableEntry>();
+            var command = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_OWNER_CLIENT_ID} = '{clientId}'";
 
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    var accountIdsOfClient = new List<string>();
-
-                    command.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_OWNER_CLIENT_ID} = '{clientId}'";
-
-                    using (var sqlReader = command.ExecuteReader())
-                    {
-                        while (sqlReader!.Read())
-                        {
-                            var dataEntry = mapperProvider.Map<NpgsqlDataReader, AccountsTableEntry>(sqlReader);
-
-                            result.Add(dataEntry);
-                        }
-                    }        
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
+            return ExecuteReadMultiple(connectionString, command);
         }
 
-        public List<AccountsTableEntry> GetAll()
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                List<AccountsTableEntry> result = new List<AccountsTableEntry>();
-
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME}";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    while (sqlReader!.Read())
-                    {
-                        var dataEntry = mapperProvider.Map<NpgsqlDataReader, AccountsTableEntry>(sqlReader);
-
-                        result.Add(dataEntry);
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
-
-        public AccountsTableEntry? GetById(string id)
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                AccountsTableEntry? result = null;
-
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"SELECT * FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
-
-                    var sqlReader = command.ExecuteReader();
-
-                    if (sqlReader.HasRows)
-                    {
-                        sqlReader.Read();
-                        result = mapperProvider.Map<NpgsqlDataReader, AccountsTableEntry>(sqlReader);
-                    }
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
-
-        public bool Add(AccountsTableEntry entry)
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText =  this.BuildAddCommand(entry);
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
-
-        public bool Edit(AccountsTableEntry entry)
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = this.BuildEditCommand(entry);
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
-
-        public bool Delete(string id)
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {AccountsTable.TABLE_NAME} WHERE {AccountsTable.COLUMN_ID} = '{id}'";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
-        public bool DeleteAll()
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var (transaction, command) = SqlDatabaseHelper.InitialzieSqlTransaction(connection);
-
-                try
-                {
-                    command.CommandText = $"DELETE FROM {AccountsTable.TABLE_NAME} WHERE 1=1";
-
-                    command.ExecuteNonQuery();
-
-                    // Attempt to commit the transaction.
-                    transaction.Commit();
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
 
         private string BuildAddCommand(AccountsTableEntry entry)
         {

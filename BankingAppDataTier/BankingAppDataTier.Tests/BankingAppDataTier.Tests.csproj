@@ -5,19 +5,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+	<IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
-
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\BankingAppDataTier.Contracts\BankingAppDataTier.Contracts.csproj" />
+    <ProjectReference Include="..\BankingAppDataTier.Library\BankingAppDataTier.Library.csproj" />
     <ProjectReference Include="..\BankingAppDataTier\BankingAppDataTier.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+	  <PackageReference Include="elideus-dot-net-framework-tests" Version="1.0.3" />
+	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+	  <PackageReference Include="xunit" Version="2.9.2" />
+	  <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+	  <PackageReference Include="SpecFlow.xUnit" Version="3.9.74" />
+	  <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

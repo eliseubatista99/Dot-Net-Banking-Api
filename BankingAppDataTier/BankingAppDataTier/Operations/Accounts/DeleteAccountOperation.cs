@@ -1,11 +1,11 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Operations.Contracts;
+﻿using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core.Operations;
 using System.Net;
-using ElideusDotNetFramework.Providers.Contracts;
+using ElideusDotNetFramework.Core;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Accounts
+namespace BankingAppDataTier.Operations
 {
     public class DeleteAccountOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<DeleteAccountInput, VoidOperationOutput>(context, endpoint)

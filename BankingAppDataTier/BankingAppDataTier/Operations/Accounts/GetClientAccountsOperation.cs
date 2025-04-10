@@ -1,13 +1,12 @@
-﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Accounts;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Accounts;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Providers.Contracts;
+﻿using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Contracts.Dtos;
+using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.Accounts
+namespace BankingAppDataTier.Operations
 {
     public class GetClientAccountsOperation(IApplicationContext context, string endpoint)
             : BankingAppDataTierOperation<GetClientAccountsInput, GetClientAccountsOutput>(context, endpoint)

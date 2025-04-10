@@ -1,8 +1,7 @@
-﻿using BankingAppDataTier.Contracts.Dtos.Inputs.LoanOffer;
-using BankingAppDataTier.Contracts.Dtos.Outputs.LoansOffers;
-using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Contracts.Providers;
-using BankingAppDataTier.Operations.LoanOffers;
+﻿using BankingAppDataTier.Contracts.Enums;
+using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Library.Providers;
+using BankingAppDataTier.Operations;
 using BankingAppDataTier.Tests.Constants;
 using ElideusDotNetFramework.Tests;
 

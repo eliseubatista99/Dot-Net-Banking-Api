@@ -1,14 +1,13 @@
-﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Loans;
-using BankingAppDataTier.Contracts.Dtos.Outputs.Loans;
+﻿using BankingAppDataTier.Library.Database;
+using BankingAppDataTier.Contracts.Dtos;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Providers.Contracts;
+using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Contracts.Operations;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core;
 using System.Net;
 
-namespace BankingAppDataTier.Operations.Loans
+namespace BankingAppDataTier.Operations
 {
     public class GetLoanByIdOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<GetLoanByIdInput, GetLoanByIdOutput>(context, endpoint)

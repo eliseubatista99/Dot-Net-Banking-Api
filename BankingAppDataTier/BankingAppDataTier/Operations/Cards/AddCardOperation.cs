@@ -1,15 +1,15 @@
-﻿using BankingAppDataTier.Contracts.Database;
-using BankingAppDataTier.Contracts.Dtos.Entitites;
-using BankingAppDataTier.Contracts.Dtos.Inputs.Cards;
+﻿using BankingAppDataTier.Library.Database;
 using BankingAppDataTier.Contracts.Enums;
-using BankingAppDataTier.Contracts.Errors;
-using BankingAppDataTier.Contracts.Providers;
-using ElideusDotNetFramework.Errors.Contracts;
-using ElideusDotNetFramework.Operations.Contracts;
-using ElideusDotNetFramework.Providers.Contracts;
+using BankingAppDataTier.Library.Errors;
+using BankingAppDataTier.Library.Providers;
+using ElideusDotNetFramework.Core.Errors;
+using ElideusDotNetFramework.Core.Operations;
+using ElideusDotNetFramework.Core;
 using System.Net;
+using BankingAppDataTier.Contracts.Dtos;
+using BankingAppDataTier.Contracts.Operations;
 
-namespace BankingAppDataTier.Operations.Cards
+namespace BankingAppDataTier.Operations
 {
     public class AddCardOperation(IApplicationContext context, string endpoint)
         : BankingAppDataTierOperation<AddCardInput, VoidOperationOutput>(context, endpoint)
@@ -25,9 +25,9 @@ namespace BankingAppDataTier.Operations.Cards
             databasePlasticsProvider = executionContext.GetDependency<IDatabasePlasticsProvider>()!;
         }
 
-        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(AddCardInput input)
+        protected override async Task<(HttpStatusCode? StatusCode, Error? Error)> ValidateInput(HttpRequest request, AddCardInput input)
         {
-            var baseValidation = await base.ValidateInput(input);
+            var baseValidation = await base.ValidateInput(request, input);
 
             if (baseValidation.Error == null)
             {
